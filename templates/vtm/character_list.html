@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}VTM Characters{% endblock %}
+
+{% block content %}
+<div class="character-list vtm-theme">
+    <div class="header">
+        <h1>🩸 Vampire: The Masquerade Characters</h1>
+        <div class="character-slots">
+            <span>{{ characters|length }} / {{ character_limit }} characters</span>
+        </div>
+    </div>
+    
+    {% if request.query_params.get('error') == 'limit_reached' %}
+    <div class="alert alert-warning">
+        <strong>Character Limit Reached!</strong>
+        <p>You have {{ character_limit }} characters. Delete one to create a new character.</p>
+    </div>
+    {% endif %}
+    
+    <div class="character-grid">
+        {% for character in characters %}
+        <div class="character-card">
+            {% if character.portrait_url %}
+            <img src="{{ character.portrait_url }}" alt="{{ character.name }}">
+            {% else %}
+            <div class="placeholder-portrait">No Portrait</div>
+            {% endif %}
+            
+            <div class="character-info">
+                <h3>{{ character.name or 'Unnamed' }}</h3>
+                <p class="clan">{{ character.clan or 'Caitiff' }}</p>
+                <p class="concept">{{ character.concept or 'No concept' }}</p>
+            </div>
+            
+            <div class="character-actions">
+                <a href="/vtm/character/{{ character.id }}" class="btn-view">View</a>
+                <a href="/vtm/character/{{ character.id }}/edit" class="btn-edit">Edit</a>
+                <form method="post" action="/vtm/character/{{ character.id }}/delete" 
+                      onsubmit="return confirm('Delete this character? This cannot be undone.');">
+                    <button type="submit" class="btn-delete">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% if can_create %}
+        <div class="character-card create-new">
+            <a href="/vtm/character/new">
+                <div class="create-icon">+</div>
+                <p>Create New Character</p>
+            </a>
+        </div>
+        {% else %}
+        <div class="character-card limit-reached">
+            <div class="limit-icon">⚠</div>
+            <p>Character Limit Reached</p>
+            <small>Delete a character to create a new one</small>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="back-link">
+        <a href="/">← Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

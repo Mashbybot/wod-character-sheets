@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - World of Darkness{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Welcome, {{ user.username }}</h1>
+    
+    <div class="game-lines">
+        <div class="game-line-card vtm-card">
+            <h2>🩸 Vampire: The Masquerade</h2>
+            <p>Manage your Kindred characters</p>
+            <a href="/vtm" class="btn-secondary">View Characters</a>
+        </div>
+        
+        <div class="game-line-card htr-card">
+            <h2>🔶 Hunter: The Reckoning</h2>
+            <p>Manage your Hunter characters</p>
+            <a href="/htr" class="btn-secondary">View Characters</a>
+        </div>
+        
+        <div class="game-line-card coming-soon">
+            <h2>🐺 More Coming Soon</h2>
+            <p>Additional WoD game lines</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

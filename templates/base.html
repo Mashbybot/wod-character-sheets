@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}World of Darkness Character Sheets{% endblock %}</title>
+    
+    <!-- Base CSS -->
+    <link rel="stylesheet" href="/static/css/base.css">
+    
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/">World of Darkness</a>
+            </div>
+            
+            <div class="nav-links">
+                {% if user %}
+                    <a href="/vtm">VTM Characters</a>
+                    <a href="/htr">HTR Characters</a>
+                    <div class="user-menu">
+                        <span>{{ user.username }}</span>
+                        <a href="/auth/logout" class="btn-logout">Logout</a>
+                    </div>
+                {% else %}
+                    <a href="/auth/login" class="btn-login">Login with Discord</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        <p>World of Darkness © Paradox Interactive. This is a fan project.</p>
+    </footer>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

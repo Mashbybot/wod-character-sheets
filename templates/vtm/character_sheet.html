@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if character %}{{ character.name }} - VTM Character{% else %}New VTM Character{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="/static/css/vtm-sheet.css">
+{% endblock %}
+
+{% block content %}
+<div class="character-sheet vtm-sheet">
+    <div class="sheet-header">
+        <h1>{% if character %}{{ character.name or 'Unnamed' }}{% else %}New Character{% endif %}</h1>
+        {% if not edit_mode and character %}
+        <a href="/vtm/character/{{ character.id }}/edit" class="btn-edit">Edit Character</a>
+        {% endif %}
+    </div>
+    
+    {% if edit_mode %}
+    <!-- EDIT MODE: Form for creating/editing character -->
+    <form method="post" action="{% if character %}/vtm/character/{{ character.id }}/update{% else %}/vtm/character/create{% endif %}" 
+          class="character-form">
+        
+        <div class="form-section">
+            <h2>Basic Information</h2>
+            
+            <div class="form-group">
+                <label for="name">Character Name</label>
+                <input type="text" id="name" name="name" 
+                       value="{% if character %}{{ character.name }}{% endif %}" 
+                       required>
+            </div>
+            
+            <div class="form-group">
+                <label for="concept">Concept</label>
+                <input type="text" id="concept" name="concept" 
+                       value="{% if character %}{{ character.concept }}{% endif %}">
+            </div>
+            
+            <div class="form-group">
+                <label for="clan">Clan</label>
+                <select id="clan" name="clan">
+                    <option value="">Select Clan</option>
+                    <option value="Brujah">Brujah</option>
+                    <option value="Gangrel">Gangrel</option>
+                    <option value="Malkavian">Malkavian</option>
+                    <option value="Nosferatu">Nosferatu</option>
+                    <option value="Toreador">Toreador</option>
+                    <option value="Tremere">Tremere</option>
+                    <option value="Ventrue">Ventrue</option>
+                    <option value="Caitiff">Caitiff</option>
+                    <option value="Thin-Blood">Thin-Blood</option>
+                    <option value="Banu Haqim">Banu Haqim</option>
+                    <option value="Hecata">Hecata</option>
+                    <option value="Lasombra">Lasombra</option>
+                    <option value="Ministry">Ministry</option>
+                    <option value="Ravnos">Ravnos</option>
+                    <option value="Salubri">Salubri</option>
+                    <option value="Tzimisce">Tzimisce</option>
+                </select>
+            </div>
+            
+            <!-- More fields will be added in Phase 2 -->
+            <p class="placeholder-text">Full character sheet form coming in Phase 2...</p>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save Character</button>
+            <a href="/vtm" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+    
+    {% else %}
+    <!-- VIEW MODE: Display character sheet -->
+    <div class="sheet-display">
+        <div class="sheet-section">
+            <h2>Chronicle Information</h2>
+            <p><strong>Name:</strong> {{ character.name }}</p>
+            <p><strong>Concept:</strong> {{ character.concept }}</p>
+            <p><strong>Clan:</strong> {{ character.clan }}</p>
+            <!-- More fields will be displayed in Phase 2 -->
+        </div>
+        
+        <p class="placeholder-text">Full character sheet display coming in Phase 2...</p>
+    </div>
+    {% endif %}
+    
+    <div class="back-link">
+        <a href="/vtm">← Back to Character List</a>
+    </div>
+</div>
+{% endblock %}

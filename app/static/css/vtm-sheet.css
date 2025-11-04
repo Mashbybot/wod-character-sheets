@@ -1,0 +1,187 @@
+/* VTM Character Sheet Styles */
+
+.character-sheet {
+    background-color: var(--bg-dark);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 2px solid var(--vtm-red-dark);
+}
+
+.sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--vtm-red);
+}
+
+.sheet-header h1 {
+    color: var(--vtm-red-light);
+}
+
+.character-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-section {
+    background-color: var(--bg-card);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.form-section h2 {
+    color: var(--vtm-red-light);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-gray);
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-white);
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--vtm-red);
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.placeholder-text {
+    color: var(--text-gray);
+    font-style: italic;
+    padding: 2rem;
+    text-align: center;
+    background-color: var(--bg-card);
+    border-radius: 4px;
+    margin: 2rem 0;
+}
+
+.sheet-display {
+    background-color: var(--bg-card);
+    padding: 2rem;
+    border-radius: 4px;
+}
+
+.sheet-section {
+    margin-bottom: 2rem;
+}
+
+.sheet-section h2 {
+    color: var(--vtm-red-light);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.sheet-section p {
+    margin-bottom: 0.5rem;
+}
+
+.sheet-section strong {
+    color: var(--text-gray);
+    margin-right: 0.5rem;
+}
+
+/* Coming Soon Page */
+.coming-soon {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.coming-soon .content {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: var(--bg-card);
+    padding: 3rem;
+    border-radius: 8px;
+    border: 2px solid var(--htr-orange-dark);
+}
+
+.coming-soon h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.coming-soon h2 {
+    color: var(--htr-orange);
+    margin-bottom: 2rem;
+}
+
+.features-preview {
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.features-preview h3 {
+    margin-bottom: 1rem;
+}
+
+.features-preview ul {
+    list-style-position: inside;
+    color: var(--text-gray);
+}
+
+.features-preview li {
+    margin-bottom: 0.5rem;
+}
+
+/* Error Pages */
+.error-page {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.error-page h1 {
+    font-size: 6rem;
+    color: var(--vtm-red);
+    margin-bottom: 1rem;
+}
+
+.error-page h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.error-page p {
+    font-size: 1.2rem;
+    color: var(--text-gray);
+    margin-bottom: 2rem;
+}

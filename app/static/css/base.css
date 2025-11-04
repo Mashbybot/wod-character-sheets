@@ -1,0 +1,430 @@
+/* World of Darkness - Base Styles */
+
+:root {
+    /* VTM Colors */
+    --vtm-red: #8B0000;
+    --vtm-red-dark: #5C0000;
+    --vtm-red-light: #A52A2A;
+    
+    /* HTR Colors */
+    --htr-orange: #FF8C00;
+    --htr-orange-dark: #CC7000;
+    
+    /* Base Colors */
+    --bg-black: #0A0A0A;
+    --bg-dark: #1A1A1A;
+    --bg-card: #2A2A2A;
+    --text-white: #E0E0E0;
+    --text-gray: #A0A0A0;
+    --border-color: #3A3A3A;
+    
+    /* UI Colors */
+    --success: #28A745;
+    --warning: #FFC107;
+    --danger: #DC3545;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Navigation */
+.navbar {
+    background-color: var(--bg-dark);
+    border-bottom: 2px solid var(--vtm-red-dark);
+    padding: 1rem 2rem;
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--vtm-red-light);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-white);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--vtm-red-light);
+}
+
+.user-menu {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Buttons */
+.btn-primary, .btn-secondary, .btn-login, .btn-logout {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--vtm-red);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--vtm-red-dark);
+}
+
+.btn-secondary {
+    background-color: var(--bg-card);
+    color: var(--text-white);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-dark);
+}
+
+.btn-login {
+    background-color: #5865F2; /* Discord blue */
+    color: white;
+}
+
+.btn-logout {
+    background-color: var(--danger);
+    color: white;
+}
+
+/* Landing Page */
+.landing-page {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.hero {
+    margin-bottom: 4rem;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    color: var(--vtm-red-light);
+    margin-bottom: 1rem;
+}
+
+.hero h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: var(--text-gray);
+    margin-bottom: 2rem;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature {
+    background-color: var(--bg-card);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.feature h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Dashboard */
+.dashboard h1 {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--vtm-red-light);
+}
+
+.game-lines {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.game-line-card {
+    background-color: var(--bg-card);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    text-align: center;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.game-line-card:hover {
+    transform: translateY(-5px);
+}
+
+.vtm-card {
+    border-color: var(--vtm-red-dark);
+}
+
+.vtm-card:hover {
+    border-color: var(--vtm-red);
+}
+
+.htr-card {
+    border-color: var(--htr-orange-dark);
+}
+
+.htr-card:hover {
+    border-color: var(--htr-orange);
+}
+
+.coming-soon {
+    opacity: 0.6;
+}
+
+/* Character List */
+.character-list {
+    padding: 2rem;
+}
+
+.character-list .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--vtm-red-dark);
+}
+
+.character-slots {
+    font-size: 1.2rem;
+    color: var(--text-gray);
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+    border-left: 4px solid;
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: var(--warning);
+    color: var(--warning);
+}
+
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.character-card {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--vtm-red);
+}
+
+.character-card img,
+.placeholder-portrait {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background-color: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-gray);
+}
+
+.character-info {
+    padding: 1rem;
+}
+
+.character-info h3 {
+    margin-bottom: 0.5rem;
+}
+
+.character-info .clan {
+    color: var(--vtm-red-light);
+    font-weight: bold;
+}
+
+.character-info .concept {
+    color: var(--text-gray);
+    font-style: italic;
+}
+
+.character-actions {
+    padding: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.character-actions a,
+.character-actions button {
+    flex: 1;
+    padding: 0.5rem;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.btn-view {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    border: 1px solid var(--border-color);
+}
+
+.btn-edit {
+    background-color: var(--vtm-red-dark);
+    color: white;
+}
+
+.btn-delete {
+    background-color: var(--danger);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.create-new {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    cursor: pointer;
+}
+
+.create-new a {
+    text-decoration: none;
+    color: var(--text-white);
+    text-align: center;
+}
+
+.create-icon {
+    font-size: 4rem;
+    color: var(--vtm-red);
+}
+
+.limit-reached {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    opacity: 0.6;
+}
+
+.limit-icon {
+    font-size: 4rem;
+    color: var(--warning);
+}
+
+/* VTM Theme */
+.vtm-theme {
+    border-top: 4px solid var(--vtm-red);
+}
+
+/* HTR Theme */
+.htr-theme {
+    border-top: 4px solid var(--htr-orange);
+}
+
+/* Back Link */
+.back-link {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.back-link a {
+    color: var(--text-gray);
+    text-decoration: none;
+}
+
+.back-link a:hover {
+    color: var(--vtm-red-light);
+}
+
+/* Footer */
+footer {
+    background-color: var(--bg-dark);
+    border-top: 1px solid var(--border-color);
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-gray);
+    margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+    
+    .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .character-grid {
+        grid-template-columns: 1fr;
+    }
+}
