@@ -15,7 +15,7 @@ itsdangerous==2.1.2
 python-dotenv==1.0.0
 
 # Image processing
-Pillow==10.1.0
+Pillow==10.4.0
 
 # HTTP requests (for Discord OAuth)
 httpx==0.25.1
