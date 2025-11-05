@@ -79,15 +79,6 @@ wod-character-sheets/
 └── README.md
 ```
 
-## Discord OAuth Setup
-
-1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
-2. Create a new application
-3. Go to OAuth2 settings
-4. Add redirect URL: `https://your-app.up.railway.app/auth/callback`
-5. Copy Client ID and Client Secret to Railway environment variables
-6. Enable OAuth2 scopes: `identify`
-
 ## License
 
 This is a personal project for World of Darkness gameplay. All World of Darkness content is owned by Paradox Interactive.
