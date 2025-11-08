@@ -20,7 +20,17 @@ app = FastAPI(
 
 # Add session middleware for OAuth
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production")
-app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+print(f"[STARTUP] Using SECRET_KEY: {SECRET_KEY[:10]}... (length: {len(SECRET_KEY)})")
+
+# Add session middleware with explicit cookie settings
+app.add_middleware(
+    SessionMiddleware, 
+    secret_key=SECRET_KEY,
+    session_cookie="wod_session",  # Explicit cookie name
+    max_age=14 * 24 * 60 * 60,     # 14 days
+    same_site="lax",                # Allow OAuth redirects
+    https_only=False                # Set to True in production with HTTPS
+)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -44,16 +54,21 @@ app.include_router(htr.router)
 async def startup_event():
     """Initialize database on startup"""
     init_db()
-    print("Database initialized")
+    print("[STARTUP] Database initialized")
 
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """Home page - landing or dashboard based on auth status"""
+    # Debug session contents
+    print(f"[HOME] Session contents: {dict(request.session)}")
+    
     user = get_current_user(request)
+    print(f"[HOME] Current user: {user}")
     
     if user:
         # Logged in - show dashboard
+        print(f"[HOME] Authenticated user {user.get('username')} - showing dashboard")
         return templates.TemplateResponse(
             "dashboard.html",
             {
@@ -63,6 +78,7 @@ async def home(request: Request):
         )
     else:
         # Not logged in - show landing page
+        print("[HOME] No authenticated user - showing landing page")
         return templates.TemplateResponse(
             "index.html",
             {
@@ -76,6 +92,16 @@ async def home(request: Request):
 async def health_check():
     """Health check endpoint for Railway"""
     return {"status": "healthy"}
+
+
+@app.get("/debug-session")
+async def debug_session(request: Request):
+    """Debug endpoint to check session contents"""
+    return {
+        "session": dict(request.session),
+        "user": get_current_user(request),
+        "cookies": dict(request.cookies)
+    }
 
 
 # Error handlers
