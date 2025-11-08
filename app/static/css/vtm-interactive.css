@@ -342,6 +342,46 @@
     font-style: italic;
 }
 
+/* ===== CLAN DISCIPLINES ===== */
+.clan-disciplines {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.clan-disciplines label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.discipline-icons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.discipline-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
+    transition: transform 0.2s;
+}
+
+.discipline-icon:hover {
+    transform: scale(1.1);
+}
+
+.no-disciplines {
+    color: var(--text-gray);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
 /* ===== EXPERIENCE SECTION ===== */
 .xp-section {
     text-align: center;

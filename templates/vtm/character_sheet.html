@@ -409,9 +409,109 @@
                 <div class="form-group">
                     <label>Bane</label>
                     <select x-model="data.bane_type" @change="autoSave()">
-                        <option value="">Select Bane (clan-specific)</option>
-                        <!-- Will populate based on clan selection -->
+                        <option value="">Select Bane</option>
+                        <template x-if="data.clan === 'brujah'">
+                            <optgroup label="Brujah Banes">
+                                <option value="Violent Temper">Violent Temper</option>
+                                <option value="Zealotry">Zealotry</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'gangrel'">
+                            <optgroup label="Gangrel Banes">
+                                <option value="Bestial Features">Bestial Features</option>
+                                <option value="Feral Impulses">Feral Impulses</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'malkavian'">
+                            <optgroup label="Malkavian Banes">
+                                <option value="Fractured Perspective">Fractured Perspective</option>
+                                <option value="Delusion">Delusion</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'nosferatu'">
+                            <optgroup label="Nosferatu Banes">
+                                <option value="Repulsiveness">Repulsiveness</option>
+                                <option value="Unnatural Aura">Unnatural Aura</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'toreador'">
+                            <optgroup label="Toreador Banes">
+                                <option value="Aesthetic Fixation">Aesthetic Fixation</option>
+                                <option value="Obsessive Fascination">Obsessive Fascination</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'tremere'">
+                            <optgroup label="Tremere Banes">
+                                <option value="Deficient Blood">Deficient Blood</option>
+                                <option value="Vitae Addiction">Vitae Addiction</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'ventrue'">
+                            <optgroup label="Ventrue Banes">
+                                <option value="Rarefied Taste">Rarefied Taste</option>
+                                <option value="Rigid Predilections">Rigid Predilections</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'banu-haqim'">
+                            <optgroup label="Banu Haqim Banes">
+                                <option value="Blood Addiction">Blood Addiction</option>
+                                <option value="Grave Curse">Grave Curse</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'hecata'">
+                            <optgroup label="Hecata Banes">
+                                <option value="Painful Kiss">Painful Kiss</option>
+                                <option value="Disfiguring Brand">Disfiguring Brand</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'lasombra'">
+                            <optgroup label="Lasombra Banes">
+                                <option value="No Reflection">No Reflection</option>
+                                <option value="Shadow Cast">Shadow Cast</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'ministry'">
+                            <optgroup label="Ministry Banes">
+                                <option value="Light Sensitivity">Light Sensitivity</option>
+                                <option value="Scale Pattern">Scale Pattern</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'ravnos'">
+                            <optgroup label="Ravnos Banes">
+                                <option value="Doomed by Reputation">Doomed by Reputation</option>
+                                <option value="Cursed by Vice">Cursed by Vice</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'salubri'">
+                            <optgroup label="Salubri Banes">
+                                <option value="Third Eye">Third Eye</option>
+                                <option value="Conspicuous Aura">Conspicuous Aura</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'tzimisce'">
+                            <optgroup label="Tzimisce Banes">
+                                <option value="Soil Dependence">Soil Dependence</option>
+                                <option value="Repulsive">Repulsive</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'caitiff'">
+                            <optgroup label="Caitiff Banes">
+                                <option value="Clanless Stigma">Clanless Stigma</option>
+                            </optgroup>
+                        </template>
+                        <template x-if="data.clan === 'thin-blood'">
+                            <optgroup label="Thin-Blood Banes">
+                                <option value="Thin Vitae">Thin Vitae</option>
+                                <option value="Mortal Frailty">Mortal Frailty</option>
+                            </optgroup>
+                        </template>
                     </select>
+                </div>
+                
+                <!-- Clan Discipline Icons -->
+                <div class="clan-disciplines" x-show="data.clan">
+                    <label>Clan Disciplines</label>
+                    <div class="discipline-icons" x-html="getClanDisciplineIcons()"></div>
                 </div>
                 
                 <div class="form-group">
@@ -423,7 +523,14 @@
                         <option value="Harm">Harm</option>
                         <option value="Paranoia">Paranoia</option>
                         <option value="Perfectionism">Perfectionism</option>
-                        <!-- Add all compulsions -->
+                        <option value="Cryptophilia">Cryptophilia</option>
+                        <option value="Judgment">Judgment</option>
+                        <option value="Cowardice">Cowardice</option>
+                        <option value="Rebellion">Rebellion</option>
+                        <option value="Temptation">Temptation</option>
+                        <option value="Obsession">Obsession</option>
+                        <option value="Greed">Greed</option>
+                        <option value="Transgression">Transgression</option>
                     </select>
                 </div>
             </section>

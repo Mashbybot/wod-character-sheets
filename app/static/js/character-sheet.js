@@ -189,6 +189,38 @@ function characterSheet(characterId) {
             // This function exists for future enhancements
         },
         
+        // Get clan discipline icons
+        getClanDisciplineIcons() {
+            const clanDisciplines = {
+                'brujah': ['potence', 'presence', 'celerity'],
+                'gangrel': ['animalism', 'fortitude', 'protean'],
+                'malkavian': ['auspex', 'dominate', 'obfuscate'],
+                'nosferatu': ['animalism', 'obfuscate', 'potence'],
+                'toreador': ['auspex', 'celerity', 'presence'],
+                'tremere': ['auspex', 'blood-sorcery', 'dominate'],
+                'ventrue': ['dominate', 'fortitude', 'presence'],
+                'banu-haqim': ['blood-sorcery', 'celerity', 'obfuscate'],
+                'hecata': ['auspex', 'fortitude', 'oblivion'],
+                'lasombra': ['dominate', 'oblivion', 'potence'],
+                'ministry': ['obfuscate', 'presence', 'protean'],
+                'ravnos': ['animalism', 'obfuscate', 'presence'],
+                'salubri': ['auspex', 'dominate', 'fortitude'],
+                'tzimisce': ['animalism', 'dominate', 'protean'],
+                'caitiff': [], // No clan disciplines
+                'thin-blood': [] // No clan disciplines
+            };
+            
+            const disciplines = clanDisciplines[this.data.clan] || [];
+            if (disciplines.length === 0) return '<span class="no-disciplines">No clan disciplines</span>';
+            
+            return disciplines.map(disc => 
+                `<img src="/static/images/disciplines/${disc}.png" 
+                      alt="${disc}" 
+                      title="${disc.replace('-', ' ')}"
+                      class="discipline-icon">`
+            ).join('');
+        },
+        
         // Touchstone management
         addTouchstone() {
             if (this.touchstones.length < 3) {
