@@ -243,7 +243,70 @@
                 </div>
             </section>
             
-            <!-- Touchstones (1-3) -->
+            <!-- Hunger & Blood Potency -->
+            <section class="sheet-section">
+                <h2>Hunger & Blood Potency</h2>
+                
+                <!-- Hunger (0-5) -->
+                <div class="tracker-row">
+                    <label>Hunger</label>
+                    <div class="dot-tracker hunger-tracker" x-data="dotTracker('hunger', data.hunger || 1, 0, 5)">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot hunger-dot" 
+                                  :class="[i <= value ? 'filled' : 'empty', i >= 4 && i <= value ? 'danger' : '']"
+                                  @click="handleClick($event)">●</span>
+                        </template>
+                    </div>
+                </div>
+                
+                <!-- Resonance -->
+                <div class="form-group">
+                    <label>Resonance</label>
+                    <input type="text" x-model="data.resonance" @input.debounce.2s="autoSave()" placeholder="Current resonance">
+                </div>
+                
+                <!-- Blood Potency -->
+                <div class="blood-potency-section">
+                    <div class="tracker-row">
+                        <label>Blood Potency</label>
+                        <div class="dot-tracker bp-tracker" x-data="dotTracker('blood_potency', data.blood_potency || 0, 0, 10)">
+                            <template x-for="i in 10" :key="i">
+                                <span class="dot" 
+                                      :class="i <= value ? 'filled' : 'empty'"
+                                      @click="handleClick($event); $parent.updateBloodPotency(value)">●</span>
+                            </template>
+                        </div>
+                    </div>
+                    
+                    <!-- Auto-calculated BP values -->
+                    <div class="bp-values">
+                        <div class="bp-value-row">
+                            <span class="bp-label">Blood Surge:</span>
+                            <span class="bp-number" x-text="bloodPotencyValues.surge"></span>
+                        </div>
+                        <div class="bp-value-row">
+                            <span class="bp-label">Mend Amount:</span>
+                            <span class="bp-number" x-text="bloodPotencyValues.mend"></span>
+                        </div>
+                        <div class="bp-value-row">
+                            <span class="bp-label">Power Bonus:</span>
+                            <span class="bp-number" x-text="bloodPotencyValues.powerBonus"></span>
+                        </div>
+                        <div class="bp-value-row">
+                            <span class="bp-label">Rouse Re-roll:</span>
+                            <span class="bp-number" x-text="bloodPotencyValues.rouseReroll"></span>
+                        </div>
+                        <div class="bp-value-row">
+                            <span class="bp-label">Bane Severity:</span>
+                            <span class="bp-number" x-text="bloodPotencyValues.baneSeverity"></span>
+                        </div>
+                        <div class="bp-value-row">
+                            <span class="bp-label">Feeding Penalty:</span>
+                            <span class="bp-text" x-text="bloodPotencyValues.feedingPenalty"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section class="sheet-section">
                 <h2>Touchstones</h2>
                 <p class="section-note">You may have 1-3 touchstones</p>
@@ -340,27 +403,46 @@
                 <!-- Health -->
                 <div class="tracker-row">
                     <label>Health</label>
-                    <div class="box-tracker health-tracker">
-                        <!-- Will implement in Step 4 -->
-                        <span class="placeholder">Health tracker (Step 4)</span>
+                    <div class="box-tracker health-tracker" x-data="boxTracker('health', healthMax, data.health_superficial || 0, data.health_aggravated || 0)">
+                        <template x-for="i in maxBoxes" :key="i">
+                            <div class="health-box"
+                                 :class="getBoxState(i)"
+                                 @click="cycleBox(i, $event)"
+                                 @contextmenu.prevent="cycleBox(i, $event, true)">
+                                <span x-show="getBoxState(i) === 'superficial'">/</span>
+                                <span x-show="getBoxState(i) === 'aggravated'">×</span>
+                            </div>
+                        </template>
                     </div>
                 </div>
                 
                 <!-- Willpower -->
                 <div class="tracker-row">
                     <label>Willpower</label>
-                    <div class="box-tracker willpower-tracker">
-                        <!-- Will implement in Step 4 -->
-                        <span class="placeholder">Willpower tracker (Step 4)</span>
+                    <div class="box-tracker willpower-tracker" x-data="boxTracker('willpower', willpowerMax, data.willpower_superficial || 0, data.willpower_aggravated || 0)">
+                        <template x-for="i in maxBoxes" :key="i">
+                            <div class="willpower-box"
+                                 :class="getBoxState(i)"
+                                 @click="cycleBox(i, $event)"
+                                 @contextmenu.prevent="cycleBox(i, $event, true)">
+                                <span x-show="getBoxState(i) === 'superficial'">/</span>
+                                <span x-show="getBoxState(i) === 'aggravated'">×</span>
+                            </div>
+                        </template>
                     </div>
                 </div>
                 
                 <!-- Humanity -->
                 <div class="tracker-row">
                     <label>Humanity</label>
-                    <div class="box-tracker humanity-tracker">
-                        <!-- Will implement in Step 4 -->
-                        <span class="placeholder">Humanity tracker (Step 4)</span>
+                    <div class="box-tracker humanity-tracker" x-data="humanityTracker(data.humanity_current || 7)">
+                        <template x-for="i in 10" :key="i">
+                            <div class="humanity-box"
+                                 :class="getHumanityState(i)"
+                                 @click="setHumanity(i)"
+                                 @contextmenu.prevent="stainHumanity(i)">
+                            </div>
+                        </template>
                     </div>
                 </div>
             </section>
@@ -593,21 +675,176 @@
                     <button type="button" class="btn-small" @click="addXP()">+ Add XP</button>
                     <button type="button" class="btn-small" @click="spendXP()">Spend XP</button>
                 </div>
-                <!-- XP log will go here (Step 9) -->
+                
+                <!-- XP Log -->
+                <div class="xp-log" x-show="xpLog.length > 0">
+                    <h3>XP Log</h3>
+                    <div class="xp-log-entries">
+                        <template x-for="(entry, idx) in xpLog.slice().reverse()" :key="idx">
+                            <div class="xp-log-entry" :class="entry.type">
+                                <span class="xp-date" x-text="entry.date"></span>
+                                <span class="xp-amount" x-text="(entry.type === 'add' ? '+' : '-') + entry.amount"></span>
+                                <span class="xp-reason" x-text="entry.reason"></span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
             </section>
             
             <!-- Skills -->
             <section class="sheet-section skills-section">
                 <h2>Skills</h2>
-                <!-- Skills will be added in Step 3 - similar to attributes -->
-                <p class="placeholder">Skills with specialties (Step 3)</p>
+                
+                <!-- Physical Skills -->
+                <div class="skill-category">
+                    <h3>Physical</h3>
+                    
+                    <template x-for="skill in ['athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny', 'melee', 'stealth', 'survival']" :key="skill">
+                        <div class="skill-row" 
+                             x-data="skillTracker(skill, data[skill], getSpecialties(skill))"
+                             @mouseenter="showSpecialtyBtn = true"
+                             @mouseleave="showSpecialtyBtn = false">
+                            <span class="skill-name" x-text="capitalize(skill)"></span>
+                            <div class="skill-right">
+                                <div class="dot-tracker" @click="handleDotClick($event)">
+                                    <template x-for="i in 5" :key="i">
+                                        <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    </template>
+                                </div>
+                                <button type="button" 
+                                        class="btn-add-specialty" 
+                                        x-show="showSpecialtyBtn && value > 0"
+                                        @click="addSpecialty()">+</button>
+                            </div>
+                            <div class="specialties-list" x-show="specialties.length > 0">
+                                <template x-for="(spec, idx) in specialties" :key="idx">
+                                    <span class="specialty-tag">
+                                        <span x-text="spec"></span>
+                                        <button type="button" @click="removeSpecialty(idx)">×</button>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <!-- Social Skills -->
+                <div class="skill-category">
+                    <h3>Social</h3>
+                    
+                    <template x-for="skill in ['animal_ken', 'etiquette', 'insight', 'intimidation', 'leadership', 'performance', 'persuasion', 'streetwise', 'subterfuge']" :key="skill">
+                        <div class="skill-row" 
+                             x-data="skillTracker(skill, data[skill], getSpecialties(skill))"
+                             @mouseenter="showSpecialtyBtn = true"
+                             @mouseleave="showSpecialtyBtn = false">
+                            <span class="skill-name" x-text="capitalize(skill)"></span>
+                            <div class="skill-right">
+                                <div class="dot-tracker" @click="handleDotClick($event)">
+                                    <template x-for="i in 5" :key="i">
+                                        <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    </template>
+                                </div>
+                                <button type="button" 
+                                        class="btn-add-specialty" 
+                                        x-show="showSpecialtyBtn && value > 0"
+                                        @click="addSpecialty()">+</button>
+                            </div>
+                            <div class="specialties-list" x-show="specialties.length > 0">
+                                <template x-for="(spec, idx) in specialties" :key="idx">
+                                    <span class="specialty-tag">
+                                        <span x-text="spec"></span>
+                                        <button type="button" @click="removeSpecialty(idx)">×</button>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <!-- Mental Skills -->
+                <div class="skill-category">
+                    <h3>Mental</h3>
+                    
+                    <template x-for="skill in ['academics', 'awareness', 'finance', 'investigation', 'medicine', 'occult', 'politics', 'science', 'technology']" :key="skill">
+                        <div class="skill-row" 
+                             x-data="skillTracker(skill, data[skill], getSpecialties(skill))"
+                             @mouseenter="showSpecialtyBtn = true"
+                             @mouseleave="showSpecialtyBtn = false">
+                            <span class="skill-name" x-text="capitalize(skill)"></span>
+                            <div class="skill-right">
+                                <div class="dot-tracker" @click="handleDotClick($event)">
+                                    <template x-for="i in 5" :key="i">
+                                        <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    </template>
+                                </div>
+                                <button type="button" 
+                                        class="btn-add-specialty" 
+                                        x-show="showSpecialtyBtn && value > 0"
+                                        @click="addSpecialty()">+</button>
+                            </div>
+                            <div class="specialties-list" x-show="specialties.length > 0">
+                                <template x-for="(spec, idx) in specialties" :key="idx">
+                                    <span class="specialty-tag">
+                                        <span x-text="spec"></span>
+                                        <button type="button" @click="removeSpecialty(idx)">×</button>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
             </section>
             
             <!-- Disciplines -->
             <section class="sheet-section disciplines-section">
                 <h2>Disciplines</h2>
-                <!-- Disciplines will be added in Step 6 -->
-                <p class="placeholder">Disciplines system (Step 6)</p>
+                
+                <template x-for="i in 5" :key="i">
+                    <div class="discipline-entry" x-data="disciplineSlot(i)">
+                        <div class="discipline-header">
+                            <select x-model="disciplineName" 
+                                    @change="updateDiscipline()"
+                                    :disabled="i <= 2 && clanDisciplines.includes(disciplineName)"
+                                    class="discipline-select">
+                                <option value="">Select Discipline</option>
+                                <option value="animalism">Animalism</option>
+                                <option value="auspex">Auspex</option>
+                                <option value="blood-sorcery">Blood Sorcery</option>
+                                <option value="celerity">Celerity</option>
+                                <option value="dominate">Dominate</option>
+                                <option value="fortitude">Fortitude</option>
+                                <option value="obfuscate">Obfuscate</option>
+                                <option value="oblivion">Oblivion</option>
+                                <option value="potence">Potence</option>
+                                <option value="presence">Presence</option>
+                                <option value="protean">Protean</option>
+                                <option value="thin-blood-alchemy">Thin-Blood Alchemy</option>
+                            </select>
+                            
+                            <div class="dot-tracker discipline-dots" @click="handleDotClick($event)">
+                                <template x-for="d in 5" :key="d">
+                                    <span class="dot" :class="d <= disciplineLevel ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="discipline-powers" x-show="disciplineName">
+                            <label>Powers</label>
+                            <textarea x-model="powers" 
+                                      @input.debounce.2s="updateDiscipline()"
+                                      rows="3"
+                                      placeholder="List discipline powers (one per line)"></textarea>
+                        </div>
+                        
+                        <div class="discipline-description" x-show="disciplineName">
+                            <label>Notes</label>
+                            <textarea x-model="description" 
+                                      @input.debounce.2s="updateDiscipline()"
+                                      rows="2"
+                                      placeholder="Custom notes"></textarea>
+                        </div>
+                    </div>
+                </template>
             </section>
             
         </div>

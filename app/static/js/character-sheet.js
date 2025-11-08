@@ -27,7 +27,44 @@ function characterSheet(characterId) {
             languages: '',
             birthplace: '',
             
-            // Attributes (1-5)
+            // Skills (0-5)
+            athletics: 0,
+            brawl: 0,
+            craft: 0,
+            drive: 0,
+            firearms: 0,
+            larceny: 0,
+            melee: 0,
+            stealth: 0,
+            survival: 0,
+            animal_ken: 0,
+            etiquette: 0,
+            insight: 0,
+            intimidation: 0,
+            leadership: 0,
+            performance: 0,
+            persuasion: 0,
+            streetwise: 0,
+            subterfuge: 0,
+            academics: 0,
+            awareness: 0,
+            finance: 0,
+            investigation: 0,
+            medicine: 0,
+            occult: 0,
+            politics: 0,
+            science: 0,
+            technology: 0,
+            
+            // Skill specialties (stored as string)
+            skill_specialties: '',
+            
+            // Hunger (0-5)
+            hunger: 1,
+            resonance: '',
+            
+            // Blood Potency (0-10)
+            blood_potency: 0,
             strength: 1,
             dexterity: 1,
             stamina: 1,
@@ -53,6 +90,35 @@ function characterSheet(characterId) {
             exp_spent: 0,
             exp_available: 0,
             
+            // Health & Willpower tracking
+            health_superficial: 0,
+            health_aggravated: 0,
+            willpower_superficial: 0,
+            willpower_aggravated: 0,
+            humanity_current: 7,
+            
+            // Disciplines (5 slots)
+            discipline_1_name: '',
+            discipline_1_level: 0,
+            discipline_1_powers: '',
+            discipline_1_description: '',
+            discipline_2_name: '',
+            discipline_2_level: 0,
+            discipline_2_powers: '',
+            discipline_2_description: '',
+            discipline_3_name: '',
+            discipline_3_level: 0,
+            discipline_3_powers: '',
+            discipline_3_description: '',
+            discipline_4_name: '',
+            discipline_4_level: 0,
+            discipline_4_powers: '',
+            discipline_4_description: '',
+            discipline_5_name: '',
+            discipline_5_level: 0,
+            discipline_5_powers: '',
+            discipline_5_description: '',
+            
             // Chronicle Tenets
             chronicle_tenets: '',
             
@@ -64,6 +130,48 @@ function characterSheet(characterId) {
         
         // Touchstones (1-3)
         touchstones: [],
+        
+        // XP Log
+        xpLog: [],
+        
+        // Blood Potency calculated values
+        bloodPotencyValues: {
+            surge: 1,
+            mend: 1,
+            powerBonus: 0,
+            rouseReroll: 0,
+            feedingPenalty: 'No penalty',
+            baneSeverity: 0
+        },
+        
+        // Computed values
+        get healthMax() {
+            return (this.data.stamina || 1) + 3;
+        },
+        
+        get willpowerMax() {
+            return (this.data.composure || 1) + (this.data.resolve || 1);
+        },
+        
+        get clanDisciplines() {
+            const clanDiscs = {
+                'brujah': ['potence', 'presence', 'celerity'],
+                'gangrel': ['animalism', 'fortitude', 'protean'],
+                'malkavian': ['auspex', 'dominate', 'obfuscate'],
+                'nosferatu': ['animalism', 'obfuscate', 'potence'],
+                'toreador': ['auspex', 'celerity', 'presence'],
+                'tremere': ['auspex', 'blood-sorcery', 'dominate'],
+                'ventrue': ['dominate', 'fortitude', 'presence'],
+                'banu-haqim': ['blood-sorcery', 'celerity', 'obfuscate'],
+                'hecata': ['auspex', 'fortitude', 'oblivion'],
+                'lasombra': ['dominate', 'oblivion', 'potence'],
+                'ministry': ['obfuscate', 'presence', 'protean'],
+                'ravnos': ['animalism', 'obfuscate', 'presence'],
+                'salubri': ['auspex', 'dominate', 'fortitude'],
+                'tzimisce': ['animalism', 'dominate', 'protean']
+            };
+            return clanDiscs[this.data.clan] || [];
+        },
         
         // Initialize component
         init() {
@@ -77,6 +185,9 @@ function characterSheet(characterId) {
                     conviction: ''
                 });
             }
+            
+            // Initialize Blood Potency values
+            this.updateBloodPotency(this.data.blood_potency || 0);
         },
         
         // Load character data from server
@@ -191,7 +302,34 @@ function characterSheet(characterId) {
             // This function exists for future enhancements
         },
         
-        // Get clan discipline icons
+        // Update Blood Potency calculated values
+        updateBloodPotency(bp) {
+            const bpTable = {
+                0: { surge: 1, mend: 1, powerBonus: 0, rouseReroll: 0, feedingPenalty: 'No penalty', baneSeverity: 0 },
+                1: { surge: 2, mend: 1, powerBonus: 0, rouseReroll: 0, feedingPenalty: 'Animal/Bagged', baneSeverity: 1 },
+                2: { surge: 2, mend: 2, powerBonus: 1, rouseReroll: 0, feedingPenalty: 'Animal/Bagged', baneSeverity: 1 },
+                3: { surge: 3, mend: 2, powerBonus: 1, rouseReroll: 1, feedingPenalty: 'Cold blood', baneSeverity: 2 },
+                4: { surge: 3, mend: 3, powerBonus: 2, rouseReroll: 1, feedingPenalty: 'Cold blood', baneSeverity: 2 },
+                5: { surge: 4, mend: 3, powerBonus: 2, rouseReroll: 2, feedingPenalty: 'Resonance only', baneSeverity: 3 },
+                6: { surge: 4, mend: 3, powerBonus: 3, rouseReroll: 2, feedingPenalty: 'Resonance only', baneSeverity: 3 },
+                7: { surge: 5, mend: 3, powerBonus: 3, rouseReroll: 3, feedingPenalty: 'Slake 1 only', baneSeverity: 4 },
+                8: { surge: 5, mend: 4, powerBonus: 4, rouseReroll: 3, feedingPenalty: 'Slake 1 only', baneSeverity: 4 },
+                9: { surge: 6, mend: 4, powerBonus: 4, rouseReroll: 4, feedingPenalty: 'Slake 1 only', baneSeverity: 5 },
+                10: { surge: 6, mend: 5, powerBonus: 5, rouseReroll: 4, feedingPenalty: 'Slake 0 only', baneSeverity: 5 }
+            };
+            this.bloodPotencyValues = bpTable[bp] || bpTable[0];
+        },
+        
+        // Skill specialties management
+        getSpecialties(skill) {
+            if (!this.data.skill_specialties) return [];
+            const specs = this.data.skill_specialties.split(',').filter(s => s.trim());
+            return specs.filter(s => s.startsWith(skill + ':')).map(s => s.split(':')[1]);
+        },
+        
+        capitalize(str) {
+            return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        },
         getClanDisciplineIcons() {
             const clanDisciplines = {
                 'brujah': ['potence', 'presence', 'celerity'],
@@ -269,20 +407,41 @@ function characterSheet(characterId) {
         // XP Management
         addXP() {
             const amount = prompt('How much XP to add?');
+            const reason = prompt('Reason (optional):');
             if (amount && !isNaN(amount)) {
-                this.data.exp_total += parseInt(amount);
+                const xpAmount = parseInt(amount);
+                this.data.exp_total += xpAmount;
                 this.data.exp_available = this.data.exp_total - this.data.exp_spent;
+                
+                // Add to log
+                this.xpLog.push({
+                    date: new Date().toLocaleDateString(),
+                    type: 'add',
+                    amount: xpAmount,
+                    reason: reason || 'XP Award'
+                });
+                
                 this.autoSave();
             }
         },
         
         spendXP() {
             const amount = prompt('How much XP to spend?');
+            const reason = prompt('What did you buy?');
             if (amount && !isNaN(amount)) {
                 const spend = parseInt(amount);
                 if (spend <= this.data.exp_available) {
                     this.data.exp_spent += spend;
                     this.data.exp_available = this.data.exp_total - this.data.exp_spent;
+                    
+                    // Add to log
+                    this.xpLog.push({
+                        date: new Date().toLocaleDateString(),
+                        type: 'spend',
+                        amount: spend,
+                        reason: reason || 'Purchase'
+                    });
+                    
                     this.autoSave();
                 } else {
                     alert('Not enough available XP!');
@@ -337,3 +496,255 @@ function dotTracker(field, initialValue = 0, min = 0, max = 5) {
 // Make components globally available
 window.characterSheet = characterSheet;
 window.dotTracker = dotTracker;
+
+// Skill tracker component (with specialties)
+function skillTracker(skillName, initialValue = 0, initialSpecialties = []) {
+    return {
+        skillName: skillName,
+        value: initialValue,
+        specialties: initialSpecialties,
+        showSpecialtyBtn: false,
+        
+        init() {
+            this.$watch(`$parent.data.${skillName}`, val => {
+                this.value = val;
+            });
+        },
+        
+        handleDotClick(event) {
+            const dots = event.currentTarget.querySelectorAll('.dot');
+            const clickedDot = event.target.closest('.dot');
+            if (!clickedDot) return;
+            
+            const clickedIndex = Array.from(dots).indexOf(clickedDot) + 1;
+            
+            if (clickedIndex <= this.value) {
+                this.value = Math.max(clickedIndex - 1, 0);
+            } else {
+                this.value = clickedIndex;
+            }
+            
+            this.$parent.data[this.skillName] = this.value;
+            this.$parent.autoSave();
+        },
+        
+        addSpecialty() {
+            const spec = prompt(`Add specialty for ${this.capitalize(this.skillName)}:`);
+            if (spec && spec.trim()) {
+                if (this.specialties.length < this.value) {
+                    this.specialties.push(spec.trim());
+                    this.saveSpecialties();
+                } else {
+                    alert(`Maximum ${this.value} specialties for this skill!`);
+                }
+            }
+        },
+        
+        removeSpecialty(idx) {
+            this.specialties.splice(idx, 1);
+            this.saveSpecialties();
+        },
+        
+        saveSpecialties() {
+            // Update parent's skill_specialties string
+            let allSpecs = [];
+            
+            // Parse existing specialties
+            if (this.$parent.data.skill_specialties) {
+                allSpecs = this.$parent.data.skill_specialties.split(',').filter(s => s.trim() && !s.startsWith(this.skillName + ':'));
+            }
+            
+            // Add current skill's specialties
+            this.specialties.forEach(spec => {
+                allSpecs.push(`${this.skillName}:${spec}`);
+            });
+            
+            this.$parent.data.skill_specialties = allSpecs.join(',');
+            this.$parent.autoSave();
+        },
+        
+        capitalize(str) {
+            return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+    };
+}
+
+// Box tracker for Health/Willpower (4 states)
+function boxTracker(type, maxBoxes, superficial = 0, aggravated = 0) {
+    return {
+        type: type,
+        maxBoxes: maxBoxes,
+        superficial: superficial,
+        aggravated: aggravated,
+        
+        getBoxState(index) {
+            // Boxes fill from left (usable), damage from right
+            const usableBoxes = this.maxBoxes - this.superficial - this.aggravated;
+            
+            if (index <= usableBoxes) {
+                return 'filled'; // Red - usable
+            } else if (index <= usableBoxes + this.superficial) {
+                return 'superficial'; // Yellow - superficial damage
+            } else if (index <= this.maxBoxes) {
+                return 'aggravated'; // Black - aggravated damage
+            }
+            return 'empty'; // Not usable yet
+        },
+        
+        cycleBox(index, event, reverse = false) {
+            const currentState = this.getBoxState(index);
+            
+            if (!reverse) {
+                // Left click: empty → filled → superficial → aggravated → empty
+                if (currentState === 'empty') {
+                    // Add usable box
+                    this.extendTracker();
+                } else if (currentState === 'filled') {
+                    // Convert to superficial (damage from right)
+                    this.superficial++;
+                } else if (currentState === 'superficial') {
+                    // Convert to aggravated
+                    this.superficial--;
+                    this.aggravated++;
+                } else if (currentState === 'aggravated') {
+                    // Remove damage
+                    this.aggravated--;
+                }
+            } else {
+                // Right click: reverse
+                if (currentState === 'aggravated') {
+                    this.aggravated--;
+                    this.superficial++;
+                } else if (currentState === 'superficial') {
+                    this.superficial--;
+                } else if (currentState === 'filled') {
+                    // Remove usable box
+                    this.shrinkTracker();
+                }
+            }
+            
+            this.save();
+        },
+        
+        extendTracker() {
+            const totalDamage = this.superficial + this.aggravated;
+            if (totalDamage > 0) {
+                // Can't extend while damaged
+                return;
+            }
+            // This would require changing max boxes - skip for now
+        },
+        
+        shrinkTracker() {
+            const totalDamage = this.superficial + this.aggravated;
+            if (totalDamage > 0) {
+                // Can't shrink while damaged
+                return;
+            }
+            // This would require changing max boxes - skip for now
+        },
+        
+        save() {
+            this.$parent.data[`${this.type}_superficial`] = this.superficial;
+            this.$parent.data[`${this.type}_aggravated`] = this.aggravated;
+            this.$parent.autoSave();
+        }
+    };
+}
+
+// Humanity tracker (3 states: empty, filled, stained)
+function humanityTracker(current = 7) {
+    return {
+        current: current,
+        stained: 0,
+        
+        getHumanityState(index) {
+            if (index <= this.current - this.stained) {
+                return 'filled'; // Red
+            } else if (index <= this.current) {
+                return 'stained'; // Black
+            }
+            return 'empty';
+        },
+        
+        setHumanity(level) {
+            // Left click: set humanity to this level
+            this.current = level;
+            this.stained = 0;
+            this.save();
+        },
+        
+        stainHumanity(level) {
+            // Right click: stain this level
+            if (level <= this.current) {
+                const stainsAbove = this.current - level + 1;
+                this.stained = Math.min(stainsAbove, this.current);
+                this.save();
+            }
+        },
+        
+        save() {
+            this.$parent.data.humanity_current = this.current;
+            this.$parent.autoSave();
+        }
+    };
+}
+
+// Discipline slot component
+function disciplineSlot(slotNumber) {
+    return {
+        slotNumber: slotNumber,
+        disciplineName: '',
+        disciplineLevel: 0,
+        powers: '',
+        description: '',
+        
+        get clanDisciplines() {
+            return this.$parent.clanDisciplines || [];
+        },
+        
+        init() {
+            // Load from parent data
+            this.disciplineName = this.$parent.data[`discipline_${this.slotNumber}_name`] || '';
+            this.disciplineLevel = this.$parent.data[`discipline_${this.slotNumber}_level`] || 0;
+            this.powers = this.$parent.data[`discipline_${this.slotNumber}_powers`] || '';
+            this.description = this.$parent.data[`discipline_${this.slotNumber}_description`] || '';
+            
+            // Auto-populate clan disciplines in first 2 slots
+            if (this.slotNumber <= 2 && !this.disciplineName && this.clanDisciplines.length >= this.slotNumber) {
+                this.disciplineName = this.clanDisciplines[this.slotNumber - 1];
+                this.updateDiscipline();
+            }
+        },
+        
+        handleDotClick(event) {
+            const dots = event.currentTarget.querySelectorAll('.dot');
+            const clickedDot = event.target.closest('.dot');
+            if (!clickedDot) return;
+            
+            const clickedIndex = Array.from(dots).indexOf(clickedDot) + 1;
+            
+            if (clickedIndex <= this.disciplineLevel) {
+                this.disciplineLevel = Math.max(clickedIndex - 1, 0);
+            } else {
+                this.disciplineLevel = clickedIndex;
+            }
+            
+            this.updateDiscipline();
+        },
+        
+        updateDiscipline() {
+            this.$parent.data[`discipline_${this.slotNumber}_name`] = this.disciplineName;
+            this.$parent.data[`discipline_${this.slotNumber}_level`] = this.disciplineLevel;
+            this.$parent.data[`discipline_${this.slotNumber}_powers`] = this.powers;
+            this.$parent.data[`discipline_${this.slotNumber}_description`] = this.description;
+            this.$parent.autoSave();
+        }
+    };
+}
+
+// Make all components available
+window.skillTracker = skillTracker;
+window.boxTracker = boxTracker;
+window.humanityTracker = humanityTracker;
+window.disciplineSlot = disciplineSlot;

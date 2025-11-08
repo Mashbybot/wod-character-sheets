@@ -413,13 +413,306 @@
 }
 
 /* ===== SKILLS SECTION ===== */
-.skills-section {
-    /* Will be fully styled in Step 3 */
+.skills-section .skill-category {
+    margin-bottom: 1.5rem;
+}
+
+.skills-section .skill-category h3 {
+    color: var(--vtm-red-light);
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.3rem;
+}
+
+.skill-row {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.skill-row:last-child {
+    border-bottom: none;
+}
+
+.skill-row > div:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.skill-right {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-add-specialty {
+    background-color: var(--vtm-red-dark);
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-add-specialty:hover {
+    background-color: var(--vtm-red);
+}
+
+.specialties-list {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+    padding-left: 120px;
+}
+
+.specialty-tag {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--vtm-red-dark);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.specialty-tag button {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0;
+}
+
+/* ===== HEALTH/WILLPOWER/HUMANITY TRACKERS ===== */
+.health-box,
+.willpower-box,
+.humanity-box {
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.health-box:hover,
+.willpower-box:hover,
+.humanity-box:hover {
+    transform: scale(1.1);
+    border-color: var(--vtm-red);
+}
+
+.health-box.empty,
+.willpower-box.empty,
+.humanity-box.empty {
+    background-color: var(--bg-dark);
+}
+
+.health-box.filled,
+.willpower-box.filled,
+.humanity-box.filled {
+    background-color: var(--vtm-red);
+    border-color: var(--vtm-red);
+}
+
+.health-box.superficial,
+.willpower-box.superficial {
+    background-color: #FFC107;
+    border-color: #FFC107;
+    color: black;
+}
+
+.health-box.aggravated,
+.willpower-box.aggravated {
+    background-color: black;
+    border-color: black;
+    color: var(--vtm-red);
+}
+
+.humanity-box.stained {
+    background-color: black;
+    border-color: black;
+}
+
+/* ===== HUNGER TRACKER ===== */
+.hunger-dot.danger {
+    color: #ff0000 !important;
+    text-shadow: 0 0 8px #ff0000;
+}
+
+/* ===== BLOOD POTENCY SECTION ===== */
+.blood-potency-section {
+    background-color: var(--bg-dark);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+.bp-values {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+}
+
+.bp-value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.bp-value-row:last-child {
+    border-bottom: none;
+}
+
+.bp-label {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.bp-number,
+.bp-text {
+    color: var(--vtm-red-light);
+    font-weight: bold;
 }
 
 /* ===== DISCIPLINES SECTION ===== */
-.disciplines-section {
-    /* Will be fully styled in Step 6 */
+.discipline-entry {
+    background-color: var(--bg-dark);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border-left: 3px solid var(--vtm-red);
+}
+
+.discipline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+}
+
+.discipline-select {
+    flex: 1;
+    padding: 0.5rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-white);
+    font-size: 0.95rem;
+}
+
+.discipline-select:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.discipline-dots {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.discipline-powers,
+.discipline-description {
+    margin-top: 0.75rem;
+}
+
+.discipline-powers label,
+.discipline-description label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.discipline-powers textarea,
+.discipline-description textarea {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-white);
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+/* ===== XP LOG ===== */
+.xp-log {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.xp-log h3 {
+    font-size: 1rem;
+    color: var(--text-gray);
+    margin-bottom: 0.75rem;
+}
+
+.xp-log-entries {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.xp-log-entry {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.xp-log-entry:last-child {
+    border-bottom: none;
+}
+
+.xp-log-entry.add .xp-amount {
+    color: var(--success);
+}
+
+.xp-log-entry.spend .xp-amount {
+    color: var(--danger);
+}
+
+.xp-date {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+}
+
+.xp-amount {
+    font-weight: bold;
+}
+
+.xp-reason {
+    color: var(--text-white);
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
