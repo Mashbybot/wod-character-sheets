@@ -1,5 +1,6 @@
 """Authentication routes - Discord OAuth"""
 
+import os
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
@@ -14,7 +15,8 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 @router.get("/login")
 async def login(request: Request):
     """Initiate Discord OAuth flow"""
-    redirect_uri = request.url_for('auth_callback')
+
+    redirect_uri = os.getenv("DISCORD_REDIRECT_URI")
     return await oauth.discord.authorize_redirect(request, redirect_uri)
 
 
