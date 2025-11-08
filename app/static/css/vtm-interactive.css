@@ -1,0 +1,446 @@
+/* VTM Interactive Character Sheet */
+
+/* ===== GRID LAYOUT ===== */
+.sheet-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.column-left,
+.column-center,
+.column-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ===== SHEET SECTIONS ===== */
+.sheet-section {
+    background-color: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.sheet-section h2 {
+    color: var(--vtm-red-light);
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sheet-section h3 {
+    color: var(--text-gray);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-note {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+/* ===== SAVE INDICATOR ===== */
+.save-indicator {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+.save-indicator .saved {
+    color: var(--success);
+}
+
+.save-indicator .error {
+    color: var(--danger);
+}
+
+/* ===== FORM ELEMENTS ===== */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-white);
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--vtm-red);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* Form row layouts */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-row .form-group {
+    margin-bottom: 0;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+.form-group.third {
+    flex: 1;
+}
+
+/* ===== DOT TRACKERS ===== */
+.attribute-row,
+.skill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.attribute-row:last-child,
+.skill-row:last-child {
+    border-bottom: none;
+}
+
+.attribute-name,
+.skill-name {
+    font-size: 1rem;
+    color: var(--text-white);
+    min-width: 120px;
+}
+
+.dot-tracker {
+    display: flex;
+    gap: 0.3rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.dot {
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.dot.filled {
+    color: var(--vtm-red);
+}
+
+.dot.empty {
+    color: var(--border-color);
+}
+
+.dot:hover {
+    transform: scale(1.2);
+}
+
+/* ===== ATTRIBUTES GRID ===== */
+.attributes-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.attribute-category h3 {
+    color: var(--vtm-red-light);
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.3rem;
+}
+
+/* ===== TOUCHSTONES ===== */
+.touchstone-entry {
+    background-color: var(--bg-dark);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border-left: 3px solid var(--vtm-red);
+}
+
+.touchstone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.touchstone-header strong {
+    color: var(--vtm-red-light);
+}
+
+/* ===== BACKGROUND ENTRIES ===== */
+.background-entry {
+    background-color: var(--bg-dark);
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+}
+
+/* ===== BUTTONS ===== */
+.btn-add,
+.btn-remove-small,
+.btn-small {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.btn-add {
+    background-color: var(--vtm-red-dark);
+    color: white;
+    width: 100%;
+}
+
+.btn-add:hover {
+    background-color: var(--vtm-red);
+}
+
+.btn-remove-small {
+    background-color: var(--danger);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.btn-small {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    border: 1px solid var(--border-color);
+}
+
+.btn-small:hover {
+    background-color: var(--bg-card);
+}
+
+/* ===== PORTRAIT SECTION ===== */
+.portrait-section {
+    text-align: center;
+}
+
+.portrait-container {
+    width: 100%;
+    max-width: 400px;
+    height: 450px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-dark);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.portrait-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.portrait-placeholder {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+}
+
+/* ===== TRACKERS SECTION ===== */
+.trackers-section {
+    background-color: var(--bg-card);
+}
+
+.tracker-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tracker-row:last-child {
+    border-bottom: none;
+}
+
+.tracker-row label {
+    font-weight: bold;
+    color: var(--text-white);
+    min-width: 100px;
+}
+
+.box-tracker {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.placeholder {
+    color: var(--text-gray);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* ===== CLAN BADGE ===== */
+.clan-badge-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.clan-badge-container {
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clan-badge {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(139, 0, 0, 0.5));
+}
+
+.badge-placeholder {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+    font-style: italic;
+}
+
+/* ===== EXPERIENCE SECTION ===== */
+.xp-section {
+    text-align: center;
+}
+
+.xp-display {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    color: var(--vtm-red-light);
+}
+
+.xp-value {
+    color: var(--success);
+}
+
+.xp-separator {
+    margin: 0 0.5rem;
+}
+
+.xp-total {
+    color: var(--text-gray);
+}
+
+.xp-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+/* ===== SKILLS SECTION ===== */
+.skills-section {
+    /* Will be fully styled in Step 3 */
+}
+
+/* ===== DISCIPLINES SECTION ===== */
+.disciplines-section {
+    /* Will be fully styled in Step 6 */
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet */
+@media (max-width: 1200px) {
+    .sheet-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .column-right {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .sheet-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .clan-badge-container {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .portrait-container {
+        height: 300px;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    .sheet-header .save-indicator,
+    .btn-add,
+    .btn-remove-small,
+    .btn-small,
+    .btn-secondary,
+    .back-link {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .sheet-section {
+        background: white;
+        border: 1px solid #333;
+    }
+    
+    .dot.filled {
+        color: black;
+    }
+    
+    .dot.empty {
+        color: #ccc;
+    }
+}

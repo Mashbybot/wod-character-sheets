@@ -6,88 +6,514 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/vtm-sheet.css">
+<link rel="stylesheet" href="/static/css/vtm-interactive.css">
 {% endblock %}
 
 {% block content %}
-<div class="character-sheet vtm-sheet">
+<div class="character-sheet vtm-sheet" x-data="characterSheet({{ character.id if character else 'null' }})">
+    
+    <!-- Header -->
     <div class="sheet-header">
-        <h1>{% if character %}{{ character.name or 'Unnamed' }}{% else %}New Character{% endif %}</h1>
-        {% if not edit_mode and character %}
-        <a href="/vtm/character/{{ character.id }}/edit" class="btn-edit">Edit Character</a>
-        {% endif %}
+        <h1 x-text="characterName || 'New Character'"></h1>
+        <div class="save-indicator" x-show="saveStatus !== ''">
+            <span x-show="saveStatus === 'saving'">⏳ Saving...</span>
+            <span x-show="saveStatus === 'saved'" class="saved">✓ Saved</span>
+            <span x-show="saveStatus === 'error'" class="error">⚠ Save Failed</span>
+        </div>
     </div>
     
-    {% if edit_mode %}
-    <!-- EDIT MODE: Form for creating/editing character -->
-    <form method="post" action="{% if character %}/vtm/character/{{ character.id }}/update{% else %}/vtm/character/create{% endif %}" 
-          class="character-form">
+    <!-- 3-Column Grid Layout -->
+    <div class="sheet-grid">
         
-        <div class="form-section">
-            <h2>Basic Information</h2>
+        <!-- LEFT COLUMN -->
+        <div class="column-left">
             
-            <div class="form-group">
-                <label for="name">Character Name</label>
-                <input type="text" id="name" name="name" 
-                       value="{% if character %}{{ character.name }}{% endif %}" 
-                       required>
-            </div>
+            <!-- Chronicle Information -->
+            <section class="sheet-section">
+                <h2>Chronicle Information</h2>
+                
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" 
+                           x-model="data.name" 
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Character Name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Chronicle</label>
+                    <input type="text" 
+                           x-model="data.chronicle" 
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Chronicle Name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Concept</label>
+                    <input type="text" 
+                           x-model="data.concept" 
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Concept">
+                </div>
+                
+                <div class="form-group">
+                    <label>Predator Type</label>
+                    <input type="text" 
+                           x-model="data.predator" 
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Predator Type">
+                </div>
+                
+                <div class="form-group">
+                    <label>Ambition</label>
+                    <textarea x-model="data.ambition" 
+                              @input.debounce.2s="autoSave()"
+                              rows="2"
+                              placeholder="Long-term goal"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Desire</label>
+                    <textarea x-model="data.desire" 
+                              @input.debounce.2s="autoSave()"
+                              rows="2"
+                              placeholder="Short-term want"></textarea>
+                </div>
+            </section>
             
-            <div class="form-group">
-                <label for="concept">Concept</label>
-                <input type="text" id="concept" name="concept" 
-                       value="{% if character %}{{ character.concept }}{% endif %}">
-            </div>
+            <!-- Appearance & Identity -->
+            <section class="sheet-section">
+                <h2>Appearance & Identity</h2>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Apparent Age</label>
+                        <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group half">
+                        <label>True Age</label>
+                        <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Date of Birth</label>
+                        <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group half">
+                        <label>Date of Death</label>
+                        <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Appearance</label>
+                    <textarea x-model="data.appearance" 
+                              @input.debounce.2s="autoSave()"
+                              rows="3"
+                              placeholder="Physical description"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Distinguishing Features</label>
+                    <textarea x-model="data.distinguishing_features" 
+                              @input.debounce.2s="autoSave()"
+                              rows="2"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group third">
+                        <label>Pronouns</label>
+                        <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group third">
+                        <label>Ethnicity</label>
+                        <input type="text" x-model="data.ethnicity" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group third">
+                        <label>Birthplace</label>
+                        <input type="text" x-model="data.birthplace" @input.debounce.2s="autoSave()">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Languages</label>
+                    <input type="text" x-model="data.languages" @input.debounce.2s="autoSave()" placeholder="Comma-separated">
+                </div>
+            </section>
             
-            <div class="form-group">
-                <label for="clan">Clan</label>
-                <select id="clan" name="clan">
-                    <option value="">Select Clan</option>
-                    <option value="Brujah">Brujah</option>
-                    <option value="Gangrel">Gangrel</option>
-                    <option value="Malkavian">Malkavian</option>
-                    <option value="Nosferatu">Nosferatu</option>
-                    <option value="Toreador">Toreador</option>
-                    <option value="Tremere">Tremere</option>
-                    <option value="Ventrue">Ventrue</option>
-                    <option value="Caitiff">Caitiff</option>
-                    <option value="Thin-Blood">Thin-Blood</option>
-                    <option value="Banu Haqim">Banu Haqim</option>
-                    <option value="Hecata">Hecata</option>
-                    <option value="Lasombra">Lasombra</option>
-                    <option value="Ministry">Ministry</option>
-                    <option value="Ravnos">Ravnos</option>
-                    <option value="Salubri">Salubri</option>
-                    <option value="Tzimisce">Tzimisce</option>
-                </select>
-            </div>
+            <!-- Attributes -->
+            <section class="sheet-section">
+                <h2>Attributes</h2>
+                
+                <div class="attributes-grid">
+                    <!-- Physical -->
+                    <div class="attribute-category">
+                        <h3>Physical</h3>
+                        <div class="attribute-row" x-data="dotTracker('strength', data.strength, 1, 5)">
+                            <span class="attribute-name">Strength</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="attribute-row" x-data="dotTracker('dexterity', data.dexterity, 1, 5)">
+                            <span class="attribute-name">Dexterity</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="attribute-row" x-data="dotTracker('stamina', data.stamina, 1, 5)">
+                            <span class="attribute-name">Stamina</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social -->
+                    <div class="attribute-category">
+                        <h3>Social</h3>
+                        <div class="attribute-row" x-data="dotTracker('charisma', data.charisma, 1, 5)">
+                            <span class="attribute-name">Charisma</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="attribute-row" x-data="dotTracker('manipulation', data.manipulation, 1, 5)">
+                            <span class="attribute-name">Manipulation</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="attribute-row" x-data="dotTracker('composure', data.composure, 1, 5)">
+                            <span class="attribute-name">Composure</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mental -->
+                    <div class="attribute-category">
+                        <h3>Mental</h3>
+                        <div class="attribute-row" x-data="dotTracker('intelligence', data.intelligence, 1, 5)">
+                            <span class="attribute-name">Intelligence</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="attribute-row" x-data="dotTracker('wits', data.wits, 1, 5)">
+                            <span class="attribute-name">Wits</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="attribute-row" x-data="dotTracker('resolve', data.resolve, 1, 5)">
+                            <span class="attribute-name">Resolve</span>
+                            <div class="dot-tracker" @click="handleClick($event)">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             
-            <!-- More fields will be added in Phase 2 -->
-            <p class="placeholder-text">Full character sheet form coming in Phase 2...</p>
+            <!-- Touchstones (1-3) -->
+            <section class="sheet-section">
+                <h2>Touchstones</h2>
+                <p class="section-note">You may have 1-3 touchstones</p>
+                
+                <template x-for="(touchstone, index) in touchstones" :key="index">
+                    <div class="touchstone-entry">
+                        <div class="touchstone-header">
+                            <strong>Touchstone <span x-text="index + 1"></span></strong>
+                            <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" x-model="touchstone.name" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea x-model="touchstone.description" @input.debounce.2s="autoSave()" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Conviction</label>
+                            <textarea x-model="touchstone.conviction" @input.debounce.2s="autoSave()" rows="1"></textarea>
+                        </div>
+                    </div>
+                </template>
+                
+                <button type="button" 
+                        @click="addTouchstone()" 
+                        x-show="touchstones.length < 3"
+                        class="btn-add">+ Add Touchstone</button>
+            </section>
+            
+            <!-- Chronicle Tenets -->
+            <section class="sheet-section">
+                <h2>Chronicle Tenets</h2>
+                <textarea x-model="data.chronicle_tenets" 
+                          @input.debounce.2s="autoSave()"
+                          rows="4"
+                          placeholder="I. Tenet one&#10;II. Tenet two&#10;III. Tenet three"></textarea>
+            </section>
+            
+            <!-- Backgrounds, Merits & Flaws -->
+            <section class="sheet-section">
+                <h2>Backgrounds, Merits & Flaws</h2>
+                
+                <template x-for="i in 6" :key="i">
+                    <div class="background-entry">
+                        <div class="form-group">
+                            <input type="text" 
+                                   :x-model="`data.background_type_${i}`"
+                                   @input.debounce.2s="autoSave()"
+                                   :placeholder="`Type (e.g., Resources, Fame)`">
+                        </div>
+                        <div class="form-group">
+                            <textarea :x-model="`data.background_description_${i}`"
+                                      @input.debounce.2s="autoSave()"
+                                      rows="2"
+                                      placeholder="Description"></textarea>
+                        </div>
+                    </div>
+                </template>
+            </section>
+            
         </div>
         
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">Save Character</button>
-            <a href="/vtm" class="btn-secondary">Cancel</a>
-        </div>
-    </form>
-    
-    {% else %}
-    <!-- VIEW MODE: Display character sheet -->
-    <div class="sheet-display">
-        <div class="sheet-section">
-            <h2>Chronicle Information</h2>
-            <p><strong>Name:</strong> {{ character.name }}</p>
-            <p><strong>Concept:</strong> {{ character.concept }}</p>
-            <p><strong>Clan:</strong> {{ character.clan }}</p>
-            <!-- More fields will be displayed in Phase 2 -->
+        <!-- CENTER COLUMN -->
+        <div class="column-center">
+            
+            <!-- Character Portrait -->
+            <section class="sheet-section portrait-section">
+                <div class="portrait-container">
+                    <template x-if="data.portrait_url">
+                        <img :src="data.portrait_url" alt="Character Portrait">
+                    </template>
+                    <template x-if="!data.portrait_url">
+                        <div class="portrait-placeholder">
+                            <span>No Portrait</span>
+                        </div>
+                    </template>
+                </div>
+                <button type="button" class="btn-secondary" @click="$refs.portraitInput.click()">
+                    <span x-text="data.portrait_url ? 'Change Portrait' : 'Upload Portrait'"></span>
+                </button>
+                <input type="file" 
+                       x-ref="portraitInput" 
+                       @change="uploadPortrait($event)" 
+                       accept="image/*" 
+                       style="display: none;">
+            </section>
+            
+            <!-- Trackers -->
+            <section class="sheet-section trackers-section">
+                <h2>Trackers</h2>
+                
+                <!-- Health -->
+                <div class="tracker-row">
+                    <label>Health</label>
+                    <div class="box-tracker health-tracker">
+                        <!-- Will implement in Step 4 -->
+                        <span class="placeholder">Health tracker (Step 4)</span>
+                    </div>
+                </div>
+                
+                <!-- Willpower -->
+                <div class="tracker-row">
+                    <label>Willpower</label>
+                    <div class="box-tracker willpower-tracker">
+                        <!-- Will implement in Step 4 -->
+                        <span class="placeholder">Willpower tracker (Step 4)</span>
+                    </div>
+                </div>
+                
+                <!-- Humanity -->
+                <div class="tracker-row">
+                    <label>Humanity</label>
+                    <div class="box-tracker humanity-tracker">
+                        <!-- Will implement in Step 4 -->
+                        <span class="placeholder">Humanity tracker (Step 4)</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Clan, Generation, Bane -->
+            <section class="sheet-section">
+                <h2>Identity</h2>
+                
+                <div class="form-group">
+                    <label>Clan</label>
+                    <select x-model="data.clan" @change="autoSave(); updateClanBadge()">
+                        <option value="">Select Clan</option>
+                        <option value="brujah">Brujah</option>
+                        <option value="gangrel">Gangrel</option>
+                        <option value="malkavian">Malkavian</option>
+                        <option value="nosferatu">Nosferatu</option>
+                        <option value="toreador">Toreador</option>
+                        <option value="tremere">Tremere</option>
+                        <option value="ventrue">Ventrue</option>
+                        <option value="caitiff">Caitiff</option>
+                        <option value="thin-blood">Thin-Blood</option>
+                        <option value="banu-haqim">Banu Haqim</option>
+                        <option value="hecata">Hecata</option>
+                        <option value="lasombra">Lasombra</option>
+                        <option value="ministry">Ministry</option>
+                        <option value="ravnos">Ravnos</option>
+                        <option value="salubri">Salubri</option>
+                        <option value="tzimisce">Tzimisce</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Sire</label>
+                    <input type="text" x-model="data.sire" @input.debounce.2s="autoSave()" placeholder="Sire's name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Generation</label>
+                    <select x-model.number="data.generation" @change="autoSave()">
+                        <template x-for="gen in 16" :key="gen">
+                            <option :value="gen" x-text="gen"></option>
+                        </template>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Bane</label>
+                    <select x-model="data.bane_type" @change="autoSave()">
+                        <option value="">Select Bane (clan-specific)</option>
+                        <!-- Will populate based on clan selection -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Compulsion</label>
+                    <select x-model="data.compulsion" @change="autoSave()">
+                        <option value="">Select Compulsion</option>
+                        <option value="Dominance">Dominance</option>
+                        <option value="Hunger">Hunger</option>
+                        <option value="Harm">Harm</option>
+                        <option value="Paranoia">Paranoia</option>
+                        <option value="Perfectionism">Perfectionism</option>
+                        <!-- Add all compulsions -->
+                    </select>
+                </div>
+            </section>
+            
+            <!-- History in Life -->
+            <section class="sheet-section">
+                <h2>History in Life</h2>
+                <textarea x-model="data.history_in_life" 
+                          @input.debounce.2s="autoSave()"
+                          rows="8"
+                          placeholder="Character's mortal history..."></textarea>
+            </section>
+            
+            <!-- After Death -->
+            <section class="sheet-section">
+                <h2>After Death</h2>
+                <textarea x-model="data.after_death" 
+                          @input.debounce.2s="autoSave()"
+                          rows="8"
+                          placeholder="Character's unlife as a vampire..."></textarea>
+            </section>
+            
+            <!-- Notes -->
+            <section class="sheet-section">
+                <h2>Notes</h2>
+                <textarea x-model="data.notes" 
+                          @input.debounce.2s="autoSave()"
+                          rows="6"
+                          placeholder="Additional notes..."></textarea>
+            </section>
+            
         </div>
         
-        <p class="placeholder-text">Full character sheet display coming in Phase 2...</p>
+        <!-- RIGHT COLUMN -->
+        <div class="column-right">
+            
+            <!-- Clan Badge -->
+            <section class="sheet-section clan-badge-section">
+                <div class="clan-badge-container">
+                    <template x-if="data.clan">
+                        <img :src="`/static/images/clans/${data.clan}.png`" 
+                             :alt="data.clan + ' symbol'" 
+                             class="clan-badge">
+                    </template>
+                    <template x-if="!data.clan">
+                        <div class="badge-placeholder">Select Clan</div>
+                    </template>
+                </div>
+            </section>
+            
+            <!-- Experience Tracker -->
+            <section class="sheet-section xp-section">
+                <h2>Experience</h2>
+                <div class="xp-display">
+                    <span class="xp-value" x-text="data.exp_available || 0"></span>
+                    <span class="xp-separator">/</span>
+                    <span class="xp-total" x-text="data.exp_total || 0"></span>
+                </div>
+                <div class="xp-buttons">
+                    <button type="button" class="btn-small" @click="addXP()">+ Add XP</button>
+                    <button type="button" class="btn-small" @click="spendXP()">Spend XP</button>
+                </div>
+                <!-- XP log will go here (Step 9) -->
+            </section>
+            
+            <!-- Skills -->
+            <section class="sheet-section skills-section">
+                <h2>Skills</h2>
+                <!-- Skills will be added in Step 3 - similar to attributes -->
+                <p class="placeholder">Skills with specialties (Step 3)</p>
+            </section>
+            
+            <!-- Disciplines -->
+            <section class="sheet-section disciplines-section">
+                <h2>Disciplines</h2>
+                <!-- Disciplines will be added in Step 6 -->
+                <p class="placeholder">Disciplines system (Step 6)</p>
+            </section>
+            
+        </div>
+        
     </div>
-    {% endif %}
     
     <div class="back-link">
         <a href="/vtm">← Back to Character List</a>
     </div>
+    
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/character-sheet.js"></script>
 {% endblock %}
