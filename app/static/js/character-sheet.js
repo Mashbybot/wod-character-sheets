@@ -82,7 +82,7 @@ function characterSheet(characterId) {
         // Load character data from server
         async loadCharacter() {
             try {
-                const response = await fetch(`/api/vtm/character/${this.characterId}`);
+                const response = await fetch(`/vtm/api/character/${this.characterId}`);
                 if (response.ok) {
                     const character = await response.json();
                     this.data = { ...this.data, ...character };
@@ -163,23 +163,25 @@ function characterSheet(characterId) {
         // Create new character
         async createCharacter() {
             try {
-                const formData = new FormData();
-                for (const [key, value] of Object.entries(this.data)) {
-                    formData.append(key, value);
-                }
-                
                 const response = await fetch('/vtm/character/create', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(this.data)
                 });
                 
                 if (response.ok) {
-                    // Redirect to the new character's edit page
-                    const data = await response.json();
-                    window.location.href = `/vtm/character/${data.id}/edit`;
+                    // Get the new character ID and redirect
+                    const result = await response.json();
+                    window.location.href = `/vtm/character/${result.id}/edit`;
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to create character');
                 }
             } catch (error) {
                 console.error('Create error:', error);
+                alert('Failed to create character');
             }
         },
         

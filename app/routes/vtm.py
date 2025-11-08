@@ -139,6 +139,29 @@ async def edit_character_form(
     )
 
 
+# API endpoint for getting character data as JSON
+@router.get("/api/character/{character_id}")
+async def get_character_api(
+    request: Request,
+    character_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get character data as JSON for Alpine.js"""
+    user = require_auth(request)
+    
+    character = db.query(VTMCharacter).filter(
+        VTMCharacter.id == character_id,
+        VTMCharacter.user_id == user['id']
+    ).first()
+    
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    # Convert SQLAlchemy object to dict
+    char_dict = {c.name: getattr(character, c.name) for c in character.__table__.columns}
+    return JSONResponse(content=char_dict)
+
+
 @router.post("/character/create")
 async def create_character(
     request: Request,
@@ -158,25 +181,28 @@ async def create_character(
             content={"error": "Character limit reached. Delete a character to create a new one."}
         )
     
-    # Get form data
-    form_data = await request.form()
+    # Get form data (could be form or JSON)
+    try:
+        data = await request.json()
+    except:
+        form_data = await request.form()
+        data = dict(form_data)
     
-    # Create new character with form data
+    # Create new character with data
     character = VTMCharacter(
         user_id=user['id'],
-        name=form_data.get('name', 'Unnamed'),
-        # Add all other fields from form_data
-        # This will be expanded when we build the actual form
+        name=data.get('name', 'Unnamed'),
+        chronicle=data.get('chronicle', ''),
+        concept=data.get('concept', ''),
+        clan=data.get('clan', ''),
+        # Add other fields as needed
     )
     
     db.add(character)
     db.commit()
     db.refresh(character)
     
-    return RedirectResponse(
-        url=f"/vtm/character/{character.id}",
-        status_code=303
-    )
+    return JSONResponse(content={"id": character.id, "success": True})
 
 
 @router.post("/character/{character_id}/update")
@@ -185,7 +211,7 @@ async def update_character(
     character_id: int,
     db: Session = Depends(get_db)
 ):
-    """Update existing VTM character"""
+    """Update existing VTM character - accepts JSON for auto-save"""
     user = require_auth(request)
     
     # Get character and verify ownership
@@ -197,21 +223,37 @@ async def update_character(
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     
-    # Get form data and update character
-    form_data = await request.form()
+    # Get data (JSON from auto-save)
+    try:
+        data = await request.json()
+    except:
+        # Fallback to form data for non-AJAX requests
+        form_data = await request.form()
+        data = dict(form_data)
     
-    # Update all fields from form_data
-    # This will be expanded when we build the actual form
-    for key, value in form_data.items():
+    # Update all provided fields
+    for key, value in data.items():
         if hasattr(character, key):
+            # Convert string 'None' to actual None
+            if value == 'None' or value == '':
+                value = None
+            # Convert numeric strings to int for integer fields
+            if value is not None:
+                column = getattr(VTMCharacter, key, None)
+                if column is not None and hasattr(column.property, 'columns'):
+                    col_type = str(column.property.columns[0].type)
+                    if 'INTEGER' in col_type and isinstance(value, str):
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            value = None
+            
             setattr(character, key, value)
     
     db.commit()
+    db.refresh(character)
     
-    return RedirectResponse(
-        url=f"/vtm/character/{character.id}",
-        status_code=303
-    )
+    return JSONResponse(content={"success": True})
 
 
 @router.post("/character/{character_id}/delete")
