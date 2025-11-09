@@ -144,13 +144,13 @@ function characterSheet(characterId) {
             baneSeverity: 0
         },
         
-        // Computed values
+        // Computed values - removed auto-calc, use stored values
         get healthMax() {
-            return (this.data.stamina || 1) + 3;
+            return this.data.health_max || 6;
         },
         
         get willpowerMax() {
-            return (this.data.composure || 1) + (this.data.resolve || 1);
+            return this.data.willpower_max || 5;
         },
         
         get clanDisciplines() {
@@ -460,6 +460,9 @@ function dotTracker(field, initialValue = 0, min = 0, max = 5) {
         max: max,
         
         init() {
+            // Initialize from parent data
+            this.value = this.$parent.data[this.field] || initialValue;
+            
             // Watch for changes from parent component
             this.$watch(`$parent.data.${field}`, value => {
                 this.value = value;
@@ -505,6 +508,9 @@ function skillTracker(skillName, initialValue = 0, initialSpecialties = []) {
         specialties: initialSpecialties,
         
         init() {
+            // Initialize from parent data
+            this.value = this.$parent.data[this.skillName] || initialValue;
+            
             this.$watch(`$parent.data.${skillName}`, val => {
                 this.value = val;
             });
@@ -568,39 +574,48 @@ function skillTracker(skillName, initialValue = 0, initialSpecialties = []) {
     };
 }
 
-// Box tracker for Health/Willpower (4 states) - ALWAYS SHOW 10 BOXES
+// Box tracker for Health/Willpower (4 states) - ADJUSTABLE MAX
 function boxTracker(type, maxBoxes, superficial = 0, aggravated = 0) {
     return {
         type: type,
-        maxBoxes: 10,  // Always display 10 boxes
-        calculatedMax: maxBoxes,  // Actual max based on attributes
+        maxBoxes: maxBoxes || 10,  // User-adjustable max
         superficial: superficial,
         aggravated: aggravated,
         
+        init() {
+            // Watch for parent data changes
+            this.$watch(`$parent.data.${this.type}_max`, value => {
+                if (value) this.maxBoxes = value;
+            });
+        },
+        
         getBoxState(index) {
+            // Display 10 boxes always, but only first 'maxBoxes' are usable
+            if (index > 10) return 'empty';
+            
             // Damage fills from RIGHT (last boxes first)
-            const usableBoxes = this.calculatedMax - this.superficial - this.aggravated;
+            const usableBoxes = this.maxBoxes - this.superficial - this.aggravated;
             
             if (index <= usableBoxes) {
                 return 'filled'; // Red - usable
-            } else if (index <= this.calculatedMax - this.aggravated) {
+            } else if (index <= this.maxBoxes - this.aggravated) {
                 return 'superficial'; // Yellow - superficial damage
-            } else if (index <= this.calculatedMax) {
+            } else if (index <= this.maxBoxes) {
                 return 'aggravated'; // Black - aggravated damage
             }
-            return 'empty'; // Beyond calculated max
+            return 'empty'; // Beyond max
         },
         
         cycleBox(index) {
-            // Only cycle boxes within calculated max
-            if (index > this.calculatedMax) return;
-            
+            // Cycle boxes within max, or extend max if clicking empty
             const currentState = this.getBoxState(index);
             
-            // Cycle: filled → superficial → aggravated → filled
-            if (currentState === 'filled') {
+            if (currentState === 'empty' && index <= 10) {
+                // Clicking empty box - extend max
+                this.maxBoxes = index;
+            } else if (currentState === 'filled') {
                 // Add superficial damage
-                if (this.superficial + this.aggravated < this.calculatedMax) {
+                if (this.superficial + this.aggravated < this.maxBoxes) {
                     this.superficial++;
                 }
             } else if (currentState === 'superficial') {
@@ -618,6 +633,7 @@ function boxTracker(type, maxBoxes, superficial = 0, aggravated = 0) {
         save() {
             this.$parent.data[`${this.type}_superficial`] = this.superficial;
             this.$parent.data[`${this.type}_aggravated`] = this.aggravated;
+            this.$parent.data[`${this.type}_max`] = this.maxBoxes;
             this.$parent.autoSave();
         }
     };
