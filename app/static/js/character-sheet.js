@@ -1,4 +1,5 @@
 // Character Sheet JavaScript - Alpine.js Components
+// SIMPLIFIED VERSION - All logic in main component
 
 // Main character sheet component
 function characterSheet(characterId) {
@@ -65,6 +66,8 @@ function characterSheet(characterId) {
             
             // Blood Potency (0-10)
             blood_potency: 0,
+            
+            // Attributes
             strength: 1,
             dexterity: 1,
             stamina: 1,
@@ -91,8 +94,10 @@ function characterSheet(characterId) {
             exp_available: 0,
             
             // Health & Willpower tracking
+            health_max: 6,
             health_superficial: 0,
             health_aggravated: 0,
+            willpower_max: 5,
             willpower_superficial: 0,
             willpower_aggravated: 0,
             humanity_current: 7,
@@ -144,35 +149,6 @@ function characterSheet(characterId) {
             baneSeverity: 0
         },
         
-        // Computed values - removed auto-calc, use stored values
-        get healthMax() {
-            return this.data.health_max || 6;
-        },
-        
-        get willpowerMax() {
-            return this.data.willpower_max || 5;
-        },
-        
-        get clanDisciplines() {
-            const clanDiscs = {
-                'brujah': ['potence', 'presence', 'celerity'],
-                'gangrel': ['animalism', 'fortitude', 'protean'],
-                'malkavian': ['auspex', 'dominate', 'obfuscate'],
-                'nosferatu': ['animalism', 'obfuscate', 'potence'],
-                'toreador': ['auspex', 'celerity', 'presence'],
-                'tremere': ['auspex', 'blood-sorcery', 'dominate'],
-                'ventrue': ['dominate', 'fortitude', 'presence'],
-                'banu-haqim': ['blood-sorcery', 'celerity', 'obfuscate'],
-                'hecata': ['auspex', 'fortitude', 'oblivion'],
-                'lasombra': ['dominate', 'oblivion', 'potence'],
-                'ministry': ['obfuscate', 'presence', 'protean'],
-                'ravnos': ['animalism', 'obfuscate', 'presence'],
-                'salubri': ['auspex', 'dominate', 'fortitude'],
-                'tzimisce': ['animalism', 'dominate', 'protean']
-            };
-            return clanDiscs[this.data.clan] || [];
-        },
-        
         // Initialize component
         init() {
             if (this.characterId) {
@@ -196,7 +172,14 @@ function characterSheet(characterId) {
                 const response = await fetch(`/vtm/api/character/${this.characterId}`);
                 if (response.ok) {
                     const character = await response.json();
-                    this.data = { ...this.data, ...character };
+                    
+                    // Update all data fields
+                    Object.keys(this.data).forEach(key => {
+                        if (character[key] !== undefined && character[key] !== null) {
+                            this.data[key] = character[key];
+                        }
+                    });
+                    
                     this.characterName = character.name || 'Unnamed';
                     
                     // Load touchstones
@@ -216,16 +199,17 @@ function characterSheet(characterId) {
                     if (this.touchstones.length === 0) {
                         this.touchstones.push({ name: '', description: '', conviction: '' });
                     }
+                    
+                    console.log('Character loaded:', this.data);
                 }
             } catch (error) {
                 console.error('Error loading character:', error);
             }
         },
         
-        // Auto-save function with debouncing handled by Alpine @input.debounce
+        // Auto-save function
         async autoSave() {
             if (!this.characterId) {
-                // New character - need to create first
                 await this.createCharacter();
                 return;
             }
@@ -250,6 +234,8 @@ function characterSheet(characterId) {
                     }
                 }
                 
+                console.log('Saving data:', saveData);
+                
                 const response = await fetch(`/vtm/character/${this.characterId}/update`, {
                     method: 'POST',
                     headers: {
@@ -264,6 +250,7 @@ function characterSheet(characterId) {
                     setTimeout(() => this.saveStatus = '', 2000);
                 } else {
                     this.saveStatus = 'error';
+                    console.error('Save failed:', await response.text());
                 }
             } catch (error) {
                 console.error('Save error:', error);
@@ -283,7 +270,6 @@ function characterSheet(characterId) {
                 });
                 
                 if (response.ok) {
-                    // Get the new character ID and redirect
                     const result = await response.json();
                     window.location.href = `/vtm/character/${result.id}/edit`;
                 } else {
@@ -298,8 +284,7 @@ function characterSheet(characterId) {
         
         // Update clan badge when clan changes
         updateClanBadge() {
-            // Badge updates automatically via Alpine binding
-            // This function exists for future enhancements
+            this.autoSave();
         },
         
         // Update Blood Potency calculated values
@@ -320,16 +305,163 @@ function characterSheet(characterId) {
             this.bloodPotencyValues = bpTable[bp] || bpTable[0];
         },
         
-        // Skill specialties management
+        // DOT TRACKER METHODS
+        clickDot(field, clickedValue, min = 0, max = 5) {
+            const currentValue = this.data[field] || min;
+            
+            if (clickedValue <= currentValue) {
+                // Clicking filled dot - decrease (but not below min)
+                this.data[field] = Math.max(clickedValue - 1, min);
+            } else {
+                // Clicking empty dot - increase to that level
+                this.data[field] = clickedValue;
+            }
+            
+            // Special handling for Blood Potency
+            if (field === 'blood_potency') {
+                this.updateBloodPotency(this.data[field]);
+            }
+            
+            this.autoSave();
+        },
+        
+        // HEALTH/WILLPOWER/HUMANITY METHODS
+        getHealthState(index) {
+            const max = this.data.health_max || 6;
+            const superficial = this.data.health_superficial || 0;
+            const aggravated = this.data.health_aggravated || 0;
+            
+            if (index > 10) return 'empty';
+            
+            const usableBoxes = max - superficial - aggravated;
+            
+            if (index <= usableBoxes) return 'filled';
+            if (index <= max - aggravated) return 'superficial';
+            if (index <= max) return 'aggravated';
+            return 'empty';
+        },
+        
+        cycleHealth(index) {
+            const state = this.getHealthState(index);
+            const max = this.data.health_max || 6;
+            
+            if (state === 'empty' && index <= 10) {
+                // Extend max
+                this.data.health_max = index;
+            } else if (state === 'filled') {
+                // Add superficial
+                if ((this.data.health_superficial + this.data.health_aggravated) < max) {
+                    this.data.health_superficial++;
+                }
+            } else if (state === 'superficial') {
+                // Convert to aggravated
+                this.data.health_superficial--;
+                this.data.health_aggravated++;
+            } else if (state === 'aggravated') {
+                // Remove damage
+                this.data.health_aggravated--;
+            }
+            
+            this.autoSave();
+        },
+        
+        getWillpowerState(index) {
+            const max = this.data.willpower_max || 5;
+            const superficial = this.data.willpower_superficial || 0;
+            const aggravated = this.data.willpower_aggravated || 0;
+            
+            if (index > 10) return 'empty';
+            
+            const usableBoxes = max - superficial - aggravated;
+            
+            if (index <= usableBoxes) return 'filled';
+            if (index <= max - aggravated) return 'superficial';
+            if (index <= max) return 'aggravated';
+            return 'empty';
+        },
+        
+        cycleWillpower(index) {
+            const state = this.getWillpowerState(index);
+            const max = this.data.willpower_max || 5;
+            
+            if (state === 'empty' && index <= 10) {
+                // Extend max
+                this.data.willpower_max = index;
+            } else if (state === 'filled') {
+                // Add superficial
+                if ((this.data.willpower_superficial + this.data.willpower_aggravated) < max) {
+                    this.data.willpower_superficial++;
+                }
+            } else if (state === 'superficial') {
+                // Convert to aggravated
+                this.data.willpower_superficial--;
+                this.data.willpower_aggravated++;
+            } else if (state === 'aggravated') {
+                // Remove damage
+                this.data.willpower_aggravated--;
+            }
+            
+            this.autoSave();
+        },
+        
+        getHumanityState(index) {
+            const current = this.data.humanity_current || 7;
+            const stained = 0; // TODO: Add stain tracking if needed
+            
+            if (index <= current - stained) return 'filled';
+            if (index <= current) return 'stained';
+            return 'empty';
+        },
+        
+        clickHumanity(index) {
+            this.data.humanity_current = index;
+            this.autoSave();
+        },
+        
+        // SKILL SPECIALTIES
         getSpecialties(skill) {
             if (!this.data.skill_specialties) return [];
             const specs = this.data.skill_specialties.split(',').filter(s => s.trim());
             return specs.filter(s => s.startsWith(skill + ':')).map(s => s.split(':')[1]);
         },
         
+        addSpecialty(skill) {
+            const skillValue = this.data[skill] || 0;
+            if (skillValue === 0) {
+                alert('Add dots to the skill first!');
+                return;
+            }
+            
+            const currentSpecs = this.getSpecialties(skill);
+            if (currentSpecs.length >= skillValue) {
+                alert(`Maximum ${skillValue} specialties for this skill!`);
+                return;
+            }
+            
+            const spec = prompt(`Add specialty for ${this.capitalize(skill)}:`);
+            if (spec && spec.trim()) {
+                let allSpecs = [];
+                if (this.data.skill_specialties) {
+                    allSpecs = this.data.skill_specialties.split(',').filter(s => s.trim());
+                }
+                allSpecs.push(`${skill}:${spec.trim()}`);
+                this.data.skill_specialties = allSpecs.join(',');
+                this.autoSave();
+            }
+        },
+        
+        removeSpecialty(skill, specialty) {
+            let allSpecs = this.data.skill_specialties.split(',').filter(s => s.trim());
+            allSpecs = allSpecs.filter(s => s !== `${skill}:${specialty}`);
+            this.data.skill_specialties = allSpecs.join(',');
+            this.autoSave();
+        },
+        
+        // HELPER METHODS
         capitalize(str) {
             return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         },
+        
         getClanDisciplineIcons() {
             const clanDisciplines = {
                 'brujah': ['potence', 'presence', 'celerity'],
@@ -346,8 +478,8 @@ function characterSheet(characterId) {
                 'ravnos': ['animalism', 'obfuscate', 'presence'],
                 'salubri': ['auspex', 'dominate', 'fortitude'],
                 'tzimisce': ['animalism', 'dominate', 'protean'],
-                'caitiff': [], // No clan disciplines
-                'thin-blood': [] // No clan disciplines
+                'caitiff': [],
+                'thin-blood': []
             };
             
             const disciplines = clanDisciplines[this.data.clan] || [];
@@ -361,27 +493,22 @@ function characterSheet(characterId) {
             ).join('');
         },
         
-        // Touchstone management
+        // TOUCHSTONE MANAGEMENT
         addTouchstone() {
             if (this.touchstones.length < 3) {
-                this.touchstones.push({
-                    name: '',
-                    description: '',
-                    conviction: ''
-                });
+                this.touchstones.push({ name: '', description: '', conviction: '' });
             }
         },
         
         removeTouchstone(index) {
             this.touchstones.splice(index, 1);
-            // Ensure at least 1 touchstone
             if (this.touchstones.length === 0) {
                 this.touchstones.push({ name: '', description: '', conviction: '' });
             }
             this.autoSave();
         },
         
-        // Portrait upload
+        // PORTRAIT UPLOAD
         async uploadPortrait(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -404,7 +531,7 @@ function characterSheet(characterId) {
             }
         },
         
-        // XP Management
+        // XP MANAGEMENT
         addXP() {
             const amount = prompt('How much XP to add?');
             const reason = prompt('Reason (optional):');
@@ -413,7 +540,6 @@ function characterSheet(characterId) {
                 this.data.exp_total += xpAmount;
                 this.data.exp_available = this.data.exp_total - this.data.exp_spent;
                 
-                // Add to log
                 this.xpLog.push({
                     date: new Date().toLocaleDateString(),
                     type: 'add',
@@ -434,7 +560,6 @@ function characterSheet(characterId) {
                     this.data.exp_spent += spend;
                     this.data.exp_available = this.data.exp_total - this.data.exp_spent;
                     
-                    // Add to log
                     this.xpLog.push({
                         date: new Date().toLocaleDateString(),
                         type: 'spend',
@@ -451,279 +576,5 @@ function characterSheet(characterId) {
     }
 }
 
-// Dot tracker component (reusable for attributes, skills, disciplines)
-function dotTracker(field, initialValue = 0, min = 0, max = 5) {
-    return {
-        field: field,
-        value: initialValue,
-        min: min,
-        max: max,
-        
-        init() {
-            // Initialize from parent data
-            this.value = this.$parent.data[this.field] || initialValue;
-            
-            // Watch for changes from parent component
-            this.$watch(`$parent.data.${field}`, value => {
-                this.value = value;
-            });
-        },
-        
-        handleClick(event) {
-            // Get clicked dot index (1-based)
-            const dots = event.currentTarget.querySelectorAll('.dot');
-            const clickedDot = event.target.closest('.dot');
-            if (!clickedDot) return;
-            
-            const clickedIndex = Array.from(dots).indexOf(clickedDot) + 1;
-            
-            // If clicking on filled dot, decrease
-            // If clicking on empty dot, increase to that level
-            if (clickedIndex <= this.value) {
-                // Clicking filled dot - decrease (but not below min)
-                this.value = Math.max(clickedIndex - 1, this.min);
-            } else {
-                // Clicking empty dot - increase to that level
-                this.value = clickedIndex;
-            }
-            
-            // Update parent data
-            this.$parent.data[this.field] = this.value;
-            
-            // Trigger auto-save
-            this.$parent.autoSave();
-        }
-    }
-}
-
-// Make components globally available
+// Make component globally available
 window.characterSheet = characterSheet;
-window.dotTracker = dotTracker;
-
-// Skill tracker component (with specialties)
-function skillTracker(skillName, initialValue = 0, initialSpecialties = []) {
-    return {
-        skillName: skillName,
-        value: initialValue,
-        specialties: initialSpecialties,
-        
-        init() {
-            // Initialize from parent data
-            this.value = this.$parent.data[this.skillName] || initialValue;
-            
-            this.$watch(`$parent.data.${skillName}`, val => {
-                this.value = val;
-            });
-        },
-        
-        handleDotClick(event) {
-            const dots = event.currentTarget.querySelectorAll('.dot');
-            const clickedDot = event.target.closest('.dot');
-            if (!clickedDot) return;
-            
-            const clickedIndex = Array.from(dots).indexOf(clickedDot) + 1;
-            
-            if (clickedIndex <= this.value) {
-                this.value = Math.max(clickedIndex - 1, 0);
-            } else {
-                this.value = clickedIndex;
-            }
-            
-            this.$parent.data[this.skillName] = this.value;
-            this.$parent.autoSave();
-        },
-        
-        addSpecialty() {
-            const spec = prompt(`Add specialty for ${this.capitalize(this.skillName)}:`);
-            if (spec && spec.trim()) {
-                if (this.specialties.length < this.value) {
-                    this.specialties.push(spec.trim());
-                    this.saveSpecialties();
-                } else {
-                    alert(`Maximum ${this.value} specialties for this skill!`);
-                }
-            }
-        },
-        
-        removeSpecialty(idx) {
-            this.specialties.splice(idx, 1);
-            this.saveSpecialties();
-        },
-        
-        saveSpecialties() {
-            // Update parent's skill_specialties string
-            let allSpecs = [];
-            
-            // Parse existing specialties
-            if (this.$parent.data.skill_specialties) {
-                allSpecs = this.$parent.data.skill_specialties.split(',').filter(s => s.trim() && !s.startsWith(this.skillName + ':'));
-            }
-            
-            // Add current skill's specialties
-            this.specialties.forEach(spec => {
-                allSpecs.push(`${this.skillName}:${spec}`);
-            });
-            
-            this.$parent.data.skill_specialties = allSpecs.join(',');
-            this.$parent.autoSave();
-        },
-        
-        capitalize(str) {
-            return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        }
-    };
-}
-
-// Box tracker for Health/Willpower (4 states) - ADJUSTABLE MAX
-function boxTracker(type, maxBoxes, superficial = 0, aggravated = 0) {
-    return {
-        type: type,
-        maxBoxes: maxBoxes || 10,  // User-adjustable max
-        superficial: superficial,
-        aggravated: aggravated,
-        
-        init() {
-            // Watch for parent data changes
-            this.$watch(`$parent.data.${this.type}_max`, value => {
-                if (value) this.maxBoxes = value;
-            });
-        },
-        
-        getBoxState(index) {
-            // Display 10 boxes always, but only first 'maxBoxes' are usable
-            if (index > 10) return 'empty';
-            
-            // Damage fills from RIGHT (last boxes first)
-            const usableBoxes = this.maxBoxes - this.superficial - this.aggravated;
-            
-            if (index <= usableBoxes) {
-                return 'filled'; // Red - usable
-            } else if (index <= this.maxBoxes - this.aggravated) {
-                return 'superficial'; // Yellow - superficial damage
-            } else if (index <= this.maxBoxes) {
-                return 'aggravated'; // Black - aggravated damage
-            }
-            return 'empty'; // Beyond max
-        },
-        
-        cycleBox(index) {
-            // Cycle boxes within max, or extend max if clicking empty
-            const currentState = this.getBoxState(index);
-            
-            if (currentState === 'empty' && index <= 10) {
-                // Clicking empty box - extend max
-                this.maxBoxes = index;
-            } else if (currentState === 'filled') {
-                // Add superficial damage
-                if (this.superficial + this.aggravated < this.maxBoxes) {
-                    this.superficial++;
-                }
-            } else if (currentState === 'superficial') {
-                // Convert to aggravated
-                this.superficial--;
-                this.aggravated++;
-            } else if (currentState === 'aggravated') {
-                // Remove damage (back to filled)
-                this.aggravated--;
-            }
-            
-            this.save();
-        },
-        
-        save() {
-            this.$parent.data[`${this.type}_superficial`] = this.superficial;
-            this.$parent.data[`${this.type}_aggravated`] = this.aggravated;
-            this.$parent.data[`${this.type}_max`] = this.maxBoxes;
-            this.$parent.autoSave();
-        }
-    };
-}
-
-// Humanity tracker (3 states: empty, filled, stained)
-function humanityTracker(current = 7) {
-    return {
-        current: current,
-        stained: 0,
-        
-        getHumanityState(index) {
-            if (index <= this.current - this.stained) {
-                return 'filled'; // Red
-            } else if (index <= this.current) {
-                return 'stained'; // Black
-            }
-            return 'empty';
-        },
-        
-        setHumanity(level) {
-            // Left click: set humanity to this level
-            this.current = level;
-            this.stained = 0;
-            this.save();
-        },
-        
-        stainHumanity(level) {
-            // Right click: stain this level
-            if (level <= this.current) {
-                const stainsAbove = this.current - level + 1;
-                this.stained = Math.min(stainsAbove, this.current);
-                this.save();
-            }
-        },
-        
-        save() {
-            this.$parent.data.humanity_current = this.current;
-            this.$parent.autoSave();
-        }
-    };
-}
-
-// Discipline slot component - NO AUTO-POPULATION
-function disciplineSlot(slotNumber) {
-    return {
-        slotNumber: slotNumber,
-        disciplineName: '',
-        disciplineLevel: 0,
-        powers: '',
-        description: '',
-        
-        init() {
-            // Load from parent data
-            this.disciplineName = this.$parent.data[`discipline_${this.slotNumber}_name`] || '';
-            this.disciplineLevel = this.$parent.data[`discipline_${this.slotNumber}_level`] || 0;
-            this.powers = this.$parent.data[`discipline_${this.slotNumber}_powers`] || '';
-            this.description = this.$parent.data[`discipline_${this.slotNumber}_description`] || '';
-            
-            // NO AUTO-POPULATION - all slots work the same
-        },
-        
-        handleDotClick(event) {
-            const dots = event.currentTarget.querySelectorAll('.dot');
-            const clickedDot = event.target.closest('.dot');
-            if (!clickedDot) return;
-            
-            const clickedIndex = Array.from(dots).indexOf(clickedDot) + 1;
-            
-            if (clickedIndex <= this.disciplineLevel) {
-                this.disciplineLevel = Math.max(clickedIndex - 1, 0);
-            } else {
-                this.disciplineLevel = clickedIndex;
-            }
-            
-            this.updateDiscipline();
-        },
-        
-        updateDiscipline() {
-            this.$parent.data[`discipline_${this.slotNumber}_name`] = this.disciplineName;
-            this.$parent.data[`discipline_${this.slotNumber}_level`] = this.disciplineLevel;
-            this.$parent.data[`discipline_${this.slotNumber}_powers`] = this.powers;
-            this.$parent.data[`discipline_${this.slotNumber}_description`] = this.description;
-            this.$parent.autoSave();
-        }
-    };
-}
-
-// Make all components available
-window.skillTracker = skillTracker;
-window.boxTracker = boxTracker;
-window.humanityTracker = humanityTracker;
-window.disciplineSlot = disciplineSlot;

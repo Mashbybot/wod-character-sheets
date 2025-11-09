@@ -151,29 +151,35 @@
                     <!-- Physical -->
                     <div class="attribute-category">
                         <h3>Physical</h3>
-                        <div class="attribute-row" x-data="dotTracker('strength', data.strength, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Strength</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.strength || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('strength', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
                         
-                        <div class="attribute-row" x-data="dotTracker('dexterity', data.dexterity, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Dexterity</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.dexterity || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('dexterity', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
                         
-                        <div class="attribute-row" x-data="dotTracker('stamina', data.stamina, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Stamina</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.stamina || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('stamina', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
@@ -182,29 +188,35 @@
                     <!-- Social -->
                     <div class="attribute-category">
                         <h3>Social</h3>
-                        <div class="attribute-row" x-data="dotTracker('charisma', data.charisma, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Charisma</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.charisma || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('charisma', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
                         
-                        <div class="attribute-row" x-data="dotTracker('manipulation', data.manipulation, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Manipulation</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.manipulation || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('manipulation', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
                         
-                        <div class="attribute-row" x-data="dotTracker('composure', data.composure, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Composure</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.composure || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('composure', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
@@ -213,29 +225,35 @@
                     <!-- Mental -->
                     <div class="attribute-category">
                         <h3>Mental</h3>
-                        <div class="attribute-row" x-data="dotTracker('intelligence', data.intelligence, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Intelligence</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.intelligence || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('intelligence', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
                         
-                        <div class="attribute-row" x-data="dotTracker('wits', data.wits, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Wits</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.wits || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('wits', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
                         
-                        <div class="attribute-row" x-data="dotTracker('resolve', data.resolve, 1, 5)">
+                        <div class="attribute-row">
                             <span class="attribute-name">Resolve</span>
-                            <div class="dot-tracker" @click="handleClick($event)">
+                            <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
+                                    <span class="dot" 
+                                          :class="i <= (data.resolve || 1) ? 'filled' : 'empty'"
+                                          @click="clickDot('resolve', i, 1, 5)">●</span>
                                 </template>
                             </div>
                         </div>
@@ -250,11 +268,11 @@
                 <!-- Hunger (0-5) -->
                 <div class="tracker-row">
                     <label>Hunger</label>
-                    <div class="dot-tracker hunger-tracker" x-data="dotTracker('hunger', data.hunger || 1, 0, 5)">
+                    <div class="dot-tracker hunger-tracker">
                         <template x-for="i in 5" :key="i">
                             <span class="dot hunger-dot" 
-                                  :class="[i <= value ? 'filled' : 'empty', i >= 4 && i <= value ? 'danger' : '']"
-                                  @click="handleClick($event)">●</span>
+                                  :class="[i <= (data.hunger || 1) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger || 1) ? 'danger' : '']"
+                                  @click="clickDot('hunger', i, 0, 5)">●</span>
                         </template>
                     </div>
                 </div>
@@ -269,11 +287,11 @@
                 <div class="blood-potency-section">
                     <div class="tracker-row">
                         <label>Blood Potency</label>
-                        <div class="dot-tracker bp-tracker" x-data="dotTracker('blood_potency', data.blood_potency || 0, 0, 10)">
+                        <div class="dot-tracker bp-tracker">
                             <template x-for="i in 10" :key="i">
                                 <span class="dot" 
-                                      :class="i <= value ? 'filled' : 'empty'"
-                                      @click="handleClick($event); $parent.updateBloodPotency(value)">●</span>
+                                      :class="i <= (data.blood_potency || 0) ? 'filled' : 'empty'"
+                                      @click="clickDot('blood_potency', i, 0, 10)">●</span>
                             </template>
                         </div>
                     </div>
@@ -307,6 +325,7 @@
                     </div>
                 </div>
             </section>
+            
             <section class="sheet-section">
                 <h2>Touchstones</h2>
                 <p class="section-note">You may have 1-3 touchstones</p>
@@ -403,14 +422,13 @@
                 <!-- Health -->
                 <div class="tracker-row">
                     <label>Health</label>
-                    <div class="box-tracker health-tracker" x-data="boxTracker('health', healthMax, data.health_superficial || 0, data.health_aggravated || 0)">
-                        <template x-for="i in maxBoxes" :key="i">
+                    <div class="box-tracker health-tracker">
+                        <template x-for="i in 10" :key="i">
                             <div class="health-box"
-                                 :class="getBoxState(i)"
-                                 @click="cycleBox(i, $event)"
-                                 @contextmenu.prevent="cycleBox(i, $event, true)">
-                                <span x-show="getBoxState(i) === 'superficial'">/</span>
-                                <span x-show="getBoxState(i) === 'aggravated'">×</span>
+                                 :class="getHealthState(i)"
+                                 @click="cycleHealth(i)">
+                                <span x-show="getHealthState(i) === 'superficial'">/</span>
+                                <span x-show="getHealthState(i) === 'aggravated'">×</span>
                             </div>
                         </template>
                     </div>
@@ -419,14 +437,13 @@
                 <!-- Willpower -->
                 <div class="tracker-row">
                     <label>Willpower</label>
-                    <div class="box-tracker willpower-tracker" x-data="boxTracker('willpower', willpowerMax, data.willpower_superficial || 0, data.willpower_aggravated || 0)">
-                        <template x-for="i in maxBoxes" :key="i">
+                    <div class="box-tracker willpower-tracker">
+                        <template x-for="i in 10" :key="i">
                             <div class="willpower-box"
-                                 :class="getBoxState(i)"
-                                 @click="cycleBox(i, $event)"
-                                 @contextmenu.prevent="cycleBox(i, $event, true)">
-                                <span x-show="getBoxState(i) === 'superficial'">/</span>
-                                <span x-show="getBoxState(i) === 'aggravated'">×</span>
+                                 :class="getWillpowerState(i)"
+                                 @click="cycleWillpower(i)">
+                                <span x-show="getWillpowerState(i) === 'superficial'">/</span>
+                                <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
                             </div>
                         </template>
                     </div>
@@ -435,12 +452,11 @@
                 <!-- Humanity -->
                 <div class="tracker-row">
                     <label>Humanity</label>
-                    <div class="box-tracker humanity-tracker" x-data="humanityTracker(data.humanity_current || 7)">
+                    <div class="box-tracker humanity-tracker">
                         <template x-for="i in 10" :key="i">
                             <div class="humanity-box"
                                  :class="getHumanityState(i)"
-                                 @click="setHumanity(i)"
-                                 @contextmenu.prevent="stainHumanity(i)">
+                                 @click="clickHumanity(i)">
                             </div>
                         </template>
                     </div>
@@ -663,6 +679,166 @@
                 </div>
             </section>
             
+            <!-- Skills -->
+            <section class="sheet-section skills-section">
+                <h2>Skills</h2>
+                
+                <!-- Physical Skills -->
+                <div class="skill-category">
+                    <h3>Physical</h3>
+                    
+                    <template x-for="skill in ['athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny', 'melee', 'stealth', 'survival']" :key="skill">
+                        <div class="skill-row">
+                            <div>
+                                <span class="skill-name" x-text="capitalize(skill)"></span>
+                                <div class="skill-right">
+                                    <div class="dot-tracker">
+                                        <template x-for="i in 5" :key="i">
+                                            <span class="dot" 
+                                                  :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                                  @click="clickDot(skill, i, 0, 5)">●</span>
+                                        </template>
+                                    </div>
+                                    <button type="button" 
+                                            class="btn-add-specialty" 
+                                            x-show="data[skill] > 0"
+                                            @click="addSpecialty(skill)">+</button>
+                                </div>
+                            </div>
+                            <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                                <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                    <span class="specialty-tag">
+                                        <span x-text="spec"></span>
+                                        <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <!-- Social Skills -->
+                <div class="skill-category">
+                    <h3>Social</h3>
+                    
+                    <template x-for="skill in ['animal_ken', 'etiquette', 'insight', 'intimidation', 'leadership', 'performance', 'persuasion', 'streetwise', 'subterfuge']" :key="skill">
+                        <div class="skill-row">
+                            <div>
+                                <span class="skill-name" x-text="capitalize(skill)"></span>
+                                <div class="skill-right">
+                                    <div class="dot-tracker">
+                                        <template x-for="i in 5" :key="i">
+                                            <span class="dot" 
+                                                  :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                                  @click="clickDot(skill, i, 0, 5)">●</span>
+                                        </template>
+                                    </div>
+                                    <button type="button" 
+                                            class="btn-add-specialty" 
+                                            x-show="data[skill] > 0"
+                                            @click="addSpecialty(skill)">+</button>
+                                </div>
+                            </div>
+                            <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                                <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                    <span class="specialty-tag">
+                                        <span x-text="spec"></span>
+                                        <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <!-- Mental Skills -->
+                <div class="skill-category">
+                    <h3>Mental</h3>
+                    
+                    <template x-for="skill in ['academics', 'awareness', 'finance', 'investigation', 'medicine', 'occult', 'politics', 'science', 'technology']" :key="skill">
+                        <div class="skill-row">
+                            <div>
+                                <span class="skill-name" x-text="capitalize(skill)"></span>
+                                <div class="skill-right">
+                                    <div class="dot-tracker">
+                                        <template x-for="i in 5" :key="i">
+                                            <span class="dot" 
+                                                  :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                                  @click="clickDot(skill, i, 0, 5)">●</span>
+                                        </template>
+                                    </div>
+                                    <button type="button" 
+                                            class="btn-add-specialty" 
+                                            x-show="data[skill] > 0"
+                                            @click="addSpecialty(skill)">+</button>
+                                </div>
+                            </div>
+                            <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                                <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                    <span class="specialty-tag">
+                                        <span x-text="spec"></span>
+                                        <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+            
+            <!-- Disciplines -->
+            <section class="sheet-section disciplines-section">
+                <h2>Disciplines</h2>
+                
+                <template x-for="i in 5" :key="i">
+                    <div class="discipline-entry">
+                        <div class="discipline-header">
+                            <select x-model="data['discipline_' + i + '_name']" 
+                                    @change="autoSave()"
+                                    class="discipline-select">
+                                <option value="">Select Discipline</option>
+                                <option value="animalism">Animalism</option>
+                                <option value="auspex">Auspex</option>
+                                <option value="blood-sorcery">Blood Sorcery</option>
+                                <option value="celerity">Celerity</option>
+                                <option value="dominate">Dominate</option>
+                                <option value="fortitude">Fortitude</option>
+                                <option value="obfuscate">Obfuscate</option>
+                                <option value="oblivion">Oblivion</option>
+                                <option value="potence">Potence</option>
+                                <option value="presence">Presence</option>
+                                <option value="protean">Protean</option>
+                                <option value="thin-blood-alchemy">Thin-Blood Alchemy</option>
+                            </select>
+                            
+                            <div class="dot-tracker discipline-dots">
+                                <template x-for="d in 5" :key="d">
+                                    <span class="dot" 
+                                          :class="d <= (data['discipline_' + i + '_level'] || 0) ? 'filled' : 'empty'"
+                                          @click="clickDot('discipline_' + i + '_level', d, 0, 5)">●</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="discipline-powers" x-show="data['discipline_' + i + '_name']">
+                            <label>Powers</label>
+                            <textarea x-model="data['discipline_' + i + '_powers']" 
+                                      @input.debounce.2s="autoSave()"
+                                      rows="3"
+                                      placeholder="List discipline powers (one per line)"></textarea>
+                        </div>
+                        
+                        <div class="discipline-description" x-show="data['discipline_' + i + '_name']">
+                            <label>Notes</label>
+                            <textarea x-model="data['discipline_' + i + '_description']" 
+                                      @input.debounce.2s="autoSave()"
+                                      rows="2"
+                                      placeholder="Custom notes"></textarea>
+                        </div>
+                    </div>
+                </template>
+            </section>
+            
             <!-- Experience Tracker -->
             <section class="sheet-section xp-section">
                 <h2>Experience</h2>
@@ -689,162 +865,6 @@
                         </template>
                     </div>
                 </div>
-            </section>
-            
-            <!-- Skills -->
-            <section class="sheet-section skills-section">
-                <h2>Skills</h2>
-                
-                <!-- Physical Skills -->
-                <div class="skill-category">
-                    <h3>Physical</h3>
-                    
-                    <template x-for="skill in ['athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny', 'melee', 'stealth', 'survival']" :key="skill">
-                        <div class="skill-row" 
-                             x-data="skillTracker(skill, data[skill], getSpecialties(skill))"
-                             @mouseenter="showSpecialtyBtn = true"
-                             @mouseleave="showSpecialtyBtn = false">
-                            <span class="skill-name" x-text="capitalize(skill)"></span>
-                            <div class="skill-right">
-                                <div class="dot-tracker" @click="handleDotClick($event)">
-                                    <template x-for="i in 5" :key="i">
-                                        <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
-                                    </template>
-                                </div>
-                                <button type="button" 
-                                        class="btn-add-specialty" 
-                                        x-show="showSpecialtyBtn && value > 0"
-                                        @click="addSpecialty()">+</button>
-                            </div>
-                            <div class="specialties-list" x-show="specialties.length > 0">
-                                <template x-for="(spec, idx) in specialties" :key="idx">
-                                    <span class="specialty-tag">
-                                        <span x-text="spec"></span>
-                                        <button type="button" @click="removeSpecialty(idx)">×</button>
-                                    </span>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                
-                <!-- Social Skills -->
-                <div class="skill-category">
-                    <h3>Social</h3>
-                    
-                    <template x-for="skill in ['animal_ken', 'etiquette', 'insight', 'intimidation', 'leadership', 'performance', 'persuasion', 'streetwise', 'subterfuge']" :key="skill">
-                        <div class="skill-row" 
-                             x-data="skillTracker(skill, data[skill], getSpecialties(skill))"
-                             @mouseenter="showSpecialtyBtn = true"
-                             @mouseleave="showSpecialtyBtn = false">
-                            <span class="skill-name" x-text="capitalize(skill)"></span>
-                            <div class="skill-right">
-                                <div class="dot-tracker" @click="handleDotClick($event)">
-                                    <template x-for="i in 5" :key="i">
-                                        <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
-                                    </template>
-                                </div>
-                                <button type="button" 
-                                        class="btn-add-specialty" 
-                                        x-show="showSpecialtyBtn && value > 0"
-                                        @click="addSpecialty()">+</button>
-                            </div>
-                            <div class="specialties-list" x-show="specialties.length > 0">
-                                <template x-for="(spec, idx) in specialties" :key="idx">
-                                    <span class="specialty-tag">
-                                        <span x-text="spec"></span>
-                                        <button type="button" @click="removeSpecialty(idx)">×</button>
-                                    </span>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                
-                <!-- Mental Skills -->
-                <div class="skill-category">
-                    <h3>Mental</h3>
-                    
-                    <template x-for="skill in ['academics', 'awareness', 'finance', 'investigation', 'medicine', 'occult', 'politics', 'science', 'technology']" :key="skill">
-                        <div class="skill-row" 
-                             x-data="skillTracker(skill, data[skill], getSpecialties(skill))"
-                             @mouseenter="showSpecialtyBtn = true"
-                             @mouseleave="showSpecialtyBtn = false">
-                            <span class="skill-name" x-text="capitalize(skill)"></span>
-                            <div class="skill-right">
-                                <div class="dot-tracker" @click="handleDotClick($event)">
-                                    <template x-for="i in 5" :key="i">
-                                        <span class="dot" :class="i <= value ? 'filled' : 'empty'">●</span>
-                                    </template>
-                                </div>
-                                <button type="button" 
-                                        class="btn-add-specialty" 
-                                        x-show="showSpecialtyBtn && value > 0"
-                                        @click="addSpecialty()">+</button>
-                            </div>
-                            <div class="specialties-list" x-show="specialties.length > 0">
-                                <template x-for="(spec, idx) in specialties" :key="idx">
-                                    <span class="specialty-tag">
-                                        <span x-text="spec"></span>
-                                        <button type="button" @click="removeSpecialty(idx)">×</button>
-                                    </span>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </section>
-            
-            <!-- Disciplines -->
-            <section class="sheet-section disciplines-section">
-                <h2>Disciplines</h2>
-                
-                <template x-for="i in 5" :key="i">
-                    <div class="discipline-entry" x-data="disciplineSlot(i)">
-                        <div class="discipline-header">
-                            <select x-model="disciplineName" 
-                                    @change="updateDiscipline()"
-                                    :disabled="i <= 2 && clanDisciplines.includes(disciplineName)"
-                                    class="discipline-select">
-                                <option value="">Select Discipline</option>
-                                <option value="animalism">Animalism</option>
-                                <option value="auspex">Auspex</option>
-                                <option value="blood-sorcery">Blood Sorcery</option>
-                                <option value="celerity">Celerity</option>
-                                <option value="dominate">Dominate</option>
-                                <option value="fortitude">Fortitude</option>
-                                <option value="obfuscate">Obfuscate</option>
-                                <option value="oblivion">Oblivion</option>
-                                <option value="potence">Potence</option>
-                                <option value="presence">Presence</option>
-                                <option value="protean">Protean</option>
-                                <option value="thin-blood-alchemy">Thin-Blood Alchemy</option>
-                            </select>
-                            
-                            <div class="dot-tracker discipline-dots" @click="handleDotClick($event)">
-                                <template x-for="d in 5" :key="d">
-                                    <span class="dot" :class="d <= disciplineLevel ? 'filled' : 'empty'">●</span>
-                                </template>
-                            </div>
-                        </div>
-                        
-                        <div class="discipline-powers" x-show="disciplineName">
-                            <label>Powers</label>
-                            <textarea x-model="powers" 
-                                      @input.debounce.2s="updateDiscipline()"
-                                      rows="3"
-                                      placeholder="List discipline powers (one per line)"></textarea>
-                        </div>
-                        
-                        <div class="discipline-description" x-show="disciplineName">
-                            <label>Notes</label>
-                            <textarea x-model="description" 
-                                      @input.debounce.2s="updateDiscipline()"
-                                      rows="2"
-                                      placeholder="Custom notes"></textarea>
-                        </div>
-                    </div>
-                </template>
             </section>
             
         </div>
