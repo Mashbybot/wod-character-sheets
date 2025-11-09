@@ -157,8 +157,15 @@ async def get_character_api(
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     
-    # Convert SQLAlchemy object to dict
-    char_dict = {c.name: getattr(character, c.name) for c in character.__table__.columns}
+    # Convert SQLAlchemy object to dict with datetime handling
+    char_dict = {}
+    for c in character.__table__.columns:
+        value = getattr(character, c.name)
+        # Convert datetime to ISO string for JSON serialization
+        if hasattr(value, 'isoformat'):
+            value = value.isoformat()
+        char_dict[c.name] = value
+    
     return JSONResponse(content=char_dict)
 
 

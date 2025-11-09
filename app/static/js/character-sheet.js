@@ -503,7 +503,6 @@ function skillTracker(skillName, initialValue = 0, initialSpecialties = []) {
         skillName: skillName,
         value: initialValue,
         specialties: initialSpecialties,
-        showSpecialtyBtn: false,
         
         init() {
             this.$watch(`$parent.data.${skillName}`, val => {
@@ -569,79 +568,51 @@ function skillTracker(skillName, initialValue = 0, initialSpecialties = []) {
     };
 }
 
-// Box tracker for Health/Willpower (4 states)
+// Box tracker for Health/Willpower (4 states) - ALWAYS SHOW 10 BOXES
 function boxTracker(type, maxBoxes, superficial = 0, aggravated = 0) {
     return {
         type: type,
-        maxBoxes: maxBoxes,
+        maxBoxes: 10,  // Always display 10 boxes
+        calculatedMax: maxBoxes,  // Actual max based on attributes
         superficial: superficial,
         aggravated: aggravated,
         
         getBoxState(index) {
-            // Boxes fill from left (usable), damage from right
-            const usableBoxes = this.maxBoxes - this.superficial - this.aggravated;
+            // Damage fills from RIGHT (last boxes first)
+            const usableBoxes = this.calculatedMax - this.superficial - this.aggravated;
             
             if (index <= usableBoxes) {
                 return 'filled'; // Red - usable
-            } else if (index <= usableBoxes + this.superficial) {
+            } else if (index <= this.calculatedMax - this.aggravated) {
                 return 'superficial'; // Yellow - superficial damage
-            } else if (index <= this.maxBoxes) {
+            } else if (index <= this.calculatedMax) {
                 return 'aggravated'; // Black - aggravated damage
             }
-            return 'empty'; // Not usable yet
+            return 'empty'; // Beyond calculated max
         },
         
-        cycleBox(index, event, reverse = false) {
+        cycleBox(index) {
+            // Only cycle boxes within calculated max
+            if (index > this.calculatedMax) return;
+            
             const currentState = this.getBoxState(index);
             
-            if (!reverse) {
-                // Left click: empty → filled → superficial → aggravated → empty
-                if (currentState === 'empty') {
-                    // Add usable box
-                    this.extendTracker();
-                } else if (currentState === 'filled') {
-                    // Convert to superficial (damage from right)
+            // Cycle: filled → superficial → aggravated → filled
+            if (currentState === 'filled') {
+                // Add superficial damage
+                if (this.superficial + this.aggravated < this.calculatedMax) {
                     this.superficial++;
-                } else if (currentState === 'superficial') {
-                    // Convert to aggravated
-                    this.superficial--;
-                    this.aggravated++;
-                } else if (currentState === 'aggravated') {
-                    // Remove damage
-                    this.aggravated--;
                 }
-            } else {
-                // Right click: reverse
-                if (currentState === 'aggravated') {
-                    this.aggravated--;
-                    this.superficial++;
-                } else if (currentState === 'superficial') {
-                    this.superficial--;
-                } else if (currentState === 'filled') {
-                    // Remove usable box
-                    this.shrinkTracker();
-                }
+            } else if (currentState === 'superficial') {
+                // Convert to aggravated
+                this.superficial--;
+                this.aggravated++;
+            } else if (currentState === 'aggravated') {
+                // Remove damage (back to filled)
+                this.aggravated--;
             }
             
             this.save();
-        },
-        
-        extendTracker() {
-            const totalDamage = this.superficial + this.aggravated;
-            if (totalDamage > 0) {
-                // Can't extend while damaged
-                return;
-            }
-            // This would require changing max boxes - skip for now
-        },
-        
-        shrinkTracker() {
-            const totalDamage = this.superficial + this.aggravated;
-            if (totalDamage > 0) {
-                // Can't shrink while damaged
-                return;
-            }
-            // This would require changing max boxes - skip for now
         },
         
         save() {
@@ -690,7 +661,7 @@ function humanityTracker(current = 7) {
     };
 }
 
-// Discipline slot component
+// Discipline slot component - NO AUTO-POPULATION
 function disciplineSlot(slotNumber) {
     return {
         slotNumber: slotNumber,
@@ -699,10 +670,6 @@ function disciplineSlot(slotNumber) {
         powers: '',
         description: '',
         
-        get clanDisciplines() {
-            return this.$parent.clanDisciplines || [];
-        },
-        
         init() {
             // Load from parent data
             this.disciplineName = this.$parent.data[`discipline_${this.slotNumber}_name`] || '';
@@ -710,11 +677,7 @@ function disciplineSlot(slotNumber) {
             this.powers = this.$parent.data[`discipline_${this.slotNumber}_powers`] || '';
             this.description = this.$parent.data[`discipline_${this.slotNumber}_description`] || '';
             
-            // Auto-populate clan disciplines in first 2 slots
-            if (this.slotNumber <= 2 && !this.disciplineName && this.clanDisciplines.length >= this.slotNumber) {
-                this.disciplineName = this.clanDisciplines[this.slotNumber - 1];
-                this.updateDiscipline();
-            }
+            // NO AUTO-POPULATION - all slots work the same
         },
         
         handleDotClick(event) {

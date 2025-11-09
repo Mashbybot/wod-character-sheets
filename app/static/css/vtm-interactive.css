@@ -382,9 +382,11 @@
     font-size: 0.9rem;
 }
 
-/* ===== EXPERIENCE SECTION ===== */
+/* ===== EXPERIENCE SECTION - MOVED TO BOTTOM ===== */
 .xp-section {
     text-align: center;
+    /* This will be at bottom of right column due to flex order */
+    order: 999;
 }
 
 .xp-display {
@@ -447,22 +449,25 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    position: relative;
 }
 
+/* FIXED: Specialty button doesn't shift dots */
 .btn-add-specialty {
     background-color: var(--vtm-red-dark);
     color: white;
     border: none;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     line-height: 1;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .btn-add-specialty:hover {
@@ -498,28 +503,34 @@
     padding: 0;
 }
 
-/* ===== HEALTH/WILLPOWER/HUMANITY TRACKERS ===== */
+/* ===== HEALTH/WILLPOWER/HUMANITY TRACKERS - SMALLER DIAMONDS ===== */
 .health-box,
 .willpower-box,
 .humanity-box {
-    width: 30px;
-    height: 30px;
+    width: 18px;
+    height: 18px;
     border: 2px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 3px;
+    transform: rotate(45deg);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     font-weight: bold;
     transition: all 0.2s;
     user-select: none;
 }
 
+.health-box > span,
+.willpower-box > span {
+    transform: rotate(-45deg);
+}
+
 .health-box:hover,
 .willpower-box:hover,
 .humanity-box:hover {
-    transform: scale(1.1);
+    transform: rotate(45deg) scale(1.15);
     border-color: var(--vtm-red);
 }
 
