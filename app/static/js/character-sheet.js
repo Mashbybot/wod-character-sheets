@@ -656,7 +656,13 @@ function characterSheet(characterId) {
                 : document.querySelector('.sheet-grid-below');
             
             if (grid && widths.length === 3) {
-                grid.style.gridTemplateColumns = `${widths[0]}% ${widths[1]}% ${widths[2]}%`;
+                // Grid has 5 columns: col1, divider, col2, divider, col3
+                // Dividers are 8px each (16px total)
+                // Adjust percentages to account for dividers
+                const col1 = `calc(${widths[0]}% - 5px)`;
+                const col2 = `calc(${widths[1]}% - 6px)`;
+                const col3 = `calc(${widths[2]}% - 5px)`;
+                grid.style.gridTemplateColumns = `${col1} 8px ${col2} 8px ${col3}`;
             }
         },
         
@@ -671,6 +677,9 @@ function characterSheet(characterId) {
             const gridRect = grid.getBoundingClientRect();
             const gridWidth = gridRect.width;
             
+            // Account for dividers (16px total for both dividers)
+            const availableWidth = gridWidth - 16;
+            
             // Get current widths
             const currentWidths = section === 'above'
                 ? this.data.column_widths_above.split(',').map(w => parseInt(w))
@@ -680,7 +689,7 @@ function characterSheet(characterId) {
             
             const onMouseMove = (e) => {
                 const deltaX = e.clientX - startX;
-                const deltaPercent = (deltaX / gridWidth) * 100;
+                const deltaPercent = (deltaX / availableWidth) * 100;
                 
                 // Adjust the two columns on either side of the divider
                 const newWidths = [...startWidths];
@@ -689,11 +698,11 @@ function characterSheet(characterId) {
                 
                 // Ensure total is 100%
                 const total = newWidths.reduce((sum, w) => sum + w, 0);
-                if (Math.abs(total - 100) > 1) {
-                    const adjustment = (100 - total) / 3;
-                    newWidths[0] += adjustment;
-                    newWidths[1] += adjustment;
-                    newWidths[2] += adjustment;
+                if (Math.abs(total - 100) > 0.1) {
+                    // Adjust third column to maintain 100%
+                    const otherIndex = dividerIndex === 0 ? 2 : 0;
+                    newWidths[otherIndex] = 100 - newWidths[dividerIndex] - newWidths[dividerIndex + 1];
+                    newWidths[otherIndex] = Math.max(15, Math.min(60, newWidths[otherIndex]));
                 }
                 
                 this.applyColumnWidths(section, newWidths);
@@ -703,19 +712,34 @@ function characterSheet(characterId) {
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
                 
-                // Save the new widths
+                // Calculate final widths from actual computed styles
                 const grid = section === 'above' 
                     ? document.querySelector('.sheet-grid-above') 
                     : document.querySelector('.sheet-grid-below');
                 
                 const computedStyle = window.getComputedStyle(grid);
                 const columns = computedStyle.gridTemplateColumns.split(' ');
-                const gridWidth = grid.getBoundingClientRect().width;
                 
-                const widthsPercent = columns.map(col => {
-                    const px = parseFloat(col);
-                    return Math.round((px / gridWidth) * 100);
-                });
+                // Columns are: col1, 8px, col2, 8px, col3
+                // We want indices 0, 2, 4
+                const col1Width = parseFloat(columns[0]);
+                const col2Width = parseFloat(columns[2]);
+                const col3Width = parseFloat(columns[4]);
+                
+                const gridWidth = grid.getBoundingClientRect().width;
+                const availableWidth = gridWidth - 16; // Account for dividers
+                
+                const widthsPercent = [
+                    Math.round((col1Width / availableWidth) * 100),
+                    Math.round((col2Width / availableWidth) * 100),
+                    Math.round((col3Width / availableWidth) * 100)
+                ];
+                
+                // Ensure they sum to 100
+                const sum = widthsPercent.reduce((a, b) => a + b, 0);
+                if (sum !== 100) {
+                    widthsPercent[2] += (100 - sum);
+                }
                 
                 if (section === 'above') {
                     this.data.column_widths_above = widthsPercent.join(',');

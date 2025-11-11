@@ -28,10 +28,17 @@
 /* ===== 3-COLUMN GRID (MAIN STRUCTURE) ===== */
 .sheet-grid-three-column {
     display: grid;
-    grid-template-columns: 30% 35% 35%;
+    grid-template-columns: 30% 8px 35% 8px 35%;
     gap: 0;
     margin-bottom: 2rem;
     position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Adjust for divider width - make total equal 100% */
+.sheet-grid-three-column {
+    grid-template-columns: calc(30% - 5px) 8px calc(35% - 6px) 8px calc(35% - 5px);
 }
 
 .column-one,
@@ -41,6 +48,7 @@
     flex-direction: column;
     gap: 1.5rem;
     padding: 0 0.75rem;
+    overflow-x: hidden;
 }
 
 /* ===== DRAGGABLE COLUMN DIVIDERS ===== */
@@ -53,14 +61,15 @@
     align-items: stretch;
     justify-content: center;
     transition: background-color 0.2s;
+    flex-shrink: 0;
 }
 
 .column-divider:hover {
-    background-color: rgba(139, 0, 0, 0.1);
+    background-color: rgba(139, 0, 0, 0.15);
 }
 
 .column-divider:active {
-    background-color: rgba(139, 0, 0, 0.2);
+    background-color: rgba(139, 0, 0, 0.3);
 }
 
 .divider-handle {
@@ -73,8 +82,9 @@
         var(--border-color) 90%,
         transparent 100%
     );
-    opacity: 0.5;
+    opacity: 0.6;
     transition: opacity 0.2s;
+    box-shadow: 0 0 4px rgba(139, 0, 0, 0.3);
 }
 
 .column-divider:hover .divider-handle {
@@ -87,6 +97,7 @@
         var(--vtm-red) 90%,
         transparent 100%
     );
+    box-shadow: 0 0 6px rgba(139, 0, 0, 0.6);
 }
 
 /* ===== 4-BOX CHRONICLE INFO GRID ===== */
