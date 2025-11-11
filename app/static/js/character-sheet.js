@@ -85,7 +85,16 @@ function characterSheet(characterId) {
             bane_type: '',
             compulsion: '',
             
-            // Portrait
+            // Portraits (6 slots)
+            portrait_face: '',
+            portrait_body: '',
+            portrait_hobby_1: '',
+            portrait_hobby_2: '',
+            portrait_hobby_3: '',
+            portrait_hobby_4: '',
+            alias: 'Alias',
+            
+            // Keep old portrait_url for backwards compatibility
             portrait_url: '',
             
             // Experience
@@ -124,7 +133,14 @@ function characterSheet(characterId) {
             discipline_5_powers: '',
             discipline_5_description: '',
             
-            // Chronicle Tenets
+            // Chronicle Tenets (5 individual fields)
+            chronicle_tenet_1: '',
+            chronicle_tenet_2: '',
+            chronicle_tenet_3: '',
+            chronicle_tenet_4: '',
+            chronicle_tenet_5: '',
+            
+            // Keep old chronicle_tenets for backwards compatibility
             chronicle_tenets: '',
             
             // History
@@ -462,6 +478,30 @@ function characterSheet(characterId) {
             return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         },
         
+        getGenerationOrdinal(gen) {
+            const num = parseInt(gen) || 13;
+            const lastDigit = num % 10;
+            const lastTwoDigits = num % 100;
+            
+            if (lastTwoDigits >= 11 && lastTwoDigits <= 13) {
+                return num + 'th';
+            }
+            
+            switch(lastDigit) {
+                case 1: return num + 'st';
+                case 2: return num + 'nd';
+                case 3: return num + 'rd';
+                default: return num + 'th';
+            }
+        },
+        
+        getCharacterTitle() {
+            const name = this.data.name || 'Unnamed';
+            const gen = this.getGenerationOrdinal(this.data.generation);
+            const clan = this.capitalize(this.data.clan || 'Caitiff');
+            return `${name} the ${gen} Generation ${clan}`;
+        },
+        
         getClanDisciplineIcons() {
             const clanDisciplines = {
                 'brujah': ['potence', 'presence', 'celerity'],
@@ -509,12 +549,13 @@ function characterSheet(characterId) {
         },
         
         // PORTRAIT UPLOAD
-        async uploadPortrait(event) {
+        async uploadPortrait(event, boxType = 'face') {
             const file = event.target.files[0];
             if (!file) return;
             
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('box_type', boxType);
             
             try {
                 const response = await fetch(`/vtm/character/${this.characterId}/upload-portrait`, {
@@ -524,7 +565,8 @@ function characterSheet(characterId) {
                 
                 if (response.ok) {
                     const data = await response.json();
-                    this.data.portrait_url = data.portrait_url;
+                    this.data[`portrait_${boxType}`] = data.portrait_url;
+                    this.autoSave();
                 }
             } catch (error) {
                 console.error('Portrait upload error:', error);

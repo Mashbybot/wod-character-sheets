@@ -302,10 +302,10 @@ async def upload_portrait(
     character_id: int,
     request: Request,
     file: Optional[UploadFile] = File(None),
-    url: Optional[str] = Form(None),
+    box_type: Optional[str] = Form('face'),
     db: Session = Depends(get_db)
 ):
-    """Upload character portrait (file or URL)"""
+    """Upload character portrait (file or URL) to specific box"""
     user = require_auth(request)
     
     # Get character and verify ownership
@@ -316,6 +316,14 @@ async def upload_portrait(
     
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
+    
+    # Validate box_type
+    valid_boxes = ['face', 'body', 'hobby_1', 'hobby_2', 'hobby_3', 'hobby_4']
+    if box_type not in valid_boxes:
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Invalid box type"}
+        )
     
     try:
         # Handle file upload
@@ -332,33 +340,38 @@ async def upload_portrait(
             unique_filename = f"{uuid.uuid4()}.{file_extension}"
             file_path = os.path.join(CHARACTER_IMAGE_DIR, unique_filename)
             
-            # Save and resize image
+            # Save and resize image based on box type
             image = Image.open(file.file)
             
-            # Resize to standard portrait size (400x600 max, maintain aspect ratio)
-            image.thumbnail((400, 600), Image.Resampling.LANCZOS)
+            # Different sizes for different boxes
+            if box_type == 'face':
+                # Square face box
+                image.thumbnail((400, 400), Image.Resampling.LANCZOS)
+            elif box_type == 'body':
+                # Tall body box
+                image.thumbnail((300, 600), Image.Resampling.LANCZOS)
+            else:
+                # Small hobby boxes
+                image.thumbnail((150, 150), Image.Resampling.LANCZOS)
+            
             image.save(file_path, optimize=True, quality=85)
             
-            # Update character portrait URL
-            character.portrait_url = f"/static/portraits/{unique_filename}"
+            # Update character portrait field
+            portrait_field = f'portrait_{box_type}'
+            setattr(character, portrait_field, f"/static/portraits/{unique_filename}")
             
-        # Handle URL (future implementation)
-        elif url:
-            # TODO: Implement URL fetching and processing
-            return JSONResponse(
-                status_code=400,
-                content={"error": "URL upload not yet implemented"}
-            )
-        
         else:
             return JSONResponse(
                 status_code=400,
-                content={"error": "No file or URL provided"}
+                content={"error": "No file provided"}
             )
         
         db.commit()
         
-        return JSONResponse(content={"success": True, "portrait_url": character.portrait_url})
+        return JSONResponse(content={
+            "success": True, 
+            "portrait_url": getattr(character, f'portrait_{box_type}')
+        })
         
     except Exception as e:
         print(f"Error uploading portrait: {e}")

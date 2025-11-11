@@ -7,14 +7,16 @@
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/vtm-sheet.css">
 <link rel="stylesheet" href="/static/css/vtm-interactive.css">
+<link rel="stylesheet" href="/static/css/vtm-phase1.css">
 {% endblock %}
 
 {% block content %}
 <div class="character-sheet vtm-sheet" x-data="characterSheet({{ character.id if character else 'null' }})">
     
     <!-- Header -->
-    <div class="sheet-header">
-        <h1 x-text="characterName || 'New Character'"></h1>
+    <div class="sheet-header-new">
+        <h1 class="character-title" x-text="getCharacterTitle()"></h1>
+        <h2 class="chronicle-subheader" x-text="data.chronicle || 'No Chronicle'"></h2>
         <div class="save-indicator" x-show="saveStatus !== ''">
             <span x-show="saveStatus === 'saving'">⏳ Saving...</span>
             <span x-show="saveStatus === 'saved'" class="saved">✓ Saved</span>
@@ -23,133 +25,120 @@
     </div>
     
     <!-- 3-Column Grid Layout -->
-    <div class="sheet-grid">
+    <div class="sheet-grid-new">
         
         <!-- LEFT COLUMN -->
-        <div class="column-left">
+        <div class="column-left-new">
             
-            <!-- Chronicle Information -->
-            <section class="sheet-section">
+            <!-- Chronicle Information - 4 Box Grid -->
+            <section class="sheet-section chronicle-grid">
                 <h2>Chronicle Information</h2>
                 
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" 
-                           x-model="data.name" 
-                           @input.debounce.2s="autoSave()"
-                           placeholder="Character Name">
-                </div>
-                
-                <div class="form-group">
-                    <label>Chronicle</label>
-                    <input type="text" 
-                           x-model="data.chronicle" 
-                           @input.debounce.2s="autoSave()"
-                           placeholder="Chronicle Name">
-                </div>
-                
-                <div class="form-group">
-                    <label>Concept</label>
-                    <input type="text" 
-                           x-model="data.concept" 
-                           @input.debounce.2s="autoSave()"
-                           placeholder="Concept">
-                </div>
-                
-                <div class="form-group">
-                    <label>Predator Type</label>
-                    <input type="text" 
-                           x-model="data.predator" 
-                           @input.debounce.2s="autoSave()"
-                           placeholder="Predator Type">
-                </div>
-                
-                <div class="form-group">
-                    <label>Ambition</label>
-                    <textarea x-model="data.ambition" 
-                              @input.debounce.2s="autoSave()"
-                              rows="2"
-                              placeholder="Long-term goal"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Desire</label>
-                    <textarea x-model="data.desire" 
-                              @input.debounce.2s="autoSave()"
-                              rows="2"
-                              placeholder="Short-term want"></textarea>
+                <div class="four-box-grid">
+                    <!-- Top Left: Personal Info -->
+                    <div class="grid-box">
+                        <div class="form-group-compact">
+                            <label>Pronouns</label>
+                            <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>True Age</label>
+                            <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Apparent Age</label>
+                            <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Birth Date</label>
+                            <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Death Date</label>
+                            <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
+                        </div>
+                    </div>
+                    
+                    <!-- Top Right: Ambition & Desire -->
+                    <div class="grid-box">
+                        <div class="form-group-compact">
+                            <label>Ambition</label>
+                            <textarea x-model="data.ambition" @input.debounce.2s="autoSave()" rows="3"></textarea>
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Desire</label>
+                            <textarea x-model="data.desire" @input.debounce.2s="autoSave()" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom Left: Background -->
+                    <div class="grid-box">
+                        <div class="form-group-compact">
+                            <label>Ethnicity</label>
+                            <input type="text" x-model="data.ethnicity" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Languages</label>
+                            <input type="text" x-model="data.languages" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Origin</label>
+                            <input type="text" x-model="data.birthplace" @input.debounce.2s="autoSave()">
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom Right: Trackers (compact) -->
+                    <div class="grid-box trackers-compact">
+                        <div class="tracker-row-compact">
+                            <label>Health</label>
+                            <div class="box-tracker-small">
+                                <template x-for="i in 10" :key="i">
+                                    <div class="health-box small"
+                                         :class="getHealthState(i)"
+                                         @click="cycleHealth(i)">
+                                        <span x-show="getHealthState(i) === 'superficial'">/</span>
+                                        <span x-show="getHealthState(i) === 'aggravated'">×</span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="tracker-row-compact">
+                            <label>Willpower</label>
+                            <div class="box-tracker-small">
+                                <template x-for="i in 10" :key="i">
+                                    <div class="willpower-box small"
+                                         :class="getWillpowerState(i)"
+                                         @click="cycleWillpower(i)">
+                                        <span x-show="getWillpowerState(i) === 'superficial'">/</span>
+                                        <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <div class="tracker-row-compact">
+                            <label>Humanity</label>
+                            <div class="box-tracker-small">
+                                <template x-for="i in 10" :key="i">
+                                    <div class="humanity-box small"
+                                         :class="getHumanityState(i)"
+                                         @click="clickHumanity(i)">
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
             
-            <!-- Appearance & Identity -->
-            <section class="sheet-section">
-                <h2>Appearance & Identity</h2>
-                
-                <div class="form-row">
-                    <div class="form-group half">
-                        <label>Apparent Age</label>
-                        <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
-                    </div>
-                    <div class="form-group half">
-                        <label>True Age</label>
-                        <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group half">
-                        <label>Date of Birth</label>
-                        <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
-                    </div>
-                    <div class="form-group half">
-                        <label>Date of Death</label>
-                        <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Appearance</label>
-                    <textarea x-model="data.appearance" 
-                              @input.debounce.2s="autoSave()"
-                              rows="3"
-                              placeholder="Physical description"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Distinguishing Features</label>
-                    <textarea x-model="data.distinguishing_features" 
-                              @input.debounce.2s="autoSave()"
-                              rows="2"></textarea>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group third">
-                        <label>Pronouns</label>
-                        <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
-                    </div>
-                    <div class="form-group third">
-                        <label>Ethnicity</label>
-                        <input type="text" x-model="data.ethnicity" @input.debounce.2s="autoSave()">
-                    </div>
-                    <div class="form-group third">
-                        <label>Birthplace</label>
-                        <input type="text" x-model="data.birthplace" @input.debounce.2s="autoSave()">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Languages</label>
-                    <input type="text" x-model="data.languages" @input.debounce.2s="autoSave()" placeholder="Comma-separated">
-                </div>
-            </section>
-            
-            <!-- Attributes -->
+            <!-- Attributes - 3 Columns Side by Side -->
             <section class="sheet-section">
                 <h2>Attributes</h2>
                 
-                <div class="attributes-grid">
+                <div class="attributes-three-column">
                     <!-- Physical -->
-                    <div class="attribute-category">
+                    <div class="attribute-column">
                         <h3>Physical</h3>
                         <div class="attribute-row">
                             <span class="attribute-name">Strength</span>
@@ -161,7 +150,6 @@
                                 </template>
                             </div>
                         </div>
-                        
                         <div class="attribute-row">
                             <span class="attribute-name">Dexterity</span>
                             <div class="dot-tracker">
@@ -172,7 +160,6 @@
                                 </template>
                             </div>
                         </div>
-                        
                         <div class="attribute-row">
                             <span class="attribute-name">Stamina</span>
                             <div class="dot-tracker">
@@ -186,7 +173,7 @@
                     </div>
                     
                     <!-- Social -->
-                    <div class="attribute-category">
+                    <div class="attribute-column">
                         <h3>Social</h3>
                         <div class="attribute-row">
                             <span class="attribute-name">Charisma</span>
@@ -198,7 +185,6 @@
                                 </template>
                             </div>
                         </div>
-                        
                         <div class="attribute-row">
                             <span class="attribute-name">Manipulation</span>
                             <div class="dot-tracker">
@@ -209,7 +195,6 @@
                                 </template>
                             </div>
                         </div>
-                        
                         <div class="attribute-row">
                             <span class="attribute-name">Composure</span>
                             <div class="dot-tracker">
@@ -223,7 +208,7 @@
                     </div>
                     
                     <!-- Mental -->
-                    <div class="attribute-category">
+                    <div class="attribute-column">
                         <h3>Mental</h3>
                         <div class="attribute-row">
                             <span class="attribute-name">Intelligence</span>
@@ -235,7 +220,6 @@
                                 </template>
                             </div>
                         </div>
-                        
                         <div class="attribute-row">
                             <span class="attribute-name">Wits</span>
                             <div class="dot-tracker">
@@ -246,7 +230,6 @@
                                 </template>
                             </div>
                         </div>
-                        
                         <div class="attribute-row">
                             <span class="attribute-name">Resolve</span>
                             <div class="dot-tracker">
@@ -261,43 +244,36 @@
                 </div>
             </section>
             
-            <!-- Hunger & Blood Potency -->
-            <section class="sheet-section">
-                <h2>Hunger & Blood Potency</h2>
+            <!-- Hunger -->
+            <section class="sheet-section hunger-section">
+                <h2>Hunger</h2>
+                <div class="dot-tracker hunger-tracker-large">
+                    <template x-for="i in 5" :key="i">
+                        <span class="dot hunger-dot" 
+                              :class="[i <= (data.hunger || 1) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger || 1) ? 'danger' : '']"
+                              @click="clickDot('hunger', i, 0, 5)">●</span>
+                    </template>
+                </div>
+            </section>
+            
+            <!-- Blood Potency -->
+            <section class="sheet-section blood-potency-new">
+                <h2>Blood Potency</h2>
                 
-                <!-- Hunger (0-5) -->
-                <div class="tracker-row">
-                    <label>Hunger</label>
-                    <div class="dot-tracker hunger-tracker">
-                        <template x-for="i in 5" :key="i">
-                            <span class="dot hunger-dot" 
-                                  :class="[i <= (data.hunger || 1) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger || 1) ? 'danger' : '']"
-                                  @click="clickDot('hunger', i, 0, 5)">●</span>
+                <!-- BP Tracker as header -->
+                <div class="bp-tracker-header">
+                    <div class="dot-tracker bp-tracker">
+                        <template x-for="i in 10" :key="i">
+                            <span class="dot" 
+                                  :class="i <= (data.blood_potency || 0) ? 'filled' : 'empty'"
+                                  @click="clickDot('blood_potency', i, 0, 10)">●</span>
                         </template>
                     </div>
                 </div>
                 
-                <!-- Resonance -->
-                <div class="form-group">
-                    <label>Resonance</label>
-                    <input type="text" x-model="data.resonance" @input.debounce.2s="autoSave()" placeholder="Current resonance">
-                </div>
-                
-                <!-- Blood Potency -->
-                <div class="blood-potency-section">
-                    <div class="tracker-row">
-                        <label>Blood Potency</label>
-                        <div class="dot-tracker bp-tracker">
-                            <template x-for="i in 10" :key="i">
-                                <span class="dot" 
-                                      :class="i <= (data.blood_potency || 0) ? 'filled' : 'empty'"
-                                      @click="clickDot('blood_potency', i, 0, 10)">●</span>
-                            </template>
-                        </div>
-                    </div>
-                    
-                    <!-- Auto-calculated BP values -->
-                    <div class="bp-values">
+                <!-- Two column readout -->
+                <div class="bp-two-column">
+                    <div class="bp-column-left">
                         <div class="bp-value-row">
                             <span class="bp-label">Blood Surge:</span>
                             <span class="bp-number" x-text="bloodPotencyValues.surge"></span>
@@ -307,12 +283,14 @@
                             <span class="bp-number" x-text="bloodPotencyValues.mend"></span>
                         </div>
                         <div class="bp-value-row">
-                            <span class="bp-label">Power Bonus:</span>
-                            <span class="bp-number" x-text="bloodPotencyValues.powerBonus"></span>
-                        </div>
-                        <div class="bp-value-row">
                             <span class="bp-label">Rouse Re-roll:</span>
                             <span class="bp-number" x-text="bloodPotencyValues.rouseReroll"></span>
+                        </div>
+                    </div>
+                    <div class="bp-column-right">
+                        <div class="bp-value-row">
+                            <span class="bp-label">Power Bonus:</span>
+                            <span class="bp-number" x-text="bloodPotencyValues.powerBonus"></span>
                         </div>
                         <div class="bp-value-row">
                             <span class="bp-label">Bane Severity:</span>
@@ -326,9 +304,12 @@
                 </div>
             </section>
             
+            <!-- VISUAL PAGE BREAK -->
+            <div class="page-break-divider"></div>
+            
+            <!-- Touchstones -->
             <section class="sheet-section">
                 <h2>Touchstones</h2>
-                <p class="section-note">You may have 1-3 touchstones</p>
                 
                 <template x-for="(touchstone, index) in touchstones" :key="index">
                     <div class="touchstone-entry">
@@ -357,13 +338,22 @@
                         class="btn-add">+ Add Touchstone</button>
             </section>
             
-            <!-- Chronicle Tenets -->
+            <!-- History in Life -->
             <section class="sheet-section">
-                <h2>Chronicle Tenets</h2>
-                <textarea x-model="data.chronicle_tenets" 
+                <h2>History in Life</h2>
+                <textarea x-model="data.history_in_life" 
                           @input.debounce.2s="autoSave()"
-                          rows="4"
-                          placeholder="I. Tenet one&#10;II. Tenet two&#10;III. Tenet three"></textarea>
+                          rows="8"
+                          placeholder="Character's mortal history..."></textarea>
+            </section>
+            
+            <!-- After Death -->
+            <section class="sheet-section">
+                <h2>After Death</h2>
+                <textarea x-model="data.after_death" 
+                          @input.debounce.2s="autoSave()"
+                          rows="8"
+                          placeholder="Character's unlife as a vampire..."></textarea>
             </section>
             
             <!-- Backgrounds, Merits & Flaws -->
@@ -391,264 +381,58 @@
         </div>
         
         <!-- CENTER COLUMN -->
-        <div class="column-center">
+        <div class="column-center-new">
             
-            <!-- Character Portrait -->
-            <section class="sheet-section portrait-section">
-                <div class="portrait-container">
-                    <template x-if="data.portrait_url">
-                        <img :src="data.portrait_url" alt="Character Portrait">
-                    </template>
-                    <template x-if="!data.portrait_url">
-                        <div class="portrait-placeholder">
-                            <span>No Portrait</span>
+            <!-- 6-Box Portrait Grid -->
+            <section class="sheet-section portrait-six-box">
+                <h2>Character Portraits</h2>
+                
+                <div class="portrait-grid">
+                    <!-- Body Portrait (tall, left) -->
+                    <div class="portrait-box portrait-body" 
+                         @dblclick="$refs.bodyInput.click()"
+                         :style="data.portrait_body ? `background-image: url(${data.portrait_body})` : ''">
+                        <template x-if="!data.portrait_body">
+                            <div class="portrait-placeholder">Full Body</div>
+                        </template>
+                    </div>
+                    <input type="file" x-ref="bodyInput" @change="uploadPortrait($event, 'body')" accept="image/*" style="display: none;">
+                    
+                    <!-- Right side: 4 hobbies + face -->
+                    <div class="portrait-right-column">
+                        <!-- 4 Hobby Boxes -->
+                        <div class="hobby-grid">
+                            <template x-for="i in 4" :key="i">
+                                <div class="portrait-box portrait-hobby" 
+                                     @dblclick="$refs[`hobby${i}Input`].click()"
+                                     :style="data[`portrait_hobby_${i}`] ? `background-image: url(${data['portrait_hobby_' + i]})` : ''">
+                                    <template x-if="!data[`portrait_hobby_${i}`]">
+                                        <div class="portrait-placeholder-small">+</div>
+                                    </template>
+                                </div>
+                                <input type="file" :x-ref="`hobby${i}Input`" @change="uploadPortrait($event, `hobby_${i}`)" accept="image/*" style="display: none;">
+                            </template>
                         </div>
-                    </template>
-                </div>
-                <button type="button" class="btn-secondary" @click="$refs.portraitInput.click()">
-                    <span x-text="data.portrait_url ? 'Change Portrait' : 'Upload Portrait'"></span>
-                </button>
-                <input type="file" 
-                       x-ref="portraitInput" 
-                       @change="uploadPortrait($event)" 
-                       accept="image/*" 
-                       style="display: none;">
-            </section>
-            
-            <!-- Trackers -->
-            <section class="sheet-section trackers-section">
-                <h2>Trackers</h2>
-                
-                <!-- Health -->
-                <div class="tracker-row">
-                    <label>Health</label>
-                    <div class="box-tracker health-tracker">
-                        <template x-for="i in 10" :key="i">
-                            <div class="health-box"
-                                 :class="getHealthState(i)"
-                                 @click="cycleHealth(i)">
-                                <span x-show="getHealthState(i) === 'superficial'">/</span>
-                                <span x-show="getHealthState(i) === 'aggravated'">×</span>
+                        
+                        <!-- Face Portrait (square, bottom) -->
+                        <div class="portrait-box portrait-face" 
+                             @dblclick="$refs.faceInput.click()"
+                             :style="data.portrait_face ? `background-image: url(${data.portrait_face})` : ''">
+                            <!-- Alias Overlay -->
+                            <div class="alias-overlay">
+                                <input type="text" 
+                                       x-model="data.alias" 
+                                       @input.debounce.2s="autoSave()"
+                                       class="alias-input"
+                                       placeholder="Alias">
                             </div>
-                        </template>
+                            <template x-if="!data.portrait_face">
+                                <div class="portrait-placeholder">Face</div>
+                            </template>
+                        </div>
+                        <input type="file" x-ref="faceInput" @change="uploadPortrait($event, 'face')" accept="image/*" style="display: none;">
                     </div>
                 </div>
-                
-                <!-- Willpower -->
-                <div class="tracker-row">
-                    <label>Willpower</label>
-                    <div class="box-tracker willpower-tracker">
-                        <template x-for="i in 10" :key="i">
-                            <div class="willpower-box"
-                                 :class="getWillpowerState(i)"
-                                 @click="cycleWillpower(i)">
-                                <span x-show="getWillpowerState(i) === 'superficial'">/</span>
-                                <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-                
-                <!-- Humanity -->
-                <div class="tracker-row">
-                    <label>Humanity</label>
-                    <div class="box-tracker humanity-tracker">
-                        <template x-for="i in 10" :key="i">
-                            <div class="humanity-box"
-                                 :class="getHumanityState(i)"
-                                 @click="clickHumanity(i)">
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Clan, Generation, Bane -->
-            <section class="sheet-section">
-                <h2>Identity</h2>
-                
-                <div class="form-group">
-                    <label>Clan</label>
-                    <select x-model="data.clan" @change="autoSave(); updateClanBadge()">
-                        <option value="">Select Clan</option>
-                        <option value="brujah">Brujah</option>
-                        <option value="gangrel">Gangrel</option>
-                        <option value="malkavian">Malkavian</option>
-                        <option value="nosferatu">Nosferatu</option>
-                        <option value="toreador">Toreador</option>
-                        <option value="tremere">Tremere</option>
-                        <option value="ventrue">Ventrue</option>
-                        <option value="caitiff">Caitiff</option>
-                        <option value="thin-blood">Thin-Blood</option>
-                        <option value="banu-haqim">Banu Haqim</option>
-                        <option value="hecata">Hecata</option>
-                        <option value="lasombra">Lasombra</option>
-                        <option value="ministry">Ministry</option>
-                        <option value="ravnos">Ravnos</option>
-                        <option value="salubri">Salubri</option>
-                        <option value="tzimisce">Tzimisce</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Sire</label>
-                    <input type="text" x-model="data.sire" @input.debounce.2s="autoSave()" placeholder="Sire's name">
-                </div>
-                
-                <div class="form-group">
-                    <label>Generation</label>
-                    <select x-model.number="data.generation" @change="autoSave()">
-                        <template x-for="gen in 16" :key="gen">
-                            <option :value="gen" x-text="gen"></option>
-                        </template>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Bane</label>
-                    <select x-model="data.bane_type" @change="autoSave()">
-                        <option value="">Select Bane</option>
-                        <template x-if="data.clan === 'brujah'">
-                            <optgroup label="Brujah Banes">
-                                <option value="Violent Temper">Violent Temper</option>
-                                <option value="Zealotry">Zealotry</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'gangrel'">
-                            <optgroup label="Gangrel Banes">
-                                <option value="Bestial Features">Bestial Features</option>
-                                <option value="Feral Impulses">Feral Impulses</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'malkavian'">
-                            <optgroup label="Malkavian Banes">
-                                <option value="Fractured Perspective">Fractured Perspective</option>
-                                <option value="Delusion">Delusion</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'nosferatu'">
-                            <optgroup label="Nosferatu Banes">
-                                <option value="Repulsiveness">Repulsiveness</option>
-                                <option value="Unnatural Aura">Unnatural Aura</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'toreador'">
-                            <optgroup label="Toreador Banes">
-                                <option value="Aesthetic Fixation">Aesthetic Fixation</option>
-                                <option value="Obsessive Fascination">Obsessive Fascination</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'tremere'">
-                            <optgroup label="Tremere Banes">
-                                <option value="Deficient Blood">Deficient Blood</option>
-                                <option value="Vitae Addiction">Vitae Addiction</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'ventrue'">
-                            <optgroup label="Ventrue Banes">
-                                <option value="Rarefied Taste">Rarefied Taste</option>
-                                <option value="Rigid Predilections">Rigid Predilections</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'banu-haqim'">
-                            <optgroup label="Banu Haqim Banes">
-                                <option value="Blood Addiction">Blood Addiction</option>
-                                <option value="Grave Curse">Grave Curse</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'hecata'">
-                            <optgroup label="Hecata Banes">
-                                <option value="Painful Kiss">Painful Kiss</option>
-                                <option value="Disfiguring Brand">Disfiguring Brand</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'lasombra'">
-                            <optgroup label="Lasombra Banes">
-                                <option value="No Reflection">No Reflection</option>
-                                <option value="Shadow Cast">Shadow Cast</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'ministry'">
-                            <optgroup label="Ministry Banes">
-                                <option value="Light Sensitivity">Light Sensitivity</option>
-                                <option value="Scale Pattern">Scale Pattern</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'ravnos'">
-                            <optgroup label="Ravnos Banes">
-                                <option value="Doomed by Reputation">Doomed by Reputation</option>
-                                <option value="Cursed by Vice">Cursed by Vice</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'salubri'">
-                            <optgroup label="Salubri Banes">
-                                <option value="Third Eye">Third Eye</option>
-                                <option value="Conspicuous Aura">Conspicuous Aura</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'tzimisce'">
-                            <optgroup label="Tzimisce Banes">
-                                <option value="Soil Dependence">Soil Dependence</option>
-                                <option value="Repulsive">Repulsive</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'caitiff'">
-                            <optgroup label="Caitiff Banes">
-                                <option value="Clanless Stigma">Clanless Stigma</option>
-                            </optgroup>
-                        </template>
-                        <template x-if="data.clan === 'thin-blood'">
-                            <optgroup label="Thin-Blood Banes">
-                                <option value="Thin Vitae">Thin Vitae</option>
-                                <option value="Mortal Frailty">Mortal Frailty</option>
-                            </optgroup>
-                        </template>
-                    </select>
-                </div>
-                
-                <!-- Clan Discipline Icons -->
-                <div class="clan-disciplines" x-show="data.clan">
-                    <label>Clan Disciplines</label>
-                    <div class="discipline-icons" x-html="getClanDisciplineIcons()"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Compulsion</label>
-                    <select x-model="data.compulsion" @change="autoSave()">
-                        <option value="">Select Compulsion</option>
-                        <option value="Dominance">Dominance</option>
-                        <option value="Hunger">Hunger</option>
-                        <option value="Harm">Harm</option>
-                        <option value="Paranoia">Paranoia</option>
-                        <option value="Perfectionism">Perfectionism</option>
-                        <option value="Cryptophilia">Cryptophilia</option>
-                        <option value="Judgment">Judgment</option>
-                        <option value="Cowardice">Cowardice</option>
-                        <option value="Rebellion">Rebellion</option>
-                        <option value="Temptation">Temptation</option>
-                        <option value="Obsession">Obsession</option>
-                        <option value="Greed">Greed</option>
-                        <option value="Transgression">Transgression</option>
-                    </select>
-                </div>
-            </section>
-            
-            <!-- History in Life -->
-            <section class="sheet-section">
-                <h2>History in Life</h2>
-                <textarea x-model="data.history_in_life" 
-                          @input.debounce.2s="autoSave()"
-                          rows="8"
-                          placeholder="Character's mortal history..."></textarea>
-            </section>
-            
-            <!-- After Death -->
-            <section class="sheet-section">
-                <h2>After Death</h2>
-                <textarea x-model="data.after_death" 
-                          @input.debounce.2s="autoSave()"
-                          rows="8"
-                          placeholder="Character's unlife as a vampire..."></textarea>
             </section>
             
             <!-- Notes -->
@@ -656,135 +440,211 @@
                 <h2>Notes</h2>
                 <textarea x-model="data.notes" 
                           @input.debounce.2s="autoSave()"
-                          rows="6"
+                          rows="12"
                           placeholder="Additional notes..."></textarea>
             </section>
             
         </div>
         
         <!-- RIGHT COLUMN -->
-        <div class="column-right">
+        <div class="column-right-new">
             
-            <!-- Clan Badge -->
-            <section class="sheet-section clan-badge-section">
-                <div class="clan-badge-container">
-                    <template x-if="data.clan">
-                        <img :src="`/static/images/clans/${data.clan}.png`" 
-                             :alt="data.clan + ' symbol'" 
-                             class="clan-badge">
-                    </template>
-                    <template x-if="!data.clan">
-                        <div class="badge-placeholder">Select Clan</div>
-                    </template>
+            <!-- Identity & Skills Split (Above Page Break) -->
+            <div class="identity-skills-split">
+                
+                <!-- Identity (Left Sub-Column) -->
+                <div class="identity-column">
+                    <section class="sheet-section identity-box">
+                        <h2>Identity</h2>
+                        
+                        <div class="form-group">
+                            <label>Clan</label>
+                            <select x-model="data.clan" @change="autoSave()">
+                                <option value="">Select Clan</option>
+                                <option value="brujah">Brujah</option>
+                                <option value="gangrel">Gangrel</option>
+                                <option value="malkavian">Malkavian</option>
+                                <option value="nosferatu">Nosferatu</option>
+                                <option value="toreador">Toreador</option>
+                                <option value="tremere">Tremere</option>
+                                <option value="ventrue">Ventrue</option>
+                                <option value="caitiff">Caitiff</option>
+                                <option value="thin-blood">Thin-Blood</option>
+                                <option value="banu-haqim">Banu Haqim</option>
+                                <option value="hecata">Hecata</option>
+                                <option value="lasombra">Lasombra</option>
+                                <option value="ministry">Ministry</option>
+                                <option value="ravnos">Ravnos</option>
+                                <option value="salubri">Salubri</option>
+                                <option value="tzimisce">Tzimisce</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Sire</label>
+                            <input type="text" x-model="data.sire" @input.debounce.2s="autoSave()">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Generation</label>
+                            <select x-model.number="data.generation" @change="autoSave()">
+                                <template x-for="gen in 16" :key="gen">
+                                    <option :value="gen" x-text="gen"></option>
+                                </template>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Predator Type</label>
+                            <input type="text" x-model="data.predator" @input.debounce.2s="autoSave()">
+                        </div>
+                        
+                        <!-- Clan Disciplines (faux break) -->
+                        <div class="clan-disciplines-inline" x-show="data.clan">
+                            <div class="discipline-icons-small" x-html="getClanDisciplineIcons()"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Bane</label>
+                            <select x-model="data.bane_type" @change="autoSave()">
+                                <option value="">Select Bane</option>
+                                <!-- Keep all your bane options here -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Compulsion</label>
+                            <select x-model="data.compulsion" @change="autoSave()">
+                                <option value="">Select Compulsion</option>
+                                <option value="Dominance">Dominance</option>
+                                <option value="Hunger">Hunger</option>
+                                <option value="Harm">Harm</option>
+                                <option value="Paranoia">Paranoia</option>
+                                <option value="Perfectionism">Perfectionism</option>
+                                <option value="Cryptophilia">Cryptophilia</option>
+                                <option value="Judgment">Judgment</option>
+                                <option value="Cowardice">Cowardice</option>
+                                <option value="Rebellion">Rebellion</option>
+                                <option value="Temptation">Temptation</option>
+                                <option value="Obsession">Obsession</option>
+                                <option value="Greed">Greed</option>
+                                <option value="Transgression">Transgression</option>
+                            </select>
+                        </div>
+                    </section>
                 </div>
-            </section>
+                
+                <!-- Skills (Right Sub-Column) -->
+                <div class="skills-column">
+                    <section class="sheet-section skills-clean-list">
+                        <h2>Skills</h2>
+                        
+                        <!-- Physical Skills (no header, just space) -->
+                        <template x-for="skill in ['athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny', 'melee', 'stealth', 'survival']" :key="skill">
+                            <div class="skill-row-clean">
+                                <div>
+                                    <span class="skill-name" x-text="capitalize(skill)"></span>
+                                    <div class="skill-right">
+                                        <div class="dot-tracker">
+                                            <template x-for="i in 5" :key="i">
+                                                <span class="dot" 
+                                                      :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                                      @click="clickDot(skill, i, 0, 5)">●</span>
+                                            </template>
+                                        </div>
+                                        <button type="button" 
+                                                class="btn-add-specialty" 
+                                                x-show="data[skill] > 0"
+                                                @click="addSpecialty(skill)">+</button>
+                                    </div>
+                                </div>
+                                <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                                    <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                        <span class="specialty-tag">
+                                            <span x-text="spec"></span>
+                                            <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <div class="skill-spacer"></div>
+                        
+                        <!-- Social Skills -->
+                        <template x-for="skill in ['animal_ken', 'etiquette', 'insight', 'intimidation', 'leadership', 'performance', 'persuasion', 'streetwise', 'subterfuge']" :key="skill">
+                            <div class="skill-row-clean">
+                                <div>
+                                    <span class="skill-name" x-text="capitalize(skill)"></span>
+                                    <div class="skill-right">
+                                        <div class="dot-tracker">
+                                            <template x-for="i in 5" :key="i">
+                                                <span class="dot" 
+                                                      :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                                      @click="clickDot(skill, i, 0, 5)">●</span>
+                                            </template>
+                                        </div>
+                                        <button type="button" 
+                                                class="btn-add-specialty" 
+                                                x-show="data[skill] > 0"
+                                                @click="addSpecialty(skill)">+</button>
+                                    </div>
+                                </div>
+                                <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                                    <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                        <span class="specialty-tag">
+                                            <span x-text="spec"></span>
+                                            <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <div class="skill-spacer"></div>
+                        
+                        <!-- Mental Skills -->
+                        <template x-for="skill in ['academics', 'awareness', 'finance', 'investigation', 'medicine', 'occult', 'politics', 'science', 'technology']" :key="skill">
+                            <div class="skill-row-clean">
+                                <div>
+                                    <span class="skill-name" x-text="capitalize(skill)"></span>
+                                    <div class="skill-right">
+                                        <div class="dot-tracker">
+                                            <template x-for="i in 5" :key="i">
+                                                <span class="dot" 
+                                                      :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                                      @click="clickDot(skill, i, 0, 5)">●</span>
+                                            </template>
+                                        </div>
+                                        <button type="button" 
+                                                class="btn-add-specialty" 
+                                                x-show="data[skill] > 0"
+                                                @click="addSpecialty(skill)">+</button>
+                                    </div>
+                                </div>
+                                <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                                    <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                        <span class="specialty-tag">
+                                            <span x-text="spec"></span>
+                                            <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </section>
+                </div>
+                
+                <!-- Clan Symbol Overlay (positioned absolute) -->
+                <div class="clan-symbol-overlay" x-show="data.clan">
+                    <img :src="`/static/images/clans/${data.clan}.png`" 
+                         :alt="data.clan + ' symbol'" 
+                         class="clan-symbol-image">
+                </div>
+            </div>
             
-            <!-- Skills -->
-            <section class="sheet-section skills-section">
-                <h2>Skills</h2>
-                
-                <!-- Physical Skills -->
-                <div class="skill-category">
-                    <h3>Physical</h3>
-                    
-                    <template x-for="skill in ['athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny', 'melee', 'stealth', 'survival']" :key="skill">
-                        <div class="skill-row">
-                            <div>
-                                <span class="skill-name" x-text="capitalize(skill)"></span>
-                                <div class="skill-right">
-                                    <div class="dot-tracker">
-                                        <template x-for="i in 5" :key="i">
-                                            <span class="dot" 
-                                                  :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
-                                                  @click="clickDot(skill, i, 0, 5)">●</span>
-                                        </template>
-                                    </div>
-                                    <button type="button" 
-                                            class="btn-add-specialty" 
-                                            x-show="data[skill] > 0"
-                                            @click="addSpecialty(skill)">+</button>
-                                </div>
-                            </div>
-                            <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
-                                <template x-for="spec in getSpecialties(skill)" :key="spec">
-                                    <span class="specialty-tag">
-                                        <span x-text="spec"></span>
-                                        <button type="button" @click="removeSpecialty(skill, spec)">×</button>
-                                    </span>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                
-                <!-- Social Skills -->
-                <div class="skill-category">
-                    <h3>Social</h3>
-                    
-                    <template x-for="skill in ['animal_ken', 'etiquette', 'insight', 'intimidation', 'leadership', 'performance', 'persuasion', 'streetwise', 'subterfuge']" :key="skill">
-                        <div class="skill-row">
-                            <div>
-                                <span class="skill-name" x-text="capitalize(skill)"></span>
-                                <div class="skill-right">
-                                    <div class="dot-tracker">
-                                        <template x-for="i in 5" :key="i">
-                                            <span class="dot" 
-                                                  :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
-                                                  @click="clickDot(skill, i, 0, 5)">●</span>
-                                        </template>
-                                    </div>
-                                    <button type="button" 
-                                            class="btn-add-specialty" 
-                                            x-show="data[skill] > 0"
-                                            @click="addSpecialty(skill)">+</button>
-                                </div>
-                            </div>
-                            <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
-                                <template x-for="spec in getSpecialties(skill)" :key="spec">
-                                    <span class="specialty-tag">
-                                        <span x-text="spec"></span>
-                                        <button type="button" @click="removeSpecialty(skill, spec)">×</button>
-                                    </span>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                
-                <!-- Mental Skills -->
-                <div class="skill-category">
-                    <h3>Mental</h3>
-                    
-                    <template x-for="skill in ['academics', 'awareness', 'finance', 'investigation', 'medicine', 'occult', 'politics', 'science', 'technology']" :key="skill">
-                        <div class="skill-row">
-                            <div>
-                                <span class="skill-name" x-text="capitalize(skill)"></span>
-                                <div class="skill-right">
-                                    <div class="dot-tracker">
-                                        <template x-for="i in 5" :key="i">
-                                            <span class="dot" 
-                                                  :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
-                                                  @click="clickDot(skill, i, 0, 5)">●</span>
-                                        </template>
-                                    </div>
-                                    <button type="button" 
-                                            class="btn-add-specialty" 
-                                            x-show="data[skill] > 0"
-                                            @click="addSpecialty(skill)">+</button>
-                                </div>
-                            </div>
-                            <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
-                                <template x-for="spec in getSpecialties(skill)" :key="spec">
-                                    <span class="specialty-tag">
-                                        <span x-text="spec"></span>
-                                        <button type="button" @click="removeSpecialty(skill, spec)">×</button>
-                                    </span>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </section>
+            <!-- VISUAL PAGE BREAK -->
+            <div class="page-break-divider"></div>
             
             <!-- Disciplines -->
             <section class="sheet-section disciplines-section">
@@ -825,7 +685,7 @@
                             <textarea x-model="data['discipline_' + i + '_powers']" 
                                       @input.debounce.2s="autoSave()"
                                       rows="3"
-                                      placeholder="List discipline powers (one per line)"></textarea>
+                                      placeholder="List discipline powers"></textarea>
                         </div>
                         
                         <div class="discipline-description" x-show="data['discipline_' + i + '_name']">
@@ -835,6 +695,21 @@
                                       rows="2"
                                       placeholder="Custom notes"></textarea>
                         </div>
+                    </div>
+                </template>
+            </section>
+            
+            <!-- Chronicle Tenets - 5 Inputs with Roman Numerals -->
+            <section class="sheet-section chronicle-tenets-numbered">
+                <h2>Chronicle Tenets</h2>
+                
+                <template x-for="i in 5" :key="i">
+                    <div class="tenet-row">
+                        <span class="tenet-numeral" x-text="['I', 'II', 'III', 'IV', 'V'][i-1]"></span>
+                        <input type="text" 
+                               :x-model="`data.chronicle_tenet_${i}`"
+                               @input.debounce.2s="autoSave()"
+                               :placeholder="`Tenet ${i}`">
                     </div>
                 </template>
             </section>
