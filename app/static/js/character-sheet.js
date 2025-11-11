@@ -144,6 +144,10 @@ function characterSheet(characterId) {
             // Keep old chronicle_tenets for backwards compatibility
             chronicle_tenets: '',
             
+            // Column width preferences (percentages)
+            column_widths_above: '30,35,35', // column1,column2,column3 percentages
+            column_widths_below: '33,33,34', // default equal split
+            
             // History
             history_in_life: '',
             after_death: '',
@@ -181,6 +185,11 @@ function characterSheet(characterId) {
             
             // Initialize Blood Potency values
             this.updateBloodPotency(this.data.blood_potency || 0);
+            
+            // Wait for DOM to be ready, then initialize resizable dividers
+            this.$nextTick(() => {
+                this.initResizableDividers();
+            });
         },
         
         // Load character data from server
@@ -629,6 +638,96 @@ function characterSheet(characterId) {
                     alert('Not enough available XP!');
                 }
             }
+        },
+        
+        // COLUMN RESIZING
+        initResizableDividers() {
+            // Apply saved widths or defaults
+            const widthsAbove = this.data.column_widths_above.split(',').map(w => parseInt(w));
+            const widthsBelow = this.data.column_widths_below.split(',').map(w => parseInt(w));
+            
+            this.applyColumnWidths('above', widthsAbove);
+            this.applyColumnWidths('below', widthsBelow);
+        },
+        
+        applyColumnWidths(section, widths) {
+            const grid = section === 'above' 
+                ? document.querySelector('.sheet-grid-above') 
+                : document.querySelector('.sheet-grid-below');
+            
+            if (grid && widths.length === 3) {
+                grid.style.gridTemplateColumns = `${widths[0]}% ${widths[1]}% ${widths[2]}%`;
+            }
+        },
+        
+        startResizing(section, dividerIndex, event) {
+            event.preventDefault();
+            
+            const grid = section === 'above' 
+                ? document.querySelector('.sheet-grid-above') 
+                : document.querySelector('.sheet-grid-below');
+            
+            const startX = event.clientX;
+            const gridRect = grid.getBoundingClientRect();
+            const gridWidth = gridRect.width;
+            
+            // Get current widths
+            const currentWidths = section === 'above'
+                ? this.data.column_widths_above.split(',').map(w => parseInt(w))
+                : this.data.column_widths_below.split(',').map(w => parseInt(w));
+            
+            const startWidths = [...currentWidths];
+            
+            const onMouseMove = (e) => {
+                const deltaX = e.clientX - startX;
+                const deltaPercent = (deltaX / gridWidth) * 100;
+                
+                // Adjust the two columns on either side of the divider
+                const newWidths = [...startWidths];
+                newWidths[dividerIndex] = Math.max(15, Math.min(60, startWidths[dividerIndex] + deltaPercent));
+                newWidths[dividerIndex + 1] = Math.max(15, Math.min(60, startWidths[dividerIndex + 1] - deltaPercent));
+                
+                // Ensure total is 100%
+                const total = newWidths.reduce((sum, w) => sum + w, 0);
+                if (Math.abs(total - 100) > 1) {
+                    const adjustment = (100 - total) / 3;
+                    newWidths[0] += adjustment;
+                    newWidths[1] += adjustment;
+                    newWidths[2] += adjustment;
+                }
+                
+                this.applyColumnWidths(section, newWidths);
+            };
+            
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                
+                // Save the new widths
+                const grid = section === 'above' 
+                    ? document.querySelector('.sheet-grid-above') 
+                    : document.querySelector('.sheet-grid-below');
+                
+                const computedStyle = window.getComputedStyle(grid);
+                const columns = computedStyle.gridTemplateColumns.split(' ');
+                const gridWidth = grid.getBoundingClientRect().width;
+                
+                const widthsPercent = columns.map(col => {
+                    const px = parseFloat(col);
+                    return Math.round((px / gridWidth) * 100);
+                });
+                
+                if (section === 'above') {
+                    this.data.column_widths_above = widthsPercent.join(',');
+                } else {
+                    this.data.column_widths_below = widthsPercent.join(',');
+                }
+                
+                this.autoSave();
+            };
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
         }
     }
 }

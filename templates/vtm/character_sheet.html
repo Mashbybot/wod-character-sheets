@@ -25,7 +25,7 @@
     </div>
     
     <!-- 3-Column Grid Layout (ABOVE PAGE BREAK) -->
-    <div class="sheet-grid-three-column">
+    <div class="sheet-grid-three-column sheet-grid-above">
         
         <!-- COLUMN 1: Chronicle Info + Attributes + Hunger + Blood Potency -->
         <div class="column-one">
@@ -306,6 +306,11 @@
             
         </div>
         
+        <!-- DRAGGABLE DIVIDER 1 -->
+        <div class="column-divider" @mousedown="startResizing('above', 0, $event)">
+            <div class="divider-handle"></div>
+        </div>
+        
         <!-- COLUMN 2: Character Portraits -->
         <div class="column-two">
             
@@ -360,6 +365,11 @@
                 </div>
             </section>
             
+        </div>
+        
+        <!-- DRAGGABLE DIVIDER 2 -->
+        <div class="column-divider" @mousedown="startResizing('above', 1, $event)">
+            <div class="divider-handle"></div>
         </div>
         
         <!-- COLUMN 3: Identity & Skills Split -->
@@ -557,7 +567,7 @@
     <div class="page-break-divider"></div>
     
     <!-- 3-Column Grid Layout (BELOW PAGE BREAK) -->
-    <div class="sheet-grid-three-column">
+    <div class="sheet-grid-three-column sheet-grid-below">
         
         <!-- COLUMN 1: Touchstones + Backgrounds -->
         <div class="column-one">
@@ -617,6 +627,11 @@
             
         </div>
         
+        <!-- DRAGGABLE DIVIDER 1 -->
+        <div class="column-divider" @mousedown="startResizing('below', 0, $event)">
+            <div class="divider-handle"></div>
+        </div>
+        
         <!-- COLUMN 2: History in Life + After Death + Notes -->
         <div class="column-two">
             
@@ -647,6 +662,11 @@
                           placeholder="Additional notes..."></textarea>
             </section>
             
+        </div>
+        
+        <!-- DRAGGABLE DIVIDER 2 -->
+        <div class="column-divider" @mousedown="startResizing('below', 1, $event)">
+            <div class="divider-handle"></div>
         </div>
         
         <!-- COLUMN 3: Disciplines + Chronicle Tenets + XP -->

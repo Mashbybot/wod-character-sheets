@@ -28,9 +28,10 @@
 /* ===== 3-COLUMN GRID (MAIN STRUCTURE) ===== */
 .sheet-grid-three-column {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 30% 35% 35%;
+    gap: 0;
     margin-bottom: 2rem;
+    position: relative;
 }
 
 .column-one,
@@ -39,6 +40,53 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    padding: 0 0.75rem;
+}
+
+/* ===== DRAGGABLE COLUMN DIVIDERS ===== */
+.column-divider {
+    width: 8px;
+    background: transparent;
+    cursor: col-resize;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.column-divider:hover {
+    background-color: rgba(139, 0, 0, 0.1);
+}
+
+.column-divider:active {
+    background-color: rgba(139, 0, 0, 0.2);
+}
+
+.divider-handle {
+    width: 3px;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        var(--border-color) 10%,
+        var(--vtm-red-dark) 50%,
+        var(--border-color) 90%,
+        transparent 100%
+    );
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.column-divider:hover .divider-handle {
+    opacity: 1;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        var(--vtm-red) 10%,
+        var(--vtm-red-light) 50%,
+        var(--vtm-red) 90%,
+        transparent 100%
+    );
 }
 
 /* ===== 4-BOX CHRONICLE INFO GRID ===== */
