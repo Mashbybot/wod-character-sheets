@@ -100,12 +100,24 @@
     box-shadow: 0 0 6px rgba(139, 0, 0, 0.6);
 }
 
-/* ===== 4-BOX CHRONICLE INFO GRID ===== */
-.chronicle-grid .four-box-grid {
+/* ===== 2-BOX CHRONICLE INFO GRID (was 4-box) ===== */
+.chronicle-grid .two-box-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: auto auto;
     gap: 1rem;
+}
+
+/* Trackers Section (moved from Chronicle grid) */
+.trackers-section {
+    margin-top: 1rem;
+}
+
+.trackers-section .trackers-compact {
+    background-color: var(--bg-dark);
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
 }
 
 .grid-box {
@@ -266,11 +278,11 @@
     margin: 2rem 0;
 }
 
-/* ===== 6-BOX PORTRAIT GRID (FIXED LAYOUT) ===== */
+/* ===== 6-BOX PORTRAIT GRID (UPDATED SIZES) ===== */
 .portrait-six-box .portrait-grid-fixed {
     display: grid;
-    grid-template-columns: 300px 200px;
-    grid-template-rows: auto auto;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 300px auto;
     gap: 1rem;
     min-height: 600px;
 }
@@ -294,33 +306,37 @@
     border-color: var(--vtm-red);
 }
 
-/* Body: Tall, left side, spans 2 rows */
+/* Body: 200x300, left side, spans 1 row */
 .portrait-body {
     grid-column: 1;
-    grid-row: 1 / 2;
-    min-height: 400px;
+    grid-row: 1;
+    width: 200px;
+    height: 300px;
 }
 
-/* Hobby Stack: Right side, top, spans 1 row */
+/* Hobby Stack: Right side, top row, fills remaining width */
 .hobby-stack {
     grid-column: 2;
     grid-row: 1;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    height: 300px;
 }
 
+/* Hobby boxes: ~100x100 calculated to fill height evenly */
 .portrait-hobby {
-    aspect-ratio: 1;
-    min-height: 90px;
+    flex: 1;
+    width: 100%;
+    min-height: 0; /* Allow flex to shrink */
 }
 
-/* Face: Below body, left side */
+/* Face: 300x300, below body, spans both columns */
 .portrait-face {
     grid-column: 1 / 3;
     grid-row: 2;
-    aspect-ratio: 2;
-    min-height: 200px;
+    width: 100%;
+    height: 300px;
 }
 
 .portrait-placeholder,
@@ -366,19 +382,23 @@
     color: var(--text-gray);
 }
 
-/* ===== IDENTITY & SKILLS SPLIT ===== */
-.identity-skills-split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+/* ===== IDENTITY & SKILLS STACKED (was split) ===== */
+.identity-skills-stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     position: relative;
     margin-bottom: 2rem;
 }
 
-.identity-column,
-.skills-column {
+.identity-section,
+.skills-section {
     display: flex;
     flex-direction: column;
+}
+
+.identity-box {
+    position: relative;
 }
 
 .identity-box .form-group {
@@ -387,6 +407,23 @@
 
 .identity-box label {
     font-size: 0.9rem;
+}
+
+/* Clan Symbol Overlay - positioned in upper right of Identity box */
+.clan-symbol-overlay-top {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.clan-symbol-image-small {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
+    opacity: 0.3;
 }
 
 .clan-disciplines-inline {
@@ -492,11 +529,7 @@
         grid-column: 1 / 3;
     }
     
-    .identity-skills-split {
-        grid-template-columns: 1fr;
-    }
-    
-    .clan-symbol-overlay {
+    .clan-symbol-overlay-top {
         position: static;
         transform: none;
         text-align: center;
@@ -513,7 +546,7 @@
         grid-column: 1;
     }
     
-    .four-box-grid {
+    .two-box-grid {
         grid-template-columns: 1fr;
     }
     

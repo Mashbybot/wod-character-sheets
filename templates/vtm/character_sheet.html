@@ -30,48 +30,28 @@
         <!-- COLUMN 1: Chronicle Info + Attributes + Hunger + Blood Potency -->
         <div class="column-one">
             
-            <!-- Chronicle Information - 4 Box Grid -->
+            <!-- Chronicle Information - 2 Box Grid -->
             <section class="sheet-section chronicle-grid">
                 <h2>Chronicle Information</h2>
                 
-                <div class="four-box-grid">
-                    <!-- Top Left: Personal Info -->
+                <div class="two-box-grid">
+                    <!-- Top: Personal Info -->
                     <div class="grid-box">
                         <div class="form-group-compact">
-                            <label>Pronouns</label>
-                            <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
+                            <label>Name</label>
+                            <input type="text" x-model="data.name" @input.debounce.2s="autoSave()">
                         </div>
                         <div class="form-group-compact">
-                            <label>True Age</label>
-                            <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
+                            <label>Concept</label>
+                            <input type="text" x-model="data.concept" @input.debounce.2s="autoSave()">
                         </div>
                         <div class="form-group-compact">
-                            <label>Apparent Age</label>
-                            <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact">
-                            <label>Birth Date</label>
-                            <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact">
-                            <label>Death Date</label>
-                            <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
+                            <label>Predator Type</label>
+                            <input type="text" x-model="data.predator" @input.debounce.2s="autoSave()">
                         </div>
                     </div>
                     
-                    <!-- Top Right: Ambition & Desire -->
-                    <div class="grid-box">
-                        <div class="form-group-compact">
-                            <label>Ambition</label>
-                            <textarea x-model="data.ambition" @input.debounce.2s="autoSave()" rows="3"></textarea>
-                        </div>
-                        <div class="form-group-compact">
-                            <label>Desire</label>
-                            <textarea x-model="data.desire" @input.debounce.2s="autoSave()" rows="3"></textarea>
-                        </div>
-                    </div>
-                    
-                    <!-- Bottom Left: Background -->
+                    <!-- Bottom: Ambition & Desire with Ethnicity/Languages/Origin at top -->
                     <div class="grid-box">
                         <div class="form-group-compact">
                             <label>Ethnicity</label>
@@ -85,48 +65,59 @@
                             <label>Origin</label>
                             <input type="text" x-model="data.birthplace" @input.debounce.2s="autoSave()">
                         </div>
+                        <div class="form-group-compact">
+                            <label>Ambition</label>
+                            <textarea x-model="data.ambition" @input.debounce.2s="autoSave()" rows="2"></textarea>
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Desire</label>
+                            <textarea x-model="data.desire" @input.debounce.2s="autoSave()" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Health/Willpower/Humanity Trackers (moved from Chronicle grid) -->
+            <section class="sheet-section trackers-section">
+                <h2>Trackers</h2>
+                <div class="trackers-compact">
+                    <div class="tracker-row-compact">
+                        <label>Health</label>
+                        <div class="box-tracker-small">
+                            <template x-for="i in 10" :key="i">
+                                <div class="health-box small"
+                                     :class="getHealthState(i)"
+                                     @click="cycleHealth(i)">
+                                    <span x-show="getHealthState(i) === 'superficial'">/</span>
+                                    <span x-show="getHealthState(i) === 'aggravated'">×</span>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                     
-                    <!-- Bottom Right: Trackers (compact) -->
-                    <div class="grid-box trackers-compact">
-                        <div class="tracker-row-compact">
-                            <label>Health</label>
-                            <div class="box-tracker-small">
-                                <template x-for="i in 10" :key="i">
-                                    <div class="health-box small"
-                                         :class="getHealthState(i)"
-                                         @click="cycleHealth(i)">
-                                        <span x-show="getHealthState(i) === 'superficial'">/</span>
-                                        <span x-show="getHealthState(i) === 'aggravated'">×</span>
-                                    </div>
-                                </template>
-                            </div>
+                    <div class="tracker-row-compact">
+                        <label>Willpower</label>
+                        <div class="box-tracker-small">
+                            <template x-for="i in 10" :key="i">
+                                <div class="willpower-box small"
+                                     :class="getWillpowerState(i)"
+                                     @click="cycleWillpower(i)">
+                                    <span x-show="getWillpowerState(i) === 'superficial'">/</span>
+                                    <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
+                                </div>
+                            </template>
                         </div>
-                        
-                        <div class="tracker-row-compact">
-                            <label>Willpower</label>
-                            <div class="box-tracker-small">
-                                <template x-for="i in 10" :key="i">
-                                    <div class="willpower-box small"
-                                         :class="getWillpowerState(i)"
-                                         @click="cycleWillpower(i)">
-                                        <span x-show="getWillpowerState(i) === 'superficial'">/</span>
-                                        <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                        
-                        <div class="tracker-row-compact">
-                            <label>Humanity</label>
-                            <div class="box-tracker-small">
-                                <template x-for="i in 10" :key="i">
-                                    <div class="humanity-box small"
-                                         :class="getHumanityState(i)"
-                                         @click="clickHumanity(i)">
-                                    </div>
-                                </template>
-                            </div>
+                    </div>
+                    
+                    <div class="tracker-row-compact">
+                        <label>Humanity</label>
+                        <div class="box-tracker-small">
+                            <template x-for="i in 10" :key="i">
+                                <div class="humanity-box small"
+                                     :class="getHumanityState(i)"
+                                     @click="clickHumanity(i)">
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -375,12 +366,20 @@
         <!-- COLUMN 3: Identity & Skills Split -->
         <div class="column-three">
             
-            <div class="identity-skills-split">
+            <div class="identity-skills-stacked">
                 
-                <!-- Identity (Left Sub-Column) -->
-                <div class="identity-column">
+                <!-- Identity (On Top) -->
+                <div class="identity-section">
                     <section class="sheet-section identity-box">
                         <h2>Identity</h2>
+                        
+                        <!-- Clan Symbol Overlay (positioned in upper right) -->
+                        <div class="clan-symbol-overlay-top" x-show="data.clan">
+                            <img :src="`/static/images/clan-symbols/${data.clan}.png`" 
+                                 :alt="data.clan"
+                                 class="clan-symbol-image-small"
+                                 onerror="this.style.display='none'">
+                        </div>
                         
                         <div class="form-group">
                             <label>Clan</label>
@@ -450,8 +449,8 @@
                     </section>
                 </div>
                 
-                <!-- Skills (Right Sub-Column) -->
-                <div class="skills-column">
+                <!-- Skills (Below Identity) -->
+                <div class="skills-section">
                     <section class="sheet-section skills-clean-list">
                         <h2>Skills</h2>
                         
