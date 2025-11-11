@@ -110,6 +110,7 @@ function characterSheet(characterId) {
             willpower_superficial: 0,
             willpower_aggravated: 0,
             humanity_current: 7,
+            humanity_stained: 0,
             
             // Disciplines (5 slots)
             discipline_1_name: '',
@@ -422,7 +423,7 @@ function characterSheet(characterId) {
         
         getHumanityState(index) {
             const current = this.data.humanity_current || 7;
-            const stained = 0; // TODO: Add stain tracking if needed
+            const stained = this.data.humanity_stained || 0;
             
             if (index <= current - stained) return 'filled';
             if (index <= current) return 'stained';
@@ -430,7 +431,21 @@ function characterSheet(characterId) {
         },
         
         clickHumanity(index) {
-            this.data.humanity_current = index;
+            const current = this.data.humanity_current || 7;
+            
+            if (index === current) {
+                // Clicking current humanity - decrease it
+                this.data.humanity_current = Math.max(index - 1, 0);
+            } else if (index < current) {
+                // Clicking below current - add stain
+                const stainedCount = current - index;
+                this.data.humanity_stained = stainedCount;
+            } else {
+                // Clicking above current - increase humanity
+                this.data.humanity_current = index;
+                this.data.humanity_stained = 0;
+            }
+            
             this.autoSave();
         },
         

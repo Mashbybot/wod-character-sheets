@@ -24,11 +24,11 @@
         </div>
     </div>
     
-    <!-- 3-Column Grid Layout -->
-    <div class="sheet-grid-new">
+    <!-- 3-Column Grid Layout (ABOVE PAGE BREAK) -->
+    <div class="sheet-grid-three-column">
         
-        <!-- LEFT COLUMN -->
-        <div class="column-left-new">
+        <!-- COLUMN 1: Chronicle Info + Attributes + Hunger + Blood Potency -->
+        <div class="column-one">
             
             <!-- Chronicle Information - 4 Box Grid -->
             <section class="sheet-section chronicle-grid">
@@ -304,91 +304,17 @@
                 </div>
             </section>
             
-            <!-- VISUAL PAGE BREAK -->
-            <div class="page-break-divider"></div>
-            
-            <!-- Touchstones -->
-            <section class="sheet-section">
-                <h2>Touchstones</h2>
-                
-                <template x-for="(touchstone, index) in touchstones" :key="index">
-                    <div class="touchstone-entry">
-                        <div class="touchstone-header">
-                            <strong>Touchstone <span x-text="index + 1"></span></strong>
-                            <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
-                        </div>
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" x-model="touchstone.name" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea x-model="touchstone.description" @input.debounce.2s="autoSave()" rows="2"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Conviction</label>
-                            <textarea x-model="touchstone.conviction" @input.debounce.2s="autoSave()" rows="1"></textarea>
-                        </div>
-                    </div>
-                </template>
-                
-                <button type="button" 
-                        @click="addTouchstone()" 
-                        x-show="touchstones.length < 3"
-                        class="btn-add">+ Add Touchstone</button>
-            </section>
-            
-            <!-- History in Life -->
-            <section class="sheet-section">
-                <h2>History in Life</h2>
-                <textarea x-model="data.history_in_life" 
-                          @input.debounce.2s="autoSave()"
-                          rows="8"
-                          placeholder="Character's mortal history..."></textarea>
-            </section>
-            
-            <!-- After Death -->
-            <section class="sheet-section">
-                <h2>After Death</h2>
-                <textarea x-model="data.after_death" 
-                          @input.debounce.2s="autoSave()"
-                          rows="8"
-                          placeholder="Character's unlife as a vampire..."></textarea>
-            </section>
-            
-            <!-- Backgrounds, Merits & Flaws -->
-            <section class="sheet-section">
-                <h2>Backgrounds, Merits & Flaws</h2>
-                
-                <template x-for="i in 6" :key="i">
-                    <div class="background-entry">
-                        <div class="form-group">
-                            <input type="text" 
-                                   :x-model="`data.background_type_${i}`"
-                                   @input.debounce.2s="autoSave()"
-                                   :placeholder="`Type (e.g., Resources, Fame)`">
-                        </div>
-                        <div class="form-group">
-                            <textarea :x-model="`data.background_description_${i}`"
-                                      @input.debounce.2s="autoSave()"
-                                      rows="2"
-                                      placeholder="Description"></textarea>
-                        </div>
-                    </div>
-                </template>
-            </section>
-            
         </div>
         
-        <!-- CENTER COLUMN -->
-        <div class="column-center-new">
+        <!-- COLUMN 2: Character Portraits -->
+        <div class="column-two">
             
             <!-- 6-Box Portrait Grid -->
             <section class="sheet-section portrait-six-box">
                 <h2>Character Portraits</h2>
                 
-                <div class="portrait-grid">
-                    <!-- Body Portrait (tall, left) -->
+                <div class="portrait-grid-fixed">
+                    <!-- Left: Body (tall) -->
                     <div class="portrait-box portrait-body" 
                          @dblclick="$refs.bodyInput.click()"
                          :style="data.portrait_body ? `background-image: url(${data.portrait_body})` : ''">
@@ -398,11 +324,10 @@
                     </div>
                     <input type="file" x-ref="bodyInput" @change="uploadPortrait($event, 'body')" accept="image/*" style="display: none;">
                     
-                    <!-- Right side: 4 hobbies + face -->
-                    <div class="portrait-right-column">
-                        <!-- 4 Hobby Boxes -->
-                        <div class="hobby-grid">
-                            <template x-for="i in 4" :key="i">
+                    <!-- Right: 4 hobbies stacked vertically -->
+                    <div class="hobby-stack">
+                        <template x-for="i in 4" :key="i">
+                            <div>
                                 <div class="portrait-box portrait-hobby" 
                                      @dblclick="$refs[`hobby${i}Input`].click()"
                                      :style="data[`portrait_hobby_${i}`] ? `background-image: url(${data['portrait_hobby_' + i]})` : ''">
@@ -411,45 +336,35 @@
                                     </template>
                                 </div>
                                 <input type="file" :x-ref="`hobby${i}Input`" @change="uploadPortrait($event, `hobby_${i}`)" accept="image/*" style="display: none;">
-                            </template>
-                        </div>
-                        
-                        <!-- Face Portrait (square, bottom) -->
-                        <div class="portrait-box portrait-face" 
-                             @dblclick="$refs.faceInput.click()"
-                             :style="data.portrait_face ? `background-image: url(${data.portrait_face})` : ''">
-                            <!-- Alias Overlay -->
-                            <div class="alias-overlay">
-                                <input type="text" 
-                                       x-model="data.alias" 
-                                       @input.debounce.2s="autoSave()"
-                                       class="alias-input"
-                                       placeholder="Alias">
                             </div>
-                            <template x-if="!data.portrait_face">
-                                <div class="portrait-placeholder">Face</div>
-                            </template>
-                        </div>
-                        <input type="file" x-ref="faceInput" @change="uploadPortrait($event, 'face')" accept="image/*" style="display: none;">
+                        </template>
                     </div>
+                    
+                    <!-- Bottom: Face (square, below body) -->
+                    <div class="portrait-box portrait-face" 
+                         @dblclick="$refs.faceInput.click()"
+                         :style="data.portrait_face ? `background-image: url(${data.portrait_face})` : ''">
+                        <!-- Alias Overlay -->
+                        <div class="alias-overlay">
+                            <input type="text" 
+                                   x-model="data.alias" 
+                                   @input.debounce.2s="autoSave()"
+                                   class="alias-input"
+                                   placeholder="Alias">
+                        </div>
+                        <template x-if="!data.portrait_face">
+                            <div class="portrait-placeholder">Face</div>
+                        </template>
+                    </div>
+                    <input type="file" x-ref="faceInput" @change="uploadPortrait($event, 'face')" accept="image/*" style="display: none;">
                 </div>
-            </section>
-            
-            <!-- Notes -->
-            <section class="sheet-section">
-                <h2>Notes</h2>
-                <textarea x-model="data.notes" 
-                          @input.debounce.2s="autoSave()"
-                          rows="12"
-                          placeholder="Additional notes..."></textarea>
             </section>
             
         </div>
         
-        <!-- RIGHT COLUMN -->
-        <div class="column-right-new">
+        <!-- COLUMN 3: Identity & Skills Split -->
+        <div class="column-three">
             
-            <!-- Identity & Skills Split (Above Page Break) -->
             <div class="identity-skills-split">
                 
                 <!-- Identity (Left Sub-Column) -->
@@ -508,7 +423,6 @@
                             <label>Bane</label>
                             <select x-model="data.bane_type" @change="autoSave()">
                                 <option value="">Select Bane</option>
-                                <!-- Keep all your bane options here -->
                             </select>
                         </div>
                         
@@ -521,14 +435,6 @@
                                 <option value="Harm">Harm</option>
                                 <option value="Paranoia">Paranoia</option>
                                 <option value="Perfectionism">Perfectionism</option>
-                                <option value="Cryptophilia">Cryptophilia</option>
-                                <option value="Judgment">Judgment</option>
-                                <option value="Cowardice">Cowardice</option>
-                                <option value="Rebellion">Rebellion</option>
-                                <option value="Temptation">Temptation</option>
-                                <option value="Obsession">Obsession</option>
-                                <option value="Greed">Greed</option>
-                                <option value="Transgression">Transgression</option>
                             </select>
                         </div>
                     </section>
@@ -539,7 +445,7 @@
                     <section class="sheet-section skills-clean-list">
                         <h2>Skills</h2>
                         
-                        <!-- Physical Skills (no header, just space) -->
+                        <!-- Physical Skills -->
                         <template x-for="skill in ['athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny', 'melee', 'stealth', 'survival']" :key="skill">
                             <div class="skill-row-clean">
                                 <div>
@@ -635,7 +541,7 @@
                     </section>
                 </div>
                 
-                <!-- Clan Symbol Overlay (positioned absolute) -->
+                <!-- Clan Symbol Overlay -->
                 <div class="clan-symbol-overlay" x-show="data.clan">
                     <img :src="`/static/images/clans/${data.clan}.png`" 
                          :alt="data.clan + ' symbol'" 
@@ -643,8 +549,108 @@
                 </div>
             </div>
             
-            <!-- VISUAL PAGE BREAK -->
-            <div class="page-break-divider"></div>
+        </div>
+        
+    </div>
+    
+    <!-- VISUAL PAGE BREAK -->
+    <div class="page-break-divider"></div>
+    
+    <!-- 3-Column Grid Layout (BELOW PAGE BREAK) -->
+    <div class="sheet-grid-three-column">
+        
+        <!-- COLUMN 1: Touchstones + Backgrounds -->
+        <div class="column-one">
+            
+            <!-- Touchstones -->
+            <section class="sheet-section">
+                <h2>Touchstones</h2>
+                
+                <template x-for="(touchstone, index) in touchstones" :key="index">
+                    <div class="touchstone-entry">
+                        <div class="touchstone-header">
+                            <strong>Touchstone <span x-text="index + 1"></span></strong>
+                            <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" x-model="touchstone.name" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea x-model="touchstone.description" @input.debounce.2s="autoSave()" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Conviction</label>
+                            <textarea x-model="touchstone.conviction" @input.debounce.2s="autoSave()" rows="1"></textarea>
+                        </div>
+                    </div>
+                </template>
+                
+                <button type="button" 
+                        @click="addTouchstone()" 
+                        x-show="touchstones.length < 3"
+                        class="btn-add">+ Add Touchstone</button>
+            </section>
+            
+            <!-- Backgrounds, Merits & Flaws -->
+            <section class="sheet-section">
+                <h2>Backgrounds, Merits & Flaws</h2>
+                
+                <template x-for="i in 6" :key="i">
+                    <div class="background-entry">
+                        <div class="form-group">
+                            <input type="text" 
+                                   :x-model="`data.background_type_${i}`"
+                                   @input.debounce.2s="autoSave()"
+                                   :placeholder="`Type`">
+                        </div>
+                        <div class="form-group">
+                            <textarea :x-model="`data.background_description_${i}`"
+                                      @input.debounce.2s="autoSave()"
+                                      rows="2"
+                                      placeholder="Description"></textarea>
+                        </div>
+                    </div>
+                </template>
+            </section>
+            
+        </div>
+        
+        <!-- COLUMN 2: History in Life + After Death + Notes -->
+        <div class="column-two">
+            
+            <!-- History in Life -->
+            <section class="sheet-section">
+                <h2>History in Life</h2>
+                <textarea x-model="data.history_in_life" 
+                          @input.debounce.2s="autoSave()"
+                          rows="10"
+                          placeholder="Character's mortal history..."></textarea>
+            </section>
+            
+            <!-- After Death -->
+            <section class="sheet-section">
+                <h2>After Death</h2>
+                <textarea x-model="data.after_death" 
+                          @input.debounce.2s="autoSave()"
+                          rows="10"
+                          placeholder="Character's unlife as a vampire..."></textarea>
+            </section>
+            
+            <!-- Notes -->
+            <section class="sheet-section">
+                <h2>Notes</h2>
+                <textarea x-model="data.notes" 
+                          @input.debounce.2s="autoSave()"
+                          rows="6"
+                          placeholder="Additional notes..."></textarea>
+            </section>
+            
+        </div>
+        
+        <!-- COLUMN 3: Disciplines + Chronicle Tenets + XP -->
+        <div class="column-three">
             
             <!-- Disciplines -->
             <section class="sheet-section disciplines-section">
@@ -699,7 +705,7 @@
                 </template>
             </section>
             
-            <!-- Chronicle Tenets - 5 Inputs with Roman Numerals -->
+            <!-- Chronicle Tenets -->
             <section class="sheet-section chronicle-tenets-numbered">
                 <h2>Chronicle Tenets</h2>
                 
@@ -727,7 +733,6 @@
                     <button type="button" class="btn-small" @click="spendXP()">Spend XP</button>
                 </div>
                 
-                <!-- XP Log -->
                 <div class="xp-log" x-show="xpLog.length > 0">
                     <h3>XP Log</h3>
                     <div class="xp-log-entries">
