@@ -168,6 +168,36 @@
     font-size: 0.9rem;
 }
 
+/* Horizontal form layout for Chronicle Info single-line inputs */
+.form-group-compact-horizontal {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-group-compact-horizontal:last-child {
+    margin-bottom: 0;
+}
+
+.form-group-compact-horizontal label {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    font-weight: bold;
+    min-width: 90px;
+    flex-shrink: 0;
+}
+
+.form-group-compact-horizontal input {
+    flex: 1;
+    padding: 0.4rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: var(--text-white);
+    font-size: 0.9rem;
+}
+
 /* Compact Trackers in Bottom Right Grid Box */
 .trackers-compact {
     display: flex;
@@ -210,6 +240,29 @@
     height: 14px;
     border: 1.5px solid var(--border-color);
     font-size: 0.7rem;
+}
+
+/* Hunger dots in compact tracker format */
+.hunger-dots-compact {
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.hunger-dot-compact {
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--border-color);
+    transition: color 0.2s;
+}
+
+.hunger-dot-compact.filled {
+    color: var(--vtm-red);
+}
+
+.hunger-dot-compact.danger {
+    color: var(--vtm-red-dark);
 }
 
 /* ===== ATTRIBUTES SECTION ===== */
@@ -497,10 +550,7 @@
 /* Clan Disciplines Header in Disciplines Section */
 .clan-disciplines-header {
     margin-bottom: 1.5rem;
-    padding: 1rem;
-    background-color: var(--bg-dark);
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
+    /* Removed: padding, background-color, border-radius, border */
 }
 
 .discipline-icons-with-labels {

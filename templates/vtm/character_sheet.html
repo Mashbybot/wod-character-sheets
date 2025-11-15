@@ -41,52 +41,52 @@
                 <div class="two-box-grid">
                     <!-- Top: Personal Info -->
                     <div class="grid-box">
-                        <div class="form-group-compact">
-                            <label>Name</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Name:</label>
                             <input type="text" x-model="data.name" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>Concept</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Concept:</label>
                             <input type="text" x-model="data.concept" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>Predator Type</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Predator Type:</label>
                             <input type="text" x-model="data.predator" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>Pronouns</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Pronouns:</label>
                             <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>True Age</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>True Age:</label>
                             <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>Apparent Age</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Apparent Age:</label>
                             <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>Date of Birth</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Date of Birth:</label>
                             <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>Date of Death</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Date of Death:</label>
                             <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
                         </div>
                     </div>
                     
                     <!-- Bottom: Ambition & Desire with Ethnicity/Languages/Origin at top -->
                     <div class="grid-box">
-                        <div class="form-group-compact">
-                            <label>Ethnicity</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Ethnicity:</label>
                             <input type="text" x-model="data.ethnicity" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>Languages</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Languages:</label>
                             <input type="text" x-model="data.languages" @input.debounce.2s="autoSave()">
                         </div>
-                        <div class="form-group-compact">
-                            <label>Origin</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Origin:</label>
                             <input type="text" x-model="data.birthplace" @input.debounce.2s="autoSave()">
                         </div>
                         <div class="form-group-compact">
@@ -105,6 +105,18 @@
             <section class="sheet-section trackers-section">
                 <h2>Trackers</h2>
                 <div class="trackers-compact">
+                    <!-- Hunger (moved from standalone section) -->
+                    <div class="tracker-row-compact">
+                        <label>Hunger</label>
+                        <div class="box-tracker-small hunger-dots-compact">
+                            <template x-for="i in 5" :key="i">
+                                <span class="dot hunger-dot-compact" 
+                                      :class="[i <= (data.hunger || 1) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger || 1) ? 'danger' : '']"
+                                      @click="clickDot('hunger', i, 0, 5)">●</span>
+                            </template>
+                        </div>
+                    </div>
+                    
                     <div class="tracker-row-compact">
                         <label>Health</label>
                         <div class="box-tracker-small">
@@ -259,18 +271,6 @@
                 </div>
             </section>
             
-            <!-- Hunger -->
-            <section class="sheet-section hunger-section">
-                <h2>Hunger</h2>
-                <div class="dot-tracker hunger-tracker-large">
-                    <template x-for="i in 5" :key="i">
-                        <span class="dot hunger-dot" 
-                              :class="[i <= (data.hunger || 1) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger || 1) ? 'danger' : '']"
-                              @click="clickDot('hunger', i, 0, 5)">●</span>
-                    </template>
-                </div>
-            </section>
-            
             <!-- Blood Potency -->
             <section class="sheet-section blood-potency-new">
                 <h2>Blood Potency</h2>
@@ -380,6 +380,28 @@
                 </div>
             </section>
             
+            <!-- Backgrounds, Merits & Flaws (moved from below break) -->
+            <section class="sheet-section">
+                <h2>Backgrounds, Merits & Flaws</h2>
+                
+                <template x-for="i in 6" :key="i">
+                    <div class="background-entry">
+                        <div class="form-group">
+                            <input type="text" 
+                                   :x-model="`data.background_type_${i}`"
+                                   @input.debounce.2s="autoSave()"
+                                   :placeholder="`Type`">
+                        </div>
+                        <div class="form-group">
+                            <textarea :x-model="`data.background_description_${i}`"
+                                      @input.debounce.2s="autoSave()"
+                                      rows="2"
+                                      placeholder="Description"></textarea>
+                        </div>
+                    </div>
+                </template>
+            </section>
+            
         </div>
         
         <!-- DRAGGABLE DIVIDER 2 -->
@@ -429,17 +451,17 @@
                         </div>
                         
                         <div class="form-group">
-                            <label>Sire</label>
-                            <input type="text" x-model="data.sire" @input.debounce.2s="autoSave()">
-                        </div>
-                        
-                        <div class="form-group">
                             <label>Generation</label>
                             <select x-model.number="data.generation" @change="autoSave()">
                                 <template x-for="gen in 16" :key="gen">
                                     <option :value="gen" x-text="gen"></option>
                                 </template>
                             </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Sire</label>
+                            <input type="text" x-model="data.sire" @input.debounce.2s="autoSave()">
                         </div>
                         
                         <div class="form-group">
@@ -663,28 +685,6 @@
                         @click="addTouchstone()" 
                         x-show="touchstones.length < 3"
                         class="btn-add">+ Add Touchstone</button>
-            </section>
-            
-            <!-- Backgrounds, Merits & Flaws -->
-            <section class="sheet-section">
-                <h2>Backgrounds, Merits & Flaws</h2>
-                
-                <template x-for="i in 6" :key="i">
-                    <div class="background-entry">
-                        <div class="form-group">
-                            <input type="text" 
-                                   :x-model="`data.background_type_${i}`"
-                                   @input.debounce.2s="autoSave()"
-                                   :placeholder="`Type`">
-                        </div>
-                        <div class="form-group">
-                            <textarea :x-model="`data.background_description_${i}`"
-                                      @input.debounce.2s="autoSave()"
-                                      rows="2"
-                                      placeholder="Description"></textarea>
-                        </div>
-                    </div>
-                </template>
             </section>
             
         </div>
