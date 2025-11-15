@@ -147,7 +147,7 @@ function characterSheet(characterId) {
             chronicle_tenets: '',
             
             // Column width preferences (percentages)
-            column_widths_above: '30,35,35', // column1,column2,column3 percentages
+            column_widths_above: '40,30,30', // column1,column2,column3 percentages
             column_widths_below: '33,33,34', // default equal split
             
             // History
@@ -158,6 +158,9 @@ function characterSheet(characterId) {
         
         // Touchstones (1-3)
         touchstones: [],
+        
+        // Backgrounds, Merits & Flaws (dynamic array)
+        backgrounds: [],
         
         // XP Log
         xpLog: [],
@@ -183,6 +186,15 @@ function characterSheet(characterId) {
                     description: '',
                     conviction: ''
                 });
+                
+                // Initialize with 3 empty backgrounds
+                for (let i = 0; i < 3; i++) {
+                    this.backgrounds.push({
+                        type: '',
+                        description: '',
+                        dots: 0
+                    });
+                }
             }
             
             // Initialize Blood Potency values
@@ -228,6 +240,26 @@ function characterSheet(characterId) {
                         this.touchstones.push({ name: '', description: '', conviction: '' });
                     }
                     
+                    // Load backgrounds
+                    this.backgrounds = [];
+                    for (let i = 1; i <= 10; i++) {  // Support up to 10 backgrounds
+                        const type = character[`background_type_${i}`];
+                        if (type) {
+                            this.backgrounds.push({
+                                type: type,
+                                description: character[`background_description_${i}`] || '',
+                                dots: character[`background_dots_${i}`] || 0
+                            });
+                        }
+                    }
+                    
+                    // If no backgrounds, add 3 empty ones
+                    if (this.backgrounds.length === 0) {
+                        for (let i = 0; i < 3; i++) {
+                            this.backgrounds.push({ type: '', description: '', dots: 0 });
+                        }
+                    }
+                    
                     console.log('Character loaded:', this.data);
                 }
             } catch (error) {
@@ -259,6 +291,20 @@ function characterSheet(characterId) {
                         saveData[`touchstone_${index}_name`] = '';
                         saveData[`touchstone_${index}_description`] = '';
                         saveData[`touchstone_${index}_conviction`] = '';
+                    }
+                }
+                
+                // Add backgrounds to save data
+                for (let i = 0; i < 10; i++) {  // Support up to 10 backgrounds
+                    const index = i + 1;
+                    if (i < this.backgrounds.length) {
+                        saveData[`background_type_${index}`] = this.backgrounds[i].type;
+                        saveData[`background_description_${index}`] = this.backgrounds[i].description;
+                        saveData[`background_dots_${index}`] = this.backgrounds[i].dots;
+                    } else {
+                        saveData[`background_type_${index}`] = '';
+                        saveData[`background_description_${index}`] = '';
+                        saveData[`background_dots_${index}`] = 0;
                     }
                 }
                 
@@ -581,6 +627,18 @@ function characterSheet(characterId) {
             if (this.touchstones.length === 0) {
                 this.touchstones.push({ name: '', description: '', conviction: '' });
             }
+            this.autoSave();
+        },
+        
+        // BACKGROUND MANAGEMENT
+        addBackground() {
+            if (this.backgrounds.length < 10) {
+                this.backgrounds.push({ type: '', description: '', dots: 0 });
+            }
+        },
+        
+        removeBackground(index) {
+            this.backgrounds.splice(index, 1);
             this.autoSave();
         },
         

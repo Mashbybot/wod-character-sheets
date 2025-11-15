@@ -331,6 +331,18 @@
     border-bottom: 1px solid var(--border-color);
 }
 
+/* Apply same style to all section headers */
+.sheet-section h2 {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-white);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
 .attributes-three-column {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -388,6 +400,89 @@
 .attribute-column .dot {
     font-size: 1rem; /* Smaller dots for better fit */
     line-height: 1;
+}
+
+/* ===== BACKGROUNDS, MERITS & FLAWS ===== */
+.background-entry {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.background-entry:last-of-type {
+    border-bottom: none;
+}
+
+.background-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.background-header input[type="text"] {
+    flex: 1;
+    padding: 0.5rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-white);
+}
+
+.square-tracker {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.square-dot {
+    font-size: 1rem;
+    cursor: pointer;
+    color: var(--border-color);
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.square-dot.filled {
+    color: var(--vtm-red);
+}
+
+.square-dot.empty:hover {
+    color: #999;
+}
+
+.square-dot.filled:hover {
+    color: var(--vtm-red-light);
+}
+
+.background-entry textarea {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-white);
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 60px; /* Compact like Ambition/Desire */
+}
+
+.btn-add {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--bg-dark);
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add:hover {
+    background-color: rgba(139, 0, 0, 0.1);
+    border-color: var(--vtm-red);
+    color: var(--vtm-red-light);
 }
 
 /* ===== HUNGER SECTION (STANDALONE) ===== */
@@ -567,18 +662,18 @@
 /* Clan Symbol Overlay - positioned in upper right of Identity box */
 .clan-symbol-overlay-top {
     position: absolute;
-    top: 1rem;
+    top: calc(1rem + 50px); /* Moved down 50px from original 1rem */
     right: 1rem;
     z-index: 10;
     pointer-events: none;
 }
 
 .clan-symbol-image-small {
-    width: 100px;
-    height: 100px;
+    width: 70px; /* Shrunk by 30% from 100px */
+    height: 70px; /* Shrunk by 30% from 100px */
     object-fit: contain;
     filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
-    opacity: 0.3;
+    opacity: 0.15; /* Decreased opacity by 50% from 0.3 */
 }
 
 .clan-disciplines-inline {

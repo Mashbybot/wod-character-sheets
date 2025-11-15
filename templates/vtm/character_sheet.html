@@ -384,22 +384,34 @@
             <section class="sheet-section">
                 <h2>Backgrounds, Merits & Flaws</h2>
                 
-                <template x-for="i in 6" :key="i">
+                <template x-for="(bg, index) in backgrounds" :key="index">
                     <div class="background-entry">
-                        <div class="form-group">
+                        <div class="background-header">
                             <input type="text" 
-                                   :x-model="`data.background_type_${i}`"
+                                   x-model="bg.type"
                                    @input.debounce.2s="autoSave()"
-                                   :placeholder="`Type`">
+                                   placeholder="Type">
+                            <div class="square-tracker">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="square-dot" 
+                                          :class="i <= (bg.dots || 0) ? 'filled' : 'empty'"
+                                          @click="bg.dots = i; autoSave()">■</span>
+                                </template>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <textarea :x-model="`data.background_description_${i}`"
+                            <textarea x-model="bg.description"
                                       @input.debounce.2s="autoSave()"
                                       rows="2"
                                       placeholder="Description"></textarea>
                         </div>
                     </div>
                 </template>
+                
+                <button type="button" 
+                        @click="addBackground()" 
+                        x-show="backgrounds.length < 10"
+                        class="btn-add">+ Add Background/Merit/Flaw</button>
             </section>
             
         </div>
@@ -687,6 +699,21 @@
                         class="btn-add">+ Add Touchstone</button>
             </section>
             
+            <!-- Chronicle Tenets (moved from column 3) -->
+            <section class="sheet-section chronicle-tenets-numbered">
+                <h2>Chronicle Tenets</h2>
+                
+                <template x-for="i in 5" :key="i">
+                    <div class="tenet-row">
+                        <span class="tenet-numeral" x-text="['I', 'II', 'III', 'IV', 'V'][i-1]"></span>
+                        <input type="text" 
+                               :x-model="`data.chronicle_tenet_${i}`"
+                               @input.debounce.2s="autoSave()"
+                               :placeholder="`Tenet ${i}`">
+                    </div>
+                </template>
+            </section>
+            
         </div>
         
         <!-- DRAGGABLE DIVIDER 1 -->
@@ -788,21 +815,6 @@
                                       rows="2"
                                       placeholder="Custom notes"></textarea>
                         </div>
-                    </div>
-                </template>
-            </section>
-            
-            <!-- Chronicle Tenets -->
-            <section class="sheet-section chronicle-tenets-numbered">
-                <h2>Chronicle Tenets</h2>
-                
-                <template x-for="i in 5" :key="i">
-                    <div class="tenet-row">
-                        <span class="tenet-numeral" x-text="['I', 'II', 'III', 'IV', 'V'][i-1]"></span>
-                        <input type="text" 
-                               :x-model="`data.chronicle_tenet_${i}`"
-                               @input.debounce.2s="autoSave()"
-                               :placeholder="`Tenet ${i}`">
                     </div>
                 </template>
             </section>
