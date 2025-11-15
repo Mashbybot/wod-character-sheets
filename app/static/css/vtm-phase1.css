@@ -245,7 +245,7 @@
 /* Hunger dots in compact tracker format - CSS BLOOD DROPS */
 .hunger-dots-compact {
     display: flex;
-    gap: 0.3rem;
+    gap: 0.6rem; /* Doubled from 0.3rem */
     flex: 1;
     justify-content: flex-start;
     align-items: center;
@@ -272,14 +272,14 @@
     background: transparent;
     border: 2px solid var(--border-color);
     border-radius: 50% 50% 50% 0;
-    transform: translateX(-50%) rotate(-45deg);
+    transform: translateX(-50%) rotate(135deg); /* Flipped vertically - changed from -45deg to 135deg */
     transition: all 0.2s ease;
 }
 
 /* Empty state on hover - slight highlight */
 .hunger-dot-compact.empty:hover::before {
     border-color: #999;
-    transform: translateX(-50%) rotate(-45deg) scale(1.1);
+    transform: translateX(-50%) rotate(135deg) scale(1.1);
 }
 
 /* Filled state - solid red blood drop */
@@ -299,13 +299,13 @@
 .hunger-dot-compact.filled:hover::before {
     background: var(--vtm-red-light);
     border-color: var(--vtm-red-light);
-    transform: translateX(-50%) rotate(-45deg) scale(1.1);
+    transform: translateX(-50%) rotate(135deg) scale(1.1);
     box-shadow: 0 0 8px rgba(139, 0, 0, 0.6);
 }
 
 /* Danger state hover - intense glow */
 .hunger-dot-compact.danger:hover::before {
-    transform: translateX(-50%) rotate(-45deg) scale(1.15);
+    transform: translateX(-50%) rotate(135deg) scale(1.15);
     box-shadow: 0 0 12px rgba(139, 0, 0, 0.8);
 }
 
