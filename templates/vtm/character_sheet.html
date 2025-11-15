@@ -16,7 +16,11 @@
     <!-- Header -->
     <div class="sheet-header-new">
         <h1 class="character-title" x-text="getCharacterTitle()"></h1>
-        <h2 class="chronicle-subheader" x-text="data.chronicle || 'No Chronicle'"></h2>
+        <h2 class="chronicle-subheader" 
+            contenteditable="true"
+            @blur="data.chronicle = $event.target.textContent; autoSave()"
+            @keydown.enter.prevent="$event.target.blur()"
+            x-text="data.chronicle || 'No Chronicle'"></h2>
         <div class="save-indicator" x-show="saveStatus !== ''">
             <span x-show="saveStatus === 'saving'">⏳ Saving...</span>
             <span x-show="saveStatus === 'saved'" class="saved">✓ Saved</span>
@@ -48,6 +52,26 @@
                         <div class="form-group-compact">
                             <label>Predator Type</label>
                             <input type="text" x-model="data.predator" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Pronouns</label>
+                            <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>True Age</label>
+                            <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Apparent Age</label>
+                            <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Date of Birth</label>
+                            <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
+                        </div>
+                        <div class="form-group-compact">
+                            <label>Date of Death</label>
+                            <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
                         </div>
                     </div>
                     
@@ -423,28 +447,67 @@
                             <input type="text" x-model="data.predator" @input.debounce.2s="autoSave()">
                         </div>
                         
-                        <!-- Clan Disciplines (faux break) -->
-                        <div class="clan-disciplines-inline" x-show="data.clan">
-                            <div class="discipline-icons-small" x-html="getClanDisciplineIcons()"></div>
-                        </div>
-                        
                         <div class="form-group">
                             <label>Bane</label>
                             <select x-model="data.bane_type" @change="autoSave()">
                                 <option value="">Select Bane</option>
+                                <option value="Bane of the Clan">Bane of the Clan</option>
+                                <option value="Aftertaste">Aftertaste (Brujah)</option>
+                                <option value="Bestial Temper">Bestial Temper (Brujah)</option>
+                                <option value="Feral Impulses">Feral Impulses (Gangrel)</option>
+                                <option value="Fractured Perspective">Fractured Perspective (Malkavian)</option>
+                                <option value="Repulsiveness">Repulsiveness (Nosferatu)</option>
+                                <option value="Aesthetic Fixation">Aesthetic Fixation (Toreador)</option>
+                                <option value="Cursed Blood">Cursed Blood (Tremere)</option>
+                                <option value="Domitor's Thrall">Domitor's Thrall (Ventrue)</option>
+                                <option value="Blood Addiction">Blood Addiction (Banu Haqim)</option>
+                                <option value="The Descent">The Descent (Hecata)</option>
+                                <option value="Distorted Image">Distorted Image (Lasombra)</option>
+                                <option value="Alienation">Alienation (Ministry)</option>
+                                <option value="Doomed">Doomed (Ravnos)</option>
+                                <option value="Trembling Hands">Trembling Hands (Salubri)</option>
+                                <option value="Vicissitude">Vicissitude (Tzimisce)</option>
+                                <option value="Custom">Custom</option>
                             </select>
+                            <input type="text" 
+                                   x-show="data.bane_type === 'Custom'"
+                                   x-model="data.bane_custom"
+                                   @input.debounce.2s="autoSave()"
+                                   placeholder="Enter custom bane"
+                                   style="margin-top: 0.5rem;">
                         </div>
                         
                         <div class="form-group">
                             <label>Compulsion</label>
                             <select x-model="data.compulsion" @change="autoSave()">
                                 <option value="">Select Compulsion</option>
-                                <option value="Dominance">Dominance</option>
-                                <option value="Hunger">Hunger</option>
-                                <option value="Harm">Harm</option>
-                                <option value="Paranoia">Paranoia</option>
-                                <option value="Perfectionism">Perfectionism</option>
+                                <option value="Domination">Domination (Brujah)</option>
+                                <option value="Rebellion">Rebellion (Brujah)</option>
+                                <option value="Tempting Fate">Tempting Fate (Gangrel)</option>
+                                <option value="Feral Impulses">Feral Impulses (Gangrel)</option>
+                                <option value="Delusion">Delusion (Malkavian)</option>
+                                <option value="Cryptophilia">Cryptophilia (Nosferatu)</option>
+                                <option value="Obsession">Obsession (Toreador)</option>
+                                <option value="Perfectionism">Perfectionism (Tremere)</option>
+                                <option value="Arrogance">Arrogance (Ventrue)</option>
+                                <option value="Judgment">Judgment (Banu Haqim)</option>
+                                <option value="Morbidity">Morbidity (Hecata)</option>
+                                <option value="Ruthlessness">Ruthlessness (Lasombra)</option>
+                                <option value="Transgression">Transgression (Ministry)</option>
+                                <option value="Tempting Fate">Tempting Fate (Ravnos)</option>
+                                <option value="Affective Empathy">Affective Empathy (Salubri)</option>
+                                <option value="Covetousness">Covetousness (Tzimisce)</option>
+                                <option value="Hunger">Hunger (General)</option>
+                                <option value="Harm">Harm (General)</option>
+                                <option value="Paranoia">Paranoia (General)</option>
+                                <option value="Custom">Custom</option>
                             </select>
+                            <input type="text" 
+                                   x-show="data.compulsion === 'Custom'"
+                                   x-model="data.compulsion_custom"
+                                   @input.debounce.2s="autoSave()"
+                                   placeholder="Enter custom compulsion"
+                                   style="margin-top: 0.5rem;">
                         </div>
                     </section>
                 </div>
@@ -674,6 +737,11 @@
             <!-- Disciplines -->
             <section class="sheet-section disciplines-section">
                 <h2>Disciplines</h2>
+                
+                <!-- Clan Discipline Icons (moved from Identity) -->
+                <div class="clan-disciplines-header" x-show="data.clan">
+                    <div class="discipline-icons-with-labels" x-html="getClanDisciplineIcons()"></div>
+                </div>
                 
                 <template x-for="i in 5" :key="i">
                     <div class="discipline-entry">

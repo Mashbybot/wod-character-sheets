@@ -83,7 +83,9 @@ function characterSheet(characterId) {
             sire: '',
             generation: 13,
             bane_type: '',
+            bane_custom: '',
             compulsion: '',
+            compulsion_custom: '',
             
             // Portraits (6 slots)
             portrait_face: '',
@@ -549,11 +551,21 @@ function characterSheet(characterId) {
             const disciplines = clanDisciplines[this.data.clan] || [];
             if (disciplines.length === 0) return '<span class="no-disciplines">No clan disciplines</span>';
             
+            // Format discipline name for display (capitalize, replace hyphens with spaces)
+            const formatDisciplineName = (disc) => {
+                return disc.split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            };
+            
             return disciplines.map(disc => 
-                `<img src="/static/images/disciplines/${disc}.png" 
-                      alt="${disc}" 
-                      title="${disc.replace('-', ' ')}"
-                      class="discipline-icon">`
+                `<div class="discipline-icon-item">
+                    <img src="/static/images/disciplines/${disc}.png" 
+                         alt="${formatDisciplineName(disc)}" 
+                         title="${formatDisciplineName(disc)}"
+                         class="discipline-icon">
+                    <div class="discipline-label">${formatDisciplineName(disc)}</div>
+                </div>`
             ).join('');
         },
         
