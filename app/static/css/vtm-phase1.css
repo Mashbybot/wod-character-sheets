@@ -242,27 +242,81 @@
     font-size: 0.7rem;
 }
 
-/* Hunger dots in compact tracker format */
+/* Hunger dots in compact tracker format - CSS BLOOD DROPS */
 .hunger-dots-compact {
     display: flex;
-    gap: 0.25rem;
+    gap: 0.3rem;
     flex: 1;
     justify-content: flex-start;
+    align-items: center;
 }
 
 .hunger-dot-compact {
-    font-size: 1.2rem;
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 20px;
     cursor: pointer;
-    color: var(--border-color);
-    transition: color 0.2s;
+    font-size: 0; /* Hide the ● character */
+    transition: all 0.2s ease;
 }
 
-.hunger-dot-compact.filled {
-    color: var(--vtm-red);
+/* Blood drop shape using ::before pseudo-element */
+.hunger-dot-compact::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    background: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 50% 50% 50% 0;
+    transform: translateX(-50%) rotate(-45deg);
+    transition: all 0.2s ease;
 }
 
-.hunger-dot-compact.danger {
-    color: var(--vtm-red-dark);
+/* Empty state on hover - slight highlight */
+.hunger-dot-compact.empty:hover::before {
+    border-color: #999;
+    transform: translateX(-50%) rotate(-45deg) scale(1.1);
+}
+
+/* Filled state - solid red blood drop */
+.hunger-dot-compact.filled::before {
+    background: var(--vtm-red);
+    border-color: var(--vtm-red);
+}
+
+/* Danger state (4-5 dots) - darker red */
+.hunger-dot-compact.danger::before {
+    background: var(--vtm-red-dark);
+    border-color: var(--vtm-red-dark);
+    animation: pulse-danger 2s ease-in-out infinite;
+}
+
+/* Filled state on hover - brighter glow */
+.hunger-dot-compact.filled:hover::before {
+    background: var(--vtm-red-light);
+    border-color: var(--vtm-red-light);
+    transform: translateX(-50%) rotate(-45deg) scale(1.1);
+    box-shadow: 0 0 8px rgba(139, 0, 0, 0.6);
+}
+
+/* Danger state hover - intense glow */
+.hunger-dot-compact.danger:hover::before {
+    transform: translateX(-50%) rotate(-45deg) scale(1.15);
+    box-shadow: 0 0 12px rgba(139, 0, 0, 0.8);
+}
+
+/* Pulse animation for danger state (high hunger) */
+@keyframes pulse-danger {
+    0%, 100% {
+        box-shadow: 0 0 4px rgba(139, 0, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 8px rgba(139, 0, 0, 0.7);
+    }
 }
 
 /* ===== ATTRIBUTES SECTION ===== */
