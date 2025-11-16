@@ -335,7 +335,7 @@
 .sheet-section h2 {
     text-align: center;
     font-size: 1.1rem;
-    color: var(--text-white);
+    color: var(--vtm-red-light); /* Changed from white to red */
     text-transform: uppercase;
     letter-spacing: 3px;
     margin-bottom: 1rem;
@@ -418,10 +418,16 @@
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 0.5rem;
+    flex-wrap: nowrap; /* Prevent wrapping */
+}
+
+.background-type-input {
+    flex: 1;
+    min-width: 0; /* Allow flex item to shrink */
 }
 
 .background-header input[type="text"] {
-    flex: 1;
+    width: 100%;
     padding: 0.5rem;
     background-color: var(--bg-dark);
     border: 1px solid var(--border-color);
@@ -431,7 +437,7 @@
 
 .square-tracker {
     display: flex;
-    gap: 0.25rem;
+    gap: 0.075rem; /* Reduced by 70% from 0.25rem */
     flex-shrink: 0;
 }
 
@@ -466,6 +472,23 @@
     font-size: 0.9rem;
     resize: vertical;
     min-height: 60px; /* Compact like Ambition/Desire */
+}
+
+/* Remove background button */
+.btn-remove-bg {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-remove-bg:hover {
+    color: #999;
 }
 
 .btn-add {
@@ -662,7 +685,7 @@
 /* Clan Symbol Overlay - positioned in upper right of Identity box */
 .clan-symbol-overlay-top {
     position: absolute;
-    top: calc(1rem + 50px); /* Moved down 50px from original 1rem */
+    top: calc(1rem + 150px); /* Moved down total 150px from original 1rem (50px + 100px additional) */
     right: 1rem;
     z-index: 10;
     pointer-events: none;
@@ -673,7 +696,7 @@
     height: 70px; /* Shrunk by 30% from 100px */
     object-fit: contain;
     filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
-    opacity: 0.15; /* Decreased opacity by 50% from 0.3 */
+    opacity: 0.10; /* Set to 30% of original 0.3 */
 }
 
 .clan-disciplines-inline {
