@@ -34,69 +34,58 @@
         <!-- COLUMN 1: Chronicle Info + Attributes + Hunger + Blood Potency -->
         <div class="column-one">
             
-            <!-- Chronicle Information - 2 Box Grid -->
+            <!-- Chronicle Information - Single Box -->
             <section class="sheet-section chronicle-grid">
                 <h2>Chronicle Information</h2>
                 
-                <div class="two-box-grid">
-                    <!-- Top: Personal Info -->
-                    <div class="grid-box">
-                        <div class="form-group-compact-horizontal">
-                            <label>Name:</label>
-                            <input type="text" x-model="data.name" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>Concept:</label>
-                            <input type="text" x-model="data.concept" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>Predator Type:</label>
-                            <input type="text" x-model="data.predator" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>Pronouns:</label>
-                            <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>True Age:</label>
-                            <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>Apparent Age:</label>
-                            <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>Date of Birth:</label>
-                            <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>Date of Death:</label>
-                            <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
-                        </div>
+                <div class="grid-box">
+                    <div class="form-group-compact-horizontal">
+                        <label>Name:</label>
+                        <input type="text" x-model="data.name" @input.debounce.2s="autoSave()">
                     </div>
-                    
-                    <!-- Bottom: Ambition & Desire with Ethnicity/Languages/Origin at top -->
-                    <div class="grid-box">
-                        <div class="form-group-compact-horizontal">
-                            <label>Ethnicity:</label>
-                            <input type="text" x-model="data.ethnicity" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>Languages:</label>
-                            <input type="text" x-model="data.languages" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact-horizontal">
-                            <label>Origin:</label>
-                            <input type="text" x-model="data.birthplace" @input.debounce.2s="autoSave()">
-                        </div>
-                        <div class="form-group-compact">
-                            <label>Ambition</label>
-                            <textarea x-model="data.ambition" @input.debounce.2s="autoSave()" rows="2"></textarea>
-                        </div>
-                        <div class="form-group-compact">
-                            <label>Desire</label>
-                            <textarea x-model="data.desire" @input.debounce.2s="autoSave()" rows="2"></textarea>
-                        </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>Concept:</label>
+                        <input type="text" x-model="data.concept" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>Pronouns:</label>
+                        <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>True Age:</label>
+                        <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>Apparent Age:</label>
+                        <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>Date of Birth:</label>
+                        <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>Date of Death:</label>
+                        <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>Ethnicity:</label>
+                        <input type="text" x-model="data.ethnicity" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>Languages:</label>
+                        <input type="text" x-model="data.languages" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact-horizontal">
+                        <label>Origin:</label>
+                        <input type="text" x-model="data.birthplace" @input.debounce.2s="autoSave()">
+                    </div>
+                    <div class="form-group-compact">
+                        <label>Ambition</label>
+                        <textarea x-model="data.ambition" @input.debounce.2s="autoSave()" rows="2"></textarea>
+                    </div>
+                    <div class="form-group-compact">
+                        <label>Desire</label>
+                        <textarea x-model="data.desire" @input.debounce.2s="autoSave()" rows="2"></textarea>
                     </div>
                 </div>
             </section>

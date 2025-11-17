@@ -260,6 +260,16 @@ function characterSheet(characterId) {
                         }
                     }
                     
+                    // Load XP log
+                    if (character.xp_log) {
+                        try {
+                            this.xpLog = JSON.parse(character.xp_log);
+                        } catch (e) {
+                            console.error('Error parsing XP log:', e);
+                            this.xpLog = [];
+                        }
+                    }
+                    
                     console.log('Character loaded:', this.data);
                 }
             } catch (error) {
@@ -307,6 +317,9 @@ function characterSheet(characterId) {
                         saveData[`background_dots_${index}`] = 0;
                     }
                 }
+                
+                // Add XP log to save data (serialize as JSON string)
+                saveData.xp_log = JSON.stringify(this.xpLog);
                 
                 console.log('Saving data:', saveData);
                 
