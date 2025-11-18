@@ -1,5 +1,5 @@
 // Character Sheet JavaScript - Alpine.js Components
-// SIMPLIFIED VERSION - All logic in main component
+// REFACTORED VERSION - Works with new backend schemas
 
 // Main character sheet component
 function characterSheet(characterId) {
@@ -62,6 +62,8 @@ function characterSheet(characterId) {
             
             // Hunger (0-5)
             hunger: 1,
+            
+            // Resonance
             resonance: '',
             
             // Blood Potency (0-10)
@@ -146,24 +148,26 @@ function characterSheet(characterId) {
             // Keep old chronicle_tenets for backwards compatibility
             chronicle_tenets: '',
             
-            // Column width preferences (percentages)
-            column_widths_above: '40,30,30', // column1,column2,column3 percentages
-            column_widths_below: '33,33,34', // default equal split
-            
             // History
             history_in_life: '',
             after_death: '',
             notes: ''
         },
         
-        // Touchstones (1-3)
+        // NEW: Touchstones as array (not individual fields)
         touchstones: [],
         
-        // Backgrounds, Merits & Flaws (dynamic array)
+        // NEW: Backgrounds as array (not individual fields)
         backgrounds: [],
         
         // XP Log
         xpLog: [],
+        
+        // NEW: User preferences (separate from character data)
+        preferences: {
+            column_widths_above: '40,30,30',
+            column_widths_below: '33,33,34'
+        },
         
         // Blood Potency calculated values
         bloodPotencyValues: {
@@ -179,6 +183,7 @@ function characterSheet(characterId) {
         init() {
             if (this.characterId) {
                 this.loadCharacter();
+                this.loadUserPreferences();
             } else {
                 // New character - initialize with one empty touchstone
                 this.touchstones.push({
@@ -210,19 +215,33 @@ function characterSheet(characterId) {
         async loadCharacter() {
             try {
                 const response = await fetch(`/vtm/api/character/${this.characterId}`);
-                if (response.ok) {
-                    const character = await response.json();
-                    
-                    // Update all data fields
-                    Object.keys(this.data).forEach(key => {
-                        if (character[key] !== undefined && character[key] !== null) {
-                            this.data[key] = character[key];
-                        }
-                    });
-                    
-                    this.characterName = character.name || 'Unnamed';
-                    
-                    // Load touchstones
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    this.handleError(errorData);
+                    return;
+                }
+                
+                const character = await response.json();
+                
+                // Update all data fields
+                Object.keys(this.data).forEach(key => {
+                    if (character[key] !== undefined && character[key] !== null) {
+                        this.data[key] = character[key];
+                    }
+                });
+                
+                this.characterName = character.name || 'Unnamed';
+                
+                // NEW: Load touchstones from array
+                if (character.touchstones && Array.isArray(character.touchstones)) {
+                    this.touchstones = character.touchstones.map(ts => ({
+                        name: ts.name || '',
+                        description: ts.description || '',
+                        conviction: ts.conviction || ''
+                    }));
+                } else {
+                    // Fallback: Load from old individual fields (backwards compatibility)
                     this.touchstones = [];
                     for (let i = 1; i <= 3; i++) {
                         const name = character[`touchstone_${i}_name`];
@@ -234,15 +253,24 @@ function characterSheet(characterId) {
                             });
                         }
                     }
-                    
-                    // If no touchstones, add one empty
-                    if (this.touchstones.length === 0) {
-                        this.touchstones.push({ name: '', description: '', conviction: '' });
-                    }
-                    
-                    // Load backgrounds
+                }
+                
+                // If no touchstones, add one empty
+                if (this.touchstones.length === 0) {
+                    this.touchstones.push({ name: '', description: '', conviction: '' });
+                }
+                
+                // NEW: Load backgrounds from array
+                if (character.backgrounds && Array.isArray(character.backgrounds)) {
+                    this.backgrounds = character.backgrounds.map(bg => ({
+                        type: bg.type || '',
+                        description: bg.description || '',
+                        dots: bg.dots || 0
+                    }));
+                } else {
+                    // Fallback: Load from old individual fields (backwards compatibility)
                     this.backgrounds = [];
-                    for (let i = 1; i <= 10; i++) {  // Support up to 10 backgrounds
+                    for (let i = 1; i <= 10; i++) {
                         const type = character[`background_type_${i}`];
                         if (type) {
                             this.backgrounds.push({
@@ -252,32 +280,86 @@ function characterSheet(characterId) {
                             });
                         }
                     }
-                    
-                    // If no backgrounds, add 3 empty ones
-                    if (this.backgrounds.length === 0) {
-                        for (let i = 0; i < 3; i++) {
-                            this.backgrounds.push({ type: '', description: '', dots: 0 });
-                        }
-                    }
-                    
-                    // Load XP log
-                    if (character.xp_log) {
-                        try {
-                            this.xpLog = JSON.parse(character.xp_log);
-                        } catch (e) {
-                            console.error('Error parsing XP log:', e);
-                            this.xpLog = [];
-                        }
-                    }
-                    
-                    console.log('Character loaded:', this.data);
                 }
+                
+                // If no backgrounds, add 3 empty ones
+                if (this.backgrounds.length === 0) {
+                    for (let i = 0; i < 3; i++) {
+                        this.backgrounds.push({ type: '', description: '', dots: 0 });
+                    }
+                }
+                
+                // Load XP log
+                if (character.xp_log) {
+                    try {
+                        if (typeof character.xp_log === 'string') {
+                            this.xpLog = JSON.parse(character.xp_log);
+                        } else if (Array.isArray(character.xp_log)) {
+                            this.xpLog = character.xp_log;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing XP log:', e);
+                        this.xpLog = [];
+                    }
+                }
+                
+                console.log('Character loaded:', this.data);
+                
             } catch (error) {
                 console.error('Error loading character:', error);
+                this.showError('Failed to load character. Please try again.');
             }
         },
         
-        // Auto-save function
+        // NEW: Load user preferences separately
+        async loadUserPreferences() {
+            try {
+                const response = await fetch('/api/preferences');
+                
+                if (response.ok) {
+                    const prefs = await response.json();
+                    this.preferences = prefs;
+                    
+                    // Apply saved column widths
+                    const widthsAbove = prefs.column_widths_above.split(',').map(w => parseInt(w));
+                    const widthsBelow = prefs.column_widths_below.split(',').map(w => parseInt(w));
+                    
+                    this.applyColumnWidths('above', widthsAbove);
+                    this.applyColumnWidths('below', widthsBelow);
+                } else {
+                    // Use defaults from character data (fallback)
+                    if (this.data.column_widths_above) {
+                        const widthsAbove = this.data.column_widths_above.split(',').map(w => parseInt(w));
+                        this.applyColumnWidths('above', widthsAbove);
+                    }
+                    if (this.data.column_widths_below) {
+                        const widthsBelow = this.data.column_widths_below.split(',').map(w => parseInt(w));
+                        this.applyColumnWidths('below', widthsBelow);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading preferences:', error);
+                // Not critical - just use defaults
+            }
+        },
+        
+        // NEW: Save user preferences separately
+        async saveUserPreferences() {
+            try {
+                await fetch('/api/preferences', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(this.preferences)
+                });
+            } catch (error) {
+                console.error('Error saving preferences:', error);
+                // Not critical - don't show error to user
+            }
+        },
+        
+        // Auto-save function with better error handling
         async autoSave() {
             if (!this.characterId) {
                 await this.createCharacter();
@@ -287,39 +369,13 @@ function characterSheet(characterId) {
             this.saveStatus = 'saving';
             
             try {
-                // Prepare data with touchstones
-                const saveData = { ...this.data };
-                
-                // Add touchstones to save data
-                for (let i = 0; i < 3; i++) {
-                    const index = i + 1;
-                    if (i < this.touchstones.length) {
-                        saveData[`touchstone_${index}_name`] = this.touchstones[i].name;
-                        saveData[`touchstone_${index}_description`] = this.touchstones[i].description;
-                        saveData[`touchstone_${index}_conviction`] = this.touchstones[i].conviction;
-                    } else {
-                        saveData[`touchstone_${index}_name`] = '';
-                        saveData[`touchstone_${index}_description`] = '';
-                        saveData[`touchstone_${index}_conviction`] = '';
-                    }
-                }
-                
-                // Add backgrounds to save data
-                for (let i = 0; i < 10; i++) {  // Support up to 10 backgrounds
-                    const index = i + 1;
-                    if (i < this.backgrounds.length) {
-                        saveData[`background_type_${index}`] = this.backgrounds[i].type;
-                        saveData[`background_description_${index}`] = this.backgrounds[i].description;
-                        saveData[`background_dots_${index}`] = this.backgrounds[i].dots;
-                    } else {
-                        saveData[`background_type_${index}`] = '';
-                        saveData[`background_description_${index}`] = '';
-                        saveData[`background_dots_${index}`] = 0;
-                    }
-                }
-                
-                // Add XP log to save data (serialize as JSON string)
-                saveData.xp_log = JSON.stringify(this.xpLog);
+                // Prepare data with touchstones and backgrounds
+                const saveData = {
+                    ...this.data,
+                    touchstones: this.touchstones,
+                    backgrounds: this.backgrounds,
+                    xp_log: JSON.stringify(this.xpLog)
+                };
                 
                 console.log('Saving data:', saveData);
                 
@@ -336,37 +392,77 @@ function characterSheet(characterId) {
                     this.characterName = this.data.name || 'Unnamed';
                     setTimeout(() => this.saveStatus = '', 2000);
                 } else {
+                    const errorData = await response.json();
                     this.saveStatus = 'error';
-                    console.error('Save failed:', await response.text());
+                    this.handleError(errorData);
                 }
+                
             } catch (error) {
                 console.error('Save error:', error);
                 this.saveStatus = 'error';
+                this.showError('Failed to save character. Please check your connection.');
             }
         },
         
         // Create new character
         async createCharacter() {
             try {
+                const createData = {
+                    ...this.data,
+                    touchstones: this.touchstones,
+                    backgrounds: this.backgrounds
+                };
+                
                 const response = await fetch('/vtm/character/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(this.data)
+                    body: JSON.stringify(createData)
                 });
                 
                 if (response.ok) {
                     const result = await response.json();
                     window.location.href = `/vtm/character/${result.id}/edit`;
                 } else {
-                    const error = await response.json();
-                    alert(error.error || 'Failed to create character');
+                    const errorData = await response.json();
+                    this.handleError(errorData);
                 }
             } catch (error) {
                 console.error('Create error:', error);
-                alert('Failed to create character');
+                this.showError('Failed to create character. Please try again.');
             }
+        },
+        
+        // NEW: Enhanced error handling
+        handleError(errorData) {
+            console.error('API Error:', errorData);
+            
+            // Check for validation errors with field details
+            if (errorData.details && Array.isArray(errorData.details)) {
+                const fieldErrors = errorData.details.map(detail => {
+                    return `${detail.field}: ${detail.message}`;
+                }).join('\n');
+                
+                this.showError(`Validation Error:\n${fieldErrors}`);
+            } 
+            // Check for general error message
+            else if (errorData.error) {
+                this.showError(errorData.error);
+            }
+            // Fallback
+            else {
+                this.showError('An error occurred. Please try again.');
+            }
+        },
+        
+        // NEW: User-friendly error display
+        showError(message) {
+            // Could be enhanced with a modal or toast notification
+            alert(message);
+            
+            // Log to console for debugging
+            console.error('User-facing error:', message);
         },
         
         // Update clan badge when clan changes
@@ -674,9 +770,13 @@ function characterSheet(characterId) {
                     const data = await response.json();
                     this.data[`portrait_${boxType}`] = data.portrait_url;
                     this.autoSave();
+                } else {
+                    const errorData = await response.json();
+                    this.handleError(errorData);
                 }
             } catch (error) {
                 console.error('Portrait upload error:', error);
+                this.showError('Failed to upload portrait. Please try again.');
             }
         },
         
@@ -725,9 +825,13 @@ function characterSheet(characterId) {
         
         // COLUMN RESIZING
         initResizableDividers() {
-            // Apply saved widths or defaults
-            const widthsAbove = this.data.column_widths_above.split(',').map(w => parseInt(w));
-            const widthsBelow = this.data.column_widths_below.split(',').map(w => parseInt(w));
+            // Apply saved widths from preferences or fallback to defaults
+            const widthsAbove = this.preferences.column_widths_above 
+                ? this.preferences.column_widths_above.split(',').map(w => parseInt(w))
+                : [40, 30, 30];
+            const widthsBelow = this.preferences.column_widths_below
+                ? this.preferences.column_widths_below.split(',').map(w => parseInt(w))
+                : [33, 33, 34];
             
             this.applyColumnWidths('above', widthsAbove);
             this.applyColumnWidths('below', widthsBelow);
@@ -763,10 +867,10 @@ function characterSheet(characterId) {
             // Account for dividers (16px total for both dividers)
             const availableWidth = gridWidth - 16;
             
-            // Get current widths
+            // Get current widths from preferences
             const currentWidths = section === 'above'
-                ? this.data.column_widths_above.split(',').map(w => parseInt(w))
-                : this.data.column_widths_below.split(',').map(w => parseInt(w));
+                ? this.preferences.column_widths_above.split(',').map(w => parseInt(w))
+                : this.preferences.column_widths_below.split(',').map(w => parseInt(w));
             
             const startWidths = [...currentWidths];
             
@@ -824,13 +928,14 @@ function characterSheet(characterId) {
                     widthsPercent[2] += (100 - sum);
                 }
                 
+                // Save to preferences
                 if (section === 'above') {
-                    this.data.column_widths_above = widthsPercent.join(',');
+                    this.preferences.column_widths_above = widthsPercent.join(',');
                 } else {
-                    this.data.column_widths_below = widthsPercent.join(',');
+                    this.preferences.column_widths_below = widthsPercent.join(',');
                 }
                 
-                this.autoSave();
+                this.saveUserPreferences();
             };
             
             document.addEventListener('mousemove', onMouseMove);

@@ -10,6 +10,14 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.database import init_db
 from app.routes import auth, vtm, htr
 from app.auth import get_current_user
+from app.exceptions import (
+    wod_exception_handler,
+    validation_exception_handler,
+    database_exception_handler,
+    WoDException
+)
+from pydantic import ValidationError
+from sqlalchemy.exc import SQLAlchemyError
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -17,6 +25,11 @@ app = FastAPI(
     description="Character sheet manager for World of Darkness games",
     version="0.1.0"
 )
+
+# Add exception handlers
+app.add_exception_handler(WoDException, wod_exception_handler)
+app.add_exception_handler(ValidationError, validation_exception_handler)
+app.add_exception_handler(SQLAlchemyError, database_exception_handler)
 
 # Add session middleware for OAuth
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production")

@@ -6,7 +6,6 @@ python-multipart==0.0.6
 # Database
 sqlalchemy==2.0.23
 psycopg2-binary==2.9.9
-alembic==1.12.1
 
 # Authentication
 authlib==1.2.1
@@ -26,21 +25,3 @@ jinja2==3.1.2
 
 # Session management
 starlette==0.27.0
-
-# Validation
-pydantic==2.5.0
-pydantic-settings==2.1.0
-email-validator==2.1.0
-
-# Testing (optional, for development)
-pytest==7.4.3
-pytest-cov==4.1.0
-pytest-asyncio==0.21.1
-
-# Code quality (optional, for development)
-ruff==0.1.6
-mypy==1.7.1
-black==23.11.0
-
-# Logging and monitoring
-python-json-logger==2.0.7
