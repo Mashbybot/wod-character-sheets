@@ -19,6 +19,18 @@ from app.exceptions import (
 from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
+# ✅ CRITICAL: Import new models so SQLAlchemy knows about them
+# This ensures init_db() creates all tables properly
+from app.models_new import (
+    User, 
+    UserPreferences, 
+    VTMCharacter, 
+    HTRCharacter, 
+    Touchstone, 
+    Background, 
+    XPLogEntry
+)
+
 # Initialize FastAPI app
 app = FastAPI(
     title="World of Darkness Character Sheets",
@@ -68,6 +80,7 @@ async def startup_event():
     """Initialize database on startup"""
     init_db()
     print("[STARTUP] Database initialized")
+    print("[STARTUP] Models loaded: User, UserPreferences, VTMCharacter, HTRCharacter, Touchstone, Background, XPLogEntry")
 
 
 @app.get("/", response_class=HTMLResponse)
