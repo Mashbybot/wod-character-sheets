@@ -89,6 +89,12 @@ def upgrade() -> None:
     # (This handles migration from existing schema)
     conn = op.get_bind()
     
+    # FIXED: Get current columns ONCE before the loop
+    inspector = sa.inspect(conn)
+    existing_columns = [col['name'] for col in inspector.get_columns('vtm_characters')]
+    
+    print(f"Existing columns in vtm_characters: {existing_columns}")
+    
     # Check if columns exist before adding
     columns_to_add = [
         ('sire', sa.String(length=100)),
@@ -114,18 +120,19 @@ def upgrade() -> None:
         column_type = column_info[1]
         kwargs = column_info[2] if len(column_info) > 2 else {}
         
-        # Check if column exists
-        inspector = sa.inspect(conn)
-        columns = [col['name'] for col in inspector.get_columns('vtm_characters')]
-        
-        if column_name not in columns:
+        # FIXED: Use existing_columns instead of columns
+        if column_name not in existing_columns:
+            print(f"Adding column: {column_name}")
             op.add_column('vtm_characters', sa.Column(column_name, column_type, **kwargs))
+        else:
+            print(f"Column {column_name} already exists, skipping")
     
     # Migrate data from old columns to new tables
     # This is done via SQL to handle existing data
     
     # Migrate touchstones (if old columns exist)
-    if 'touchstone_1_name' in columns:
+    if 'touchstone_1_name' in existing_columns:
+        print("Migrating touchstones...")
         conn.execute(text("""
             INSERT INTO touchstones (character_id, name, description, conviction, display_order)
             SELECT id, touchstone_1_name, touchstone_1_description, touchstone_1_conviction, 0
@@ -162,7 +169,8 @@ def upgrade() -> None:
         """))
     
     # Migrate backgrounds (if old columns exist)
-    if 'background_type_1' in columns:
+    if 'background_type_1' in existing_columns:
+        print("Migrating backgrounds...")
         for i in range(1, 7):
             conn.execute(text(f"""
                 INSERT INTO backgrounds (character_id, type, description, dots, display_order)
@@ -195,11 +203,13 @@ def upgrade() -> None:
     ]
     
     for column_name in columns_to_drop:
-        if column_name in columns:
+        if column_name in existing_columns:
             try:
+                print(f"Dropping column: {column_name}")
                 op.drop_column('vtm_characters', column_name)
-            except:
-                pass  # Column doesn't exist, continue
+            except Exception as e:
+                print(f"Could not drop column {column_name}: {e}")
+                pass  # Column doesn't exist or can't be dropped, continue
 
 
 def downgrade() -> None:
