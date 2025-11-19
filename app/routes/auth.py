@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import oauth, get_discord_user
 from app.database import get_db
-from app.models import User
+from app.models_new import User
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
