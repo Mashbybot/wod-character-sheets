@@ -698,16 +698,43 @@
             <section class="sheet-section chronicle-tenets-numbered">
                 <h2>Chronicle Tenets</h2>
                 
-                <template x-for="i in 5" :key="i">
-                    <div class="tenet-row">
-                        <span class="tenet-numeral" x-text="['I', 'II', 'III', 'IV', 'V'][i-1]"></span>
-                        <input type="text" 
-                               :x-model="`data.chronicle_tenet_${i}`"
-                               @input.debounce.2s="autoSave()"
-                               :placeholder="`Tenet ${i}`">
-                    </div>
-                </template>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">I</span>
+                    <input type="text" 
+                           x-model="data.chronicle_tenet_1"
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Tenet 1">
+                </div>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">II</span>
+                    <input type="text" 
+                           x-model="data.chronicle_tenet_2"
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Tenet 2">
+                </div>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">III</span>
+                    <input type="text" 
+                           x-model="data.chronicle_tenet_3"
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Tenet 3">
+                </div>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">IV</span>
+                    <input type="text" 
+                           x-model="data.chronicle_tenet_4"
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Tenet 4">
+                </div>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">V</span>
+                    <input type="text" 
+                           x-model="data.chronicle_tenet_5"
+                           @input.debounce.2s="autoSave()"
+                           placeholder="Tenet 5">
+                </div>
             </section>
+            
             
         </div>
         
