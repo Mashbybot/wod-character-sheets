@@ -716,7 +716,8 @@
 .discipline-icons-small img {
     width: 60px;
     height: 60px;
-    filter: drop-shadow(0 0 3px rgba(139, 0, 0, 0.3));
+    /* Convert black icons to heading red (#A52A2A) */
+    filter: invert(22%) sepia(77%) saturate(1403%) hue-rotate(344deg) brightness(93%) contrast(95%) drop-shadow(0 0 3px rgba(139, 0, 0, 0.3));
 }
 
 /* Clan Disciplines Header in Disciplines Section */
@@ -742,7 +743,8 @@
 .discipline-icons-with-labels img {
     width: 60px;
     height: 60px;
-    filter: drop-shadow(0 0 3px rgba(139, 0, 0, 0.3));
+    /* Convert black icons to heading red (#A52A2A) */
+    filter: invert(22%) sepia(77%) saturate(1403%) hue-rotate(344deg) brightness(93%) contrast(95%) drop-shadow(0 0 3px rgba(139, 0, 0, 0.3));
 }
 
 .discipline-icons-with-labels .discipline-label {
