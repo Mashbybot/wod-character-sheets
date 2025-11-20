@@ -692,11 +692,11 @@
 }
 
 .clan-symbol-image-small {
-    width: 70px !important; /* Shrunk by 30% from 100px */
-    height: 70px !important; /* Shrunk by 30% from 100px */
+    width: 35px !important; /* Half of previous 70px */
+    height: 35px !important; /* Half of previous 70px */
     object-fit: contain;
     filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
-    opacity: 0.10 !important; /* Set to 30% of original 0.3 */
+    opacity: 0.20 !important; /* 20% opacity */
 }
 
 .clan-disciplines-inline {
