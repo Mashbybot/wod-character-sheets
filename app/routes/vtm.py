@@ -45,16 +45,20 @@ templates = Jinja2Templates(directory="templates")
 async def vtm_character_list(request: Request, db: Session = Depends(get_db)):
     """Display user's VTM characters (up to 3 slots)"""
     user = require_auth(request)
-    
+
     # Get user's characters
     characters = db.query(VTMCharacter).filter(
         VTMCharacter.user_id == user['id']
     ).order_by(VTMCharacter.created_at).all()
-    
+
+    # DEBUG: Log portrait data
+    for char in characters:
+        print(f"[DEBUG CHARACTER LIST] Character {char.id} ({char.name}): portrait_face={char.portrait_face}, portrait_body={char.portrait_body}")
+
     # Calculate available slots
     available_slots = CHARACTER_LIMIT_PER_USER - len(characters)
     can_create = available_slots > 0
-    
+
     return templates.TemplateResponse(
         "vtm/character_list.html",
         {
@@ -527,7 +531,10 @@ async def upload_portrait(
         # Update character
         setattr(character, f'portrait_{box_type}', portrait_url)
         db.commit()
-        
+
+        # DEBUG: Log what was saved
+        print(f"[DEBUG UPLOAD] Character {character.id}: Set portrait_{box_type} = {portrait_url}")
+
         return JSONResponse(content={
             "success": True,
             "portrait_url": portrait_url
