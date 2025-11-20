@@ -21,8 +21,10 @@
     <div class="character-grid">
         {% for character in characters %}
         <div class="character-card">
-            {% if character.portrait_url %}
-            <img src="{{ character.portrait_url }}" alt="{{ character.name }}">
+            {% if character.portrait_face %}
+            <img src="{{ character.portrait_face }}" alt="{{ character.name }}">
+            {% elif character.portrait_body %}
+            <img src="{{ character.portrait_body }}" alt="{{ character.name }}">
             {% else %}
             <div class="placeholder-portrait">No Portrait</div>
             {% endif %}
