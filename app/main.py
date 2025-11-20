@@ -61,10 +61,11 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Mount character portraits from Railway Volume
+# NOTE: Must be at /portraits (not /static/portraits) to avoid mount path conflicts
 VOLUME_PATH = os.getenv("VOLUME_PATH", "/data")
 PORTRAITS_DIR = os.path.join(VOLUME_PATH, "character_portraits")
 os.makedirs(PORTRAITS_DIR, exist_ok=True)
-app.mount("/static/portraits", StaticFiles(directory=PORTRAITS_DIR), name="portraits")
+app.mount("/portraits", StaticFiles(directory=PORTRAITS_DIR), name="portraits")
 
 # Templates
 templates = Jinja2Templates(directory="templates")

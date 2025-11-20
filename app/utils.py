@@ -113,9 +113,9 @@ def process_and_save_portrait(
         
         # Save optimized image
         image.save(file_path, optimize=True, quality=85)
-        
-        # Return URL path
-        return f"/static/portraits/{unique_filename}"
+
+        # Return URL path (mounted at /portraits in main.py)
+        return f"/portraits/{unique_filename}"
         
     except Exception as e:
         raise ImageUploadError(f"Failed to process image: {str(e)}")
