@@ -140,7 +140,7 @@
                             <template x-for="i in 10" :key="i">
                                 <div class="humanity-box small"
                                      :class="getHumanityState(i)"
-                                     @click="clickHumanity(i)">
+                                     @click="cycleHumanity(i)">
                                 </div>
                             </template>
                         </div>

@@ -527,7 +527,7 @@ function characterSheet(characterId) {
         cycleHealth(index) {
             const state = this.getHealthState(index);
             const max = this.data.health_max || 6;
-            
+
             if (state === 'empty' && index <= 10) {
                 // Extend max
                 this.data.health_max = index;
@@ -541,10 +541,11 @@ function characterSheet(characterId) {
                 this.data.health_superficial--;
                 this.data.health_aggravated++;
             } else if (state === 'aggravated') {
-                // Remove damage
+                // Make empty (remove aggravated and reduce max)
                 this.data.health_aggravated--;
+                this.data.health_max--;
             }
-            
+
             this.autoSave();
         },
         
@@ -566,7 +567,7 @@ function characterSheet(characterId) {
         cycleWillpower(index) {
             const state = this.getWillpowerState(index);
             const max = this.data.willpower_max || 5;
-            
+
             if (state === 'empty' && index <= 10) {
                 // Extend max
                 this.data.willpower_max = index;
@@ -580,10 +581,11 @@ function characterSheet(characterId) {
                 this.data.willpower_superficial--;
                 this.data.willpower_aggravated++;
             } else if (state === 'aggravated') {
-                // Remove damage
+                // Make empty (remove aggravated and reduce max)
                 this.data.willpower_aggravated--;
+                this.data.willpower_max--;
             }
-            
+
             this.autoSave();
         },
         
@@ -598,7 +600,7 @@ function characterSheet(characterId) {
         
         clickHumanity(index) {
             const current = this.data.humanity_current || 7;
-            
+
             if (index === current) {
                 // Clicking current humanity - decrease it
                 this.data.humanity_current = Math.max(index - 1, 0);
@@ -611,10 +613,35 @@ function characterSheet(characterId) {
                 this.data.humanity_current = index;
                 this.data.humanity_stained = 0;
             }
-            
+
             this.autoSave();
         },
-        
+
+        cycleHumanity(index) {
+            const state = this.getHumanityState(index);
+            const current = this.data.humanity_current || 7;
+            const stained = this.data.humanity_stained || 0;
+            const lastFilled = current - stained;
+
+            if (index === lastFilled && state === 'filled') {
+                // Clicking the last filled box - make it stained
+                this.data.humanity_stained++;
+            } else if (index === lastFilled + 1 && state === 'stained') {
+                // Clicking the first stained box - make it empty
+                this.data.humanity_current--;
+                this.data.humanity_stained--;
+            } else if (index === current + 1 && state === 'empty' && index <= 10) {
+                // Clicking the first empty box - make it filled
+                this.data.humanity_current = index;
+            } else if (state === 'empty' && index <= 10) {
+                // Clicking any empty box - extend current to that box
+                this.data.humanity_current = index;
+                this.data.humanity_stained = 0;
+            }
+
+            this.autoSave();
+        },
+
         // SKILL SPECIALTIES
         getSpecialties(skill) {
             if (!this.data.skill_specialties) return [];
