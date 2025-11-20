@@ -9,16 +9,17 @@
 }
 
 .character-title {
-    font-family: 'Cinzel', 'Georgia', serif;
+    font-family: 'Grenze Gotisch', 'Cinzel', 'Georgia', serif;
     font-size: 2.5rem;
     color: var(--vtm-red-light);
     margin-bottom: 0.5rem;
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
 }
 
 .chronicle-subheader {
+    font-family: 'Grenze Gotisch', 'Cinzel', 'Georgia', serif;
     font-size: 1.2rem;
     color: var(--text-gray);
     font-style: italic;
@@ -28,6 +29,7 @@
     border-radius: 4px;
     transition: background-color 0.2s;
     outline: none;
+    letter-spacing: 1px;
 }
 
 .chronicle-subheader:hover {
