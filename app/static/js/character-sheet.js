@@ -811,10 +811,10 @@ function characterSheet(characterId) {
                     .join(' ');
             };
             
-            return disciplines.map(disc => 
+            return disciplines.map(disc =>
                 `<div class="discipline-icon-item">
-                    <img src="/static/images/disciplines/${disc}.png" 
-                         alt="${formatDisciplineName(disc)}" 
+                    <img src="/static/images/disciplines/${disc}.png?v=${window.STATIC_VERSION || ''}"
+                         alt="${formatDisciplineName(disc)}"
                          title="${formatDisciplineName(disc)}"
                          class="discipline-icon">
                     <div class="discipline-label">${formatDisciplineName(disc)}</div>

@@ -1,6 +1,7 @@
 """Main FastAPI application"""
 
 import os
+import time
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -67,8 +68,14 @@ PORTRAITS_DIR = os.path.join(VOLUME_PATH, "character_portraits")
 os.makedirs(PORTRAITS_DIR, exist_ok=True)
 app.mount("/portraits", StaticFiles(directory=PORTRAITS_DIR), name="portraits")
 
+# Static version for cache-busting
+# Use timestamp for development, or set STATIC_VERSION env var in production
+STATIC_VERSION = os.getenv("STATIC_VERSION", str(int(time.time())))
+
 # Templates
 templates = Jinja2Templates(directory="templates")
+# Make STATIC_VERSION available to all templates
+templates.env.globals["static_version"] = STATIC_VERSION
 
 # Include routers
 app.include_router(auth.router)

@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="/static/css/vtm-sheet.css">
-<link rel="stylesheet" href="/static/css/vtm-interactive.css">
-<link rel="stylesheet" href="/static/css/vtm-phase1.css">
+<link rel="stylesheet" href="/static/css/vtm-sheet.css?v={{ static_version }}">
+<link rel="stylesheet" href="/static/css/vtm-interactive.css?v={{ static_version }}">
+<link rel="stylesheet" href="/static/css/vtm-phase1.css?v={{ static_version }}">
+<script>
+    // Global static version for cache-busting
+    window.STATIC_VERSION = '{{ static_version }}';
+</script>
 {% endblock %}
 
 {% block content %}
@@ -428,7 +432,7 @@
                         
                         <!-- Clan Symbol Overlay (positioned in upper right) -->
                         <div class="clan-symbol-overlay-top" x-show="data.clan">
-                            <img :src="`/static/images/clan-symbols/${data.clan}.png`" 
+                            <img :src="`/static/images/clan-symbols/${data.clan}.png?v=${window.STATIC_VERSION}`"
                                  :alt="data.clan"
                                  class="clan-symbol-image-small"
                                  onerror="this.style.display='none'">
@@ -644,8 +648,8 @@
                 
                 <!-- Clan Symbol Overlay -->
                 <div class="clan-symbol-overlay" x-show="data.clan">
-                    <img :src="`/static/images/clans/${data.clan}.png`" 
-                         :alt="data.clan + ' symbol'" 
+                    <img :src="`/static/images/clans/${data.clan}.png?v=${window.STATIC_VERSION}`"
+                         :alt="data.clan + ' symbol'"
                          class="clan-symbol-image">
                 </div>
             </div>
@@ -880,5 +884,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="/static/js/character-sheet.js"></script>
+<script src="/static/js/character-sheet.js?v={{ static_version }}"></script>
 {% endblock %}
