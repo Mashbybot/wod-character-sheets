@@ -22,9 +22,9 @@
         {% for character in characters %}
         <div class="character-card">
             {% if character.portrait_face %}
-            <img src="{{ character.portrait_face }}" alt="{{ character.name }}">
+            <img src="{{ character.portrait_face }}" alt="{{ character.name }}" loading="lazy">
             {% elif character.portrait_body %}
-            <img src="{{ character.portrait_body }}" alt="{{ character.name }}">
+            <img src="{{ character.portrait_body }}" alt="{{ character.name }}" loading="lazy">
             {% else %}
             <div class="placeholder-portrait">No Portrait</div>
             {% endif %}

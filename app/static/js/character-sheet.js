@@ -178,7 +178,16 @@ function characterSheet(characterId) {
             feedingPenalty: 'No penalty',
             baneSeverity: 0
         },
-        
+
+        // PERFORMANCE OPTIMIZATIONS
+        // Track changed fields for delta saves
+        changedFields: new Set(),
+        // Save queue for batching
+        saveQueue: null,
+        saveTimeout: null,
+        // Track if we're currently saving
+        isSaving: false,
+
         // Initialize component
         init() {
             if (this.characterId) {
@@ -191,7 +200,7 @@ function characterSheet(characterId) {
                     description: '',
                     conviction: ''
                 });
-                
+
                 // Initialize with 3 empty backgrounds
                 for (let i = 0; i < 3; i++) {
                     this.backgrounds.push({
@@ -201,10 +210,10 @@ function characterSheet(characterId) {
                     });
                 }
             }
-            
+
             // Initialize Blood Potency values
             this.updateBloodPotency(this.data.blood_potency || 0);
-            
+
             // Wait for DOM to be ready, then initialize resizable dividers
             this.$nextTick(() => {
                 this.initResizableDividers();
@@ -362,49 +371,108 @@ function characterSheet(characterId) {
             }
         },
         
-        // Auto-save function with better error handling
-        async autoSave() {
+        // Track field changes for delta saves
+        trackChange(field) {
+            this.changedFields.add(field);
+        },
+
+        // Improved auto-save with batching, delta saves, and optimistic updates
+        async autoSave(changedField = null) {
             if (!this.characterId) {
                 await this.createCharacter();
                 return;
             }
-            
-            this.saveStatus = 'saving';
-            
-            try {
-                // Prepare data with touchstones and backgrounds
-                const saveData = {
-                    ...this.data,
-                    touchstones: this.touchstones,
-                    backgrounds: this.backgrounds,
-                    xp_log: JSON.stringify(this.xpLog)
-                };
-                
-                console.log('Saving data:', saveData);
-                
-                const response = await fetch(`/vtm/character/${this.characterId}/update`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(saveData)
-                });
-                
-                if (response.ok) {
-                    this.saveStatus = 'saved';
-                    this.characterName = this.data.name || 'Unnamed';
-                    setTimeout(() => this.saveStatus = '', 2000);
-                } else {
-                    const errorData = await response.json();
-                    this.saveStatus = 'error';
-                    this.handleError(errorData);
-                }
-                
-            } catch (error) {
-                console.error('Save error:', error);
-                this.saveStatus = 'error';
-                this.showError('Failed to save character. Please check your connection.');
+
+            // Track which field changed
+            if (changedField) {
+                this.trackChange(changedField);
             }
+
+            // Optimistic UI update - show saving immediately
+            this.saveStatus = 'saving';
+
+            // Clear existing timeout and set new one for batching
+            if (this.saveTimeout) {
+                clearTimeout(this.saveTimeout);
+            }
+
+            // Batch multiple rapid changes with 500ms debounce (reduced from 2s)
+            this.saveTimeout = setTimeout(async () => {
+                // Skip if already saving
+                if (this.isSaving) {
+                    // Re-queue the save
+                    this.autoSave();
+                    return;
+                }
+
+                this.isSaving = true;
+
+                try {
+                    // Build save data - use delta if we have tracked changes
+                    let saveData;
+
+                    if (this.changedFields.size > 0 && this.changedFields.size < 10) {
+                        // Delta save - only send changed fields
+                        saveData = {};
+                        this.changedFields.forEach(field => {
+                            if (this.data[field] !== undefined) {
+                                saveData[field] = this.data[field];
+                            }
+                        });
+                        // Always include arrays if they might have changed
+                        if (this.changedFields.has('touchstones')) {
+                            saveData.touchstones = this.touchstones;
+                        }
+                        if (this.changedFields.has('backgrounds')) {
+                            saveData.backgrounds = this.backgrounds;
+                        }
+                        if (this.changedFields.has('xp_log')) {
+                            saveData.xp_log = JSON.stringify(this.xpLog);
+                        }
+                        console.log('Delta save:', Array.from(this.changedFields));
+                    } else {
+                        // Full save - for initial saves or many changes
+                        saveData = {
+                            ...this.data,
+                            touchstones: this.touchstones,
+                            backgrounds: this.backgrounds,
+                            xp_log: JSON.stringify(this.xpLog)
+                        };
+                        console.log('Full save');
+                    }
+
+                    const response = await fetch(`/vtm/character/${this.characterId}/update`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(saveData)
+                    });
+
+                    if (response.ok) {
+                        // Success - update UI
+                        this.saveStatus = 'saved';
+                        this.characterName = this.data.name || 'Unnamed';
+                        this.changedFields.clear();
+                        setTimeout(() => {
+                            if (this.saveStatus === 'saved') {
+                                this.saveStatus = '';
+                            }
+                        }, 2000);
+                    } else {
+                        const errorData = await response.json();
+                        this.saveStatus = 'error';
+                        this.handleError(errorData);
+                    }
+
+                } catch (error) {
+                    console.error('Save error:', error);
+                    this.saveStatus = 'error';
+                    this.showError('Failed to save character. Please check your connection.');
+                } finally {
+                    this.isSaving = false;
+                }
+            }, 500); // Reduced from 2000ms to 500ms for better responsiveness
         },
         
         // Create new character

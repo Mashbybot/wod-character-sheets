@@ -41,51 +41,51 @@
                 <div class="grid-box">
                     <div class="form-group-compact-horizontal">
                         <label>Name:</label>
-                        <input type="text" x-model="data.name" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.name" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>Concept:</label>
-                        <input type="text" x-model="data.concept" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.concept" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>Pronouns:</label>
-                        <input type="text" x-model="data.pronouns" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.pronouns" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>True Age:</label>
-                        <input type="text" x-model="data.true_age" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.true_age" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>Apparent Age:</label>
-                        <input type="text" x-model="data.apparent_age" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.apparent_age" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>Date of Birth:</label>
-                        <input type="text" x-model="data.date_of_birth" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.date_of_birth" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>Date of Death:</label>
-                        <input type="text" x-model="data.date_of_death" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.date_of_death" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>Ethnicity:</label>
-                        <input type="text" x-model="data.ethnicity" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.ethnicity" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>Languages:</label>
-                        <input type="text" x-model="data.languages" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.languages" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact-horizontal">
                         <label>Origin:</label>
-                        <input type="text" x-model="data.birthplace" @input.debounce.2s="autoSave()">
+                        <input type="text" x-model="data.birthplace" @input.debounce.300ms="autoSave()">
                     </div>
                     <div class="form-group-compact">
                         <label>Ambition</label>
-                        <textarea x-model="data.ambition" @input.debounce.2s="autoSave()" rows="2"></textarea>
+                        <textarea x-model="data.ambition" @input.debounce.300ms="autoSave()" rows="2"></textarea>
                     </div>
                     <div class="form-group-compact">
                         <label>Desire</label>
-                        <textarea x-model="data.desire" @input.debounce.2s="autoSave()" rows="2"></textarea>
+                        <textarea x-model="data.desire" @input.debounce.300ms="autoSave()" rows="2"></textarea>
                     </div>
                 </div>
             </section>
@@ -357,7 +357,7 @@
                         <div class="alias-overlay">
                             <input type="text" 
                                    x-model="data.alias" 
-                                   @input.debounce.2s="autoSave()"
+                                   @input.debounce.300ms="autoSave()"
                                    class="alias-input"
                                    placeholder="Alias">
                         </div>
@@ -379,7 +379,7 @@
                             <div class="background-type-input">
                                 <input type="text" 
                                        x-model="bg.type"
-                                       @input.debounce.2s="autoSave()"
+                                       @input.debounce.300ms="autoSave()"
                                        placeholder="Type">
                             </div>
                             <div class="square-tracker">
@@ -396,7 +396,7 @@
                         </div>
                         <div class="form-group">
                             <textarea x-model="bg.description"
-                                      @input.debounce.2s="autoSave()"
+                                      @input.debounce.300ms="autoSave()"
                                       rows="2"
                                       placeholder="Description"></textarea>
                         </div>
@@ -468,12 +468,12 @@
                         
                         <div class="form-group">
                             <label>Sire</label>
-                            <input type="text" x-model="data.sire" @input.debounce.2s="autoSave()">
+                            <input type="text" x-model="data.sire" @input.debounce.300ms="autoSave()">
                         </div>
                         
                         <div class="form-group">
                             <label>Predator Type</label>
-                            <input type="text" x-model="data.predator" @input.debounce.2s="autoSave()">
+                            <input type="text" x-model="data.predator" @input.debounce.300ms="autoSave()">
                         </div>
                         
                         <div class="form-group">
@@ -501,7 +501,7 @@
                             <input type="text" 
                                    x-show="data.bane_type === 'Custom'"
                                    x-model="data.bane_custom"
-                                   @input.debounce.2s="autoSave()"
+                                   @input.debounce.300ms="autoSave()"
                                    placeholder="Enter custom bane"
                                    style="margin-top: 0.5rem;">
                         </div>
@@ -534,7 +534,7 @@
                             <input type="text" 
                                    x-show="data.compulsion === 'Custom'"
                                    x-model="data.compulsion_custom"
-                                   @input.debounce.2s="autoSave()"
+                                   @input.debounce.300ms="autoSave()"
                                    placeholder="Enter custom compulsion"
                                    style="margin-top: 0.5rem;">
                         </div>
@@ -675,15 +675,15 @@
                         </div>
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" x-model="touchstone.name" @input.debounce.2s="autoSave()">
+                            <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea x-model="touchstone.description" @input.debounce.2s="autoSave()" rows="2"></textarea>
+                            <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Conviction</label>
-                            <textarea x-model="touchstone.conviction" @input.debounce.2s="autoSave()" rows="1"></textarea>
+                            <textarea x-model="touchstone.conviction" @input.debounce.300ms="autoSave()" rows="1"></textarea>
                         </div>
                     </div>
                 </template>
@@ -702,35 +702,35 @@
                     <span class="tenet-numeral">I</span>
                     <input type="text" 
                            x-model="data.chronicle_tenet_1"
-                           @input.debounce.2s="autoSave()"
+                           @input.debounce.300ms="autoSave()"
                            placeholder="Tenet 1">
                 </div>
                 <div class="tenet-row">
                     <span class="tenet-numeral">II</span>
                     <input type="text" 
                            x-model="data.chronicle_tenet_2"
-                           @input.debounce.2s="autoSave()"
+                           @input.debounce.300ms="autoSave()"
                            placeholder="Tenet 2">
                 </div>
                 <div class="tenet-row">
                     <span class="tenet-numeral">III</span>
                     <input type="text" 
                            x-model="data.chronicle_tenet_3"
-                           @input.debounce.2s="autoSave()"
+                           @input.debounce.300ms="autoSave()"
                            placeholder="Tenet 3">
                 </div>
                 <div class="tenet-row">
                     <span class="tenet-numeral">IV</span>
                     <input type="text" 
                            x-model="data.chronicle_tenet_4"
-                           @input.debounce.2s="autoSave()"
+                           @input.debounce.300ms="autoSave()"
                            placeholder="Tenet 4">
                 </div>
                 <div class="tenet-row">
                     <span class="tenet-numeral">V</span>
                     <input type="text" 
                            x-model="data.chronicle_tenet_5"
-                           @input.debounce.2s="autoSave()"
+                           @input.debounce.300ms="autoSave()"
                            placeholder="Tenet 5">
                 </div>
             </section>
@@ -750,7 +750,7 @@
             <section class="sheet-section">
                 <h2>History in Life</h2>
                 <textarea x-model="data.history_in_life" 
-                          @input.debounce.2s="autoSave()"
+                          @input.debounce.300ms="autoSave()"
                           rows="10"
                           placeholder="Character's mortal history..."></textarea>
             </section>
@@ -759,7 +759,7 @@
             <section class="sheet-section">
                 <h2>After Death</h2>
                 <textarea x-model="data.after_death" 
-                          @input.debounce.2s="autoSave()"
+                          @input.debounce.300ms="autoSave()"
                           rows="10"
                           placeholder="Character's unlife as a vampire..."></textarea>
             </section>
@@ -768,7 +768,7 @@
             <section class="sheet-section">
                 <h2>Notes</h2>
                 <textarea x-model="data.notes" 
-                          @input.debounce.2s="autoSave()"
+                          @input.debounce.300ms="autoSave()"
                           rows="6"
                           placeholder="Additional notes..."></textarea>
             </section>
@@ -825,7 +825,7 @@
                         <div class="discipline-powers" x-show="data['discipline_' + i + '_name']">
                             <label>Powers</label>
                             <textarea x-model="data['discipline_' + i + '_powers']" 
-                                      @input.debounce.2s="autoSave()"
+                                      @input.debounce.300ms="autoSave()"
                                       rows="3"
                                       placeholder="List discipline powers"></textarea>
                         </div>
@@ -833,7 +833,7 @@
                         <div class="discipline-description" x-show="data['discipline_' + i + '_name']">
                             <label>Notes</label>
                             <textarea x-model="data['discipline_' + i + '_description']" 
-                                      @input.debounce.2s="autoSave()"
+                                      @input.debounce.300ms="autoSave()"
                                       rows="2"
                                       placeholder="Custom notes"></textarea>
                         </div>
