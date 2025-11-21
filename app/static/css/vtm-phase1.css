@@ -6,10 +6,28 @@
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
     border-bottom: 3px solid var(--vtm-red-dark);
+    position: relative;
+}
+
+/* Clan Symbol in Header - positioned to the right */
+.clan-symbol-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.clan-symbol-image-header {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(139, 0, 0, 0.4));
+    opacity: 0.8;
 }
 
 .character-title {
-    font-family: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
+    font-family: 'Brush Script MT', 'Brush Script', cursive;
     font-size: 2.5rem;
     color: var(--vtm-red-light);
     margin-bottom: 0.5rem;
@@ -19,7 +37,7 @@
 }
 
 .chronicle-subheader {
-    font-family: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
+    font-family: 'Brush Script MT', 'Brush Script', cursive;
     font-size: 1.2rem;
     color: var(--text-gray);
     font-style: italic;
@@ -62,7 +80,7 @@
 .column-three {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 10px;
     padding: 0 0.75rem;
     overflow-x: hidden;
 }
@@ -661,7 +679,7 @@
 .identity-skills-stacked {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 10px;
     position: relative;
     margin-bottom: 2rem;
 }
@@ -726,8 +744,8 @@
 .discipline-icons-small img {
     width: 60px;
     height: 60px;
-    /* Convert black icons to dark gray (#1A1A1A) */
-    filter: brightness(0.10) drop-shadow(0 0 3px rgba(26, 26, 26, 0.5));
+    /* Convert black icons to match dark gray background (#1A1A1A) */
+    filter: brightness(0.10);
 }
 
 /* Clan Disciplines Header in Disciplines Section */
@@ -753,8 +771,8 @@
 .discipline-icons-with-labels img {
     width: 60px;
     height: 60px;
-    /* Convert black icons to dark gray (#1A1A1A) */
-    filter: brightness(0.10) drop-shadow(0 0 3px rgba(26, 26, 26, 0.5));
+    /* Convert black icons to match dark gray background (#1A1A1A) */
+    filter: brightness(0.10);
 }
 
 .discipline-icons-with-labels .discipline-label {

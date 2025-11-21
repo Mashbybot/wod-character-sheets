@@ -368,8 +368,8 @@
     width: 100px;
     height: 100px;
     object-fit: contain;
-    /* Convert black icons to dark gray (#1A1A1A) */
-    filter: brightness(0.10) drop-shadow(0 0 5px rgba(26, 26, 26, 0.5));
+    /* Convert black icons to match dark gray background (#1A1A1A) */
+    filter: brightness(0.10);
     transition: transform 0.2s;
 }
 

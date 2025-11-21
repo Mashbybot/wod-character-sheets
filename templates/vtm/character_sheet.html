@@ -20,7 +20,7 @@
     <!-- Header -->
     <div class="sheet-header-new">
         <h1 class="character-title" x-text="getCharacterTitle()"></h1>
-        <h2 class="chronicle-subheader" 
+        <h2 class="chronicle-subheader"
             contenteditable="true"
             @blur="data.chronicle = $event.target.textContent; autoSave()"
             @keydown.enter.prevent="$event.target.blur()"
@@ -29,6 +29,13 @@
             <span x-show="saveStatus === 'saving'">⏳ Saving...</span>
             <span x-show="saveStatus === 'saved'" class="saved">✓ Saved</span>
             <span x-show="saveStatus === 'error'" class="error">⚠ Save Failed</span>
+        </div>
+        <!-- Clan Symbol in Header -->
+        <div class="clan-symbol-header" x-show="data.clan">
+            <img :src="`/static/images/clan-symbols/${data.clan}.png?v=${window.STATIC_VERSION}`"
+                 :alt="data.clan"
+                 class="clan-symbol-image-header"
+                 onerror="this.style.display='none'">
         </div>
     </div>
     
@@ -429,15 +436,7 @@
                 <div class="identity-section">
                     <section class="sheet-section identity-box">
                         <h2>Identity</h2>
-                        
-                        <!-- Clan Symbol Overlay (positioned in upper right) -->
-                        <div class="clan-symbol-overlay-top" x-show="data.clan">
-                            <img :src="`/static/images/clan-symbols/${data.clan}.png?v=${window.STATIC_VERSION}`"
-                                 :alt="data.clan"
-                                 class="clan-symbol-image-small"
-                                 onerror="this.style.display='none'">
-                        </div>
-                        
+
                         <div class="form-group">
                             <label>Clan</label>
                             <select x-model="data.clan" @change="autoSave()">
@@ -645,15 +644,9 @@
                         </template>
                     </section>
                 </div>
-                
-                <!-- Clan Symbol Overlay -->
-                <div class="clan-symbol-overlay" x-show="data.clan">
-                    <img :src="`/static/images/clans/${data.clan}.png?v=${window.STATIC_VERSION}`"
-                         :alt="data.clan + ' symbol'"
-                         class="clan-symbol-image">
-                </div>
+
             </div>
-            
+
         </div>
         
     </div>
