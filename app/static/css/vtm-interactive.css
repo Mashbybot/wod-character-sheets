@@ -368,8 +368,8 @@
     width: 100px;
     height: 100px;
     object-fit: contain;
-    /* Convert black icons to heading red (#A52A2A) */
-    filter: invert(22%) sepia(77%) saturate(1403%) hue-rotate(344deg) brightness(93%) contrast(95%) drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
+    /* Convert black icons to dark gray (#1A1A1A) */
+    filter: brightness(0.10) drop-shadow(0 0 5px rgba(26, 26, 26, 0.5));
     transition: transform 0.2s;
 }
 

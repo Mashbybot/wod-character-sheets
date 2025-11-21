@@ -9,17 +9,17 @@
 }
 
 .character-title {
-    font-family: 'Grenze Gotisch', 'Cinzel', 'Georgia', serif;
+    font-family: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
     font-size: 2.5rem;
     color: var(--vtm-red-light);
     margin-bottom: 0.5rem;
-    font-weight: 700;
+    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 3px;
 }
 
 .chronicle-subheader {
-    font-family: 'Grenze Gotisch', 'Cinzel', 'Georgia', serif;
+    font-family: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
     font-size: 1.2rem;
     color: var(--text-gray);
     font-style: italic;
@@ -676,29 +676,37 @@
     position: relative;
 }
 
+.identity-box h2 {
+    position: relative;
+    z-index: 2;
+}
+
 .identity-box .form-group {
     margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
 }
 
 .identity-box label {
     font-size: 0.9rem;
 }
 
-/* Clan Symbol Overlay - positioned in upper right of Identity box */
+/* Clan Symbol Overlay - centered behind Identity box content */
 .clan-symbol-overlay-top {
     position: absolute;
-    top: calc(1rem + 150px); /* Moved down total 150px from original 1rem (50px + 100px additional) */
-    right: 1rem;
-    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
     pointer-events: none;
 }
 
 .clan-symbol-image-small {
-    width: 35px !important; /* Half of previous 70px */
-    height: 35px !important; /* Half of previous 70px */
+    width: 80px;
+    height: 80px;
     object-fit: contain;
     filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
-    opacity: 0.20 !important; /* 20% opacity */
+    opacity: 0.15;
 }
 
 .clan-disciplines-inline {
@@ -718,8 +726,8 @@
 .discipline-icons-small img {
     width: 60px;
     height: 60px;
-    /* Convert black icons to heading red (#A52A2A) */
-    filter: invert(22%) sepia(77%) saturate(1403%) hue-rotate(344deg) brightness(93%) contrast(95%) drop-shadow(0 0 3px rgba(139, 0, 0, 0.3));
+    /* Convert black icons to dark gray (#1A1A1A) */
+    filter: brightness(0.10) drop-shadow(0 0 3px rgba(26, 26, 26, 0.5));
 }
 
 /* Clan Disciplines Header in Disciplines Section */
@@ -745,8 +753,8 @@
 .discipline-icons-with-labels img {
     width: 60px;
     height: 60px;
-    /* Convert black icons to heading red (#A52A2A) */
-    filter: invert(22%) sepia(77%) saturate(1403%) hue-rotate(344deg) brightness(93%) contrast(95%) drop-shadow(0 0 3px rgba(139, 0, 0, 0.3));
+    /* Convert black icons to dark gray (#1A1A1A) */
+    filter: brightness(0.10) drop-shadow(0 0 3px rgba(26, 26, 26, 0.5));
 }
 
 .discipline-icons-with-labels .discipline-label {

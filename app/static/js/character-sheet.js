@@ -302,9 +302,12 @@ function characterSheet(characterId) {
                         this.xpLog = [];
                     }
                 }
-                
+
+                // Update Blood Potency calculated values after loading
+                this.updateBloodPotency(this.data.blood_potency || 0);
+
                 console.log('Character loaded:', this.data);
-                
+
             } catch (error) {
                 console.error('Error loading character:', error);
                 this.showError('Failed to load character. Please try again.');
