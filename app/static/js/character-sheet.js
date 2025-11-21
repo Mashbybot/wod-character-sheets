@@ -7,6 +7,8 @@ function characterSheet(characterId) {
         characterId: characterId,
         characterName: '',
         saveStatus: '', // '', 'saving', 'saved', 'error'
+        isLoading: true, // Track initial loading state
+        loadError: null, // Track loading errors
         data: {
             // Chronicle Information
             name: '',
@@ -209,6 +211,9 @@ function characterSheet(characterId) {
                         dots: 0
                     });
                 }
+
+                // No loading needed for new character
+                this.isLoading = false;
             }
 
             // Initialize Blood Potency values
@@ -222,11 +227,15 @@ function characterSheet(characterId) {
         
         // Load character data from server
         async loadCharacter() {
+            this.isLoading = true;
+            this.loadError = null;
+
             try {
                 const response = await fetch(`/vtm/api/character/${this.characterId}`);
-                
+
                 if (!response.ok) {
                     const errorData = await response.json();
+                    this.loadError = errorData.error || 'Failed to load character';
                     this.handleError(errorData);
                     return;
                 }
@@ -319,7 +328,10 @@ function characterSheet(characterId) {
 
             } catch (error) {
                 console.error('Error loading character:', error);
-                this.showError('Failed to load character. Please try again.');
+                this.loadError = 'Failed to load character. Please check your connection.';
+                this.showError(this.loadError);
+            } finally {
+                this.isLoading = false;
             }
         },
         

@@ -588,15 +588,42 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: border-color 0.3s;
+    transition: all 0.3s ease;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
+    overflow: hidden;
+}
+
+.portrait-box::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(139, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 .portrait-box:hover {
     border-color: var(--vtm-red);
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.4), inset 0 0 20px rgba(139, 0, 0, 0.1);
+    transform: scale(1.02);
+}
+
+.portrait-box:hover::after {
+    opacity: 1;
+}
+
+.portrait-box:hover .portrait-placeholder,
+.portrait-box:hover .portrait-placeholder-small {
+    color: var(--vtm-red-light);
+    transform: scale(1.1);
+    transition: all 0.3s ease;
 }
 
 /* Body: 200x300, left side, spans 1 row */
@@ -940,6 +967,86 @@
     .character-title {
         font-size: 1.8rem;
     }
+
+    /* Hide column dividers on mobile (not touch-friendly) */
+    .column-divider {
+        display: none;
+    }
+
+    /* Adjust grid to remove divider spacing */
+    .sheet-grid-three-column {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem;
+    }
+
+    /* Fix chronicle info horizontal labels on small screens */
+    .form-group-compact-horizontal {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .form-group-compact-horizontal label {
+        font-size: 0.85rem;
+    }
+
+    /* Improve skills section dot wrapping */
+    .skill-row-clean > div {
+        flex-wrap: wrap;
+    }
+
+    .skill-right {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+
+    .specialties-list {
+        padding-left: 0;
+    }
+
+    /* Make hobby boxes larger on mobile */
+    .portrait-hobby {
+        min-height: 120px;
+    }
+
+    /* Improve attribute layout on narrow screens */
+    .attribute-row {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .attribute-name {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* ===== EMPTY STATE PLACEHOLDERS ===== */
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-gray);
+    font-style: italic;
+    background-color: var(--bg-dark);
+    border-radius: 4px;
+    border: 2px dashed var(--border-color);
+    margin: 1rem 0;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+.empty-state-text {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-hint {
+    font-size: 0.85rem;
+    opacity: 0.7;
 }
 
 /* ===== PRINT STYLES ===== */

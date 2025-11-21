@@ -16,7 +16,29 @@
 
 {% block content %}
 <div class="character-sheet vtm-sheet" x-data="characterSheet({{ character.id if character else 'null' }})">
-    
+
+    <!-- Loading Spinner -->
+    <div x-show="isLoading" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading character data...</p>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div x-show="loadError && !isLoading" class="error-overlay">
+        <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <h2>Error Loading Character</h2>
+            <p x-text="loadError"></p>
+            <button @click="location.reload()" class="btn-retry">Retry</button>
+            <a href="/vtm" class="btn-back">Back to Character List</a>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden while loading) -->
+    <div x-show="!isLoading && !loadError">
+
     <!-- Header -->
     <div class="sheet-header-new">
         <h1 class="character-title" x-text="getCharacterTitle()"></h1>
@@ -383,7 +405,14 @@
             <!-- Backgrounds, Merits & Flaws (moved from below break) -->
             <section class="sheet-section">
                 <h2>Backgrounds, Merits & Flaws</h2>
-                
+
+                <!-- Empty State -->
+                <div x-show="backgrounds.length === 0" class="empty-state">
+                    <span class="empty-state-icon">📋</span>
+                    <div class="empty-state-text">No backgrounds yet</div>
+                    <div class="empty-state-hint">Add backgrounds, merits, and flaws to define your character</div>
+                </div>
+
                 <template x-for="(bg, index) in backgrounds" :key="index">
                     <div class="background-entry">
                         <div class="background-header">
@@ -663,7 +692,14 @@
             <!-- Touchstones -->
             <section class="sheet-section">
                 <h2>Touchstones</h2>
-                
+
+                <!-- Empty State -->
+                <div x-show="touchstones.length === 0" class="empty-state">
+                    <span class="empty-state-icon">👤</span>
+                    <div class="empty-state-text">No touchstones yet</div>
+                    <div class="empty-state-hint">Add touchstones to maintain your Humanity</div>
+                </div>
+
                 <template x-for="(touchstone, index) in touchstones" :key="index">
                     <div class="touchstone-entry">
                         <div class="touchstone-header">
@@ -851,9 +887,17 @@
                     <button type="button" class="btn-small" @click="spendXP()">Spend XP</button>
                 </div>
                 
-                <div class="xp-log" x-show="xpLog.length > 0">
+                <div class="xp-log">
                     <h3>XP Log</h3>
-                    <div class="xp-log-entries">
+
+                    <!-- Empty State -->
+                    <div x-show="xpLog.length === 0" class="empty-state" style="padding: 1rem; margin: 0;">
+                        <span class="empty-state-icon" style="font-size: 2rem;">📊</span>
+                        <div class="empty-state-text">No XP history yet</div>
+                        <div class="empty-state-hint">Add or spend XP to track your character's progression</div>
+                    </div>
+
+                    <div x-show="xpLog.length > 0" class="xp-log-entries">
                         <template x-for="(entry, idx) in xpLog.slice().reverse()" :key="idx">
                             <div class="xp-log-entry" :class="entry.type">
                                 <span class="xp-date" x-text="entry.date"></span>
@@ -872,7 +916,9 @@
     <div class="back-link">
         <a href="/vtm">← Back to Character List</a>
     </div>
-    
+
+    </div><!-- End main content wrapper -->
+
 </div>
 {% endblock %}
 
