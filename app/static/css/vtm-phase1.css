@@ -742,7 +742,25 @@
     font-size: 0.9rem;
 }
 
-/* Clan Symbol Overlay - centered behind Identity box content */
+/* Clan Symbol Watermark in Identity Box */
+.clan-symbol-overlay-identity {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.clan-symbol-image-identity {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
+    opacity: 0.12;
+}
+
+/* Clan Symbol Overlay - centered behind Identity box content (legacy) */
 .clan-symbol-overlay-top {
     position: absolute;
     top: 50%;
@@ -1024,6 +1042,13 @@
     .alias-input {
         font-size: 1.8rem;
         letter-spacing: 3px;
+    }
+
+    /* Adjust clan symbol size for mobile */
+    .clan-symbol-image-identity {
+        width: 80px;
+        height: 80px;
+        opacity: 0.08;
     }
 
     /* Improve attribute layout on narrow screens */

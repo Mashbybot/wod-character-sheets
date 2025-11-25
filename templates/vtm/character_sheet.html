@@ -467,6 +467,14 @@
                     <section class="sheet-section identity-box">
                         <h2>Identity</h2>
 
+                        <!-- Clan Symbol Watermark -->
+                        <div class="clan-symbol-overlay-identity" x-show="data.clan">
+                            <img :src="`/static/images/clan-symbols/${data.clan}.png?v=${window.STATIC_VERSION}`"
+                                 :alt="data.clan"
+                                 class="clan-symbol-image-identity"
+                                 onerror="this.style.display='none'">
+                        </div>
+
                         <div class="form-group-compact-horizontal">
                             <label>Clan:</label>
                             <select x-model="data.clan" @change="autoSave()">
