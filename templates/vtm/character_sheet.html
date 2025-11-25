@@ -540,12 +540,11 @@
                                 <option value="Custom">Custom</option>
                             </select>
                         </div>
-                        <div x-show="data.bane_type === 'Custom'" style="margin-left: 90px; margin-bottom: 0.5rem;">
+                        <div x-show="data.bane_type === 'Custom'" class="custom-input-wrapper">
                             <input type="text"
                                    x-model="data.bane_custom"
                                    @input.debounce.300ms="autoSave()"
-                                   placeholder="Enter custom bane"
-                                   style="width: 100%; padding: 0.4rem; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 3px; color: var(--text-white); font-size: 0.9rem;">
+                                   placeholder="Enter custom bane">
                         </div>
 
                         <div class="form-group-compact-horizontal">
@@ -574,12 +573,11 @@
                                 <option value="Custom">Custom</option>
                             </select>
                         </div>
-                        <div x-show="data.compulsion === 'Custom'" style="margin-left: 90px; margin-bottom: 0.5rem;">
+                        <div x-show="data.compulsion === 'Custom'" class="custom-input-wrapper">
                             <input type="text"
                                    x-model="data.compulsion_custom"
                                    @input.debounce.300ms="autoSave()"
-                                   placeholder="Enter custom compulsion"
-                                   style="width: 100%; padding: 0.4rem; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 3px; color: var(--text-white); font-size: 0.9rem;">
+                                   placeholder="Enter custom compulsion">
                         </div>
                     </section>
                 </div>
