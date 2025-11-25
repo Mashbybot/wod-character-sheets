@@ -52,7 +52,7 @@ main {
 .navbar {
     background-color: var(--bg-dark);
     border-bottom: 2px solid var(--vtm-red-dark);
-    padding: 1rem 2rem;
+    padding: 0.5rem 2rem;
 }
 
 .nav-container {
@@ -73,7 +73,7 @@ main {
 }
 
 .wod-logo {
-    height: 40px;
+    height: 32px;
     width: auto;
     transition: opacity 0.3s;
 }
@@ -192,6 +192,16 @@ main {
 }
 
 /* Dashboard */
+.dashboard-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.wod-logo-large {
+    height: 140px;
+    width: auto;
+}
+
 .dashboard h1 {
     text-align: center;
     margin-bottom: 3rem;

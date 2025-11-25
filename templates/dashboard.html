@@ -4,8 +4,11 @@
 
 {% block content %}
 <div class="dashboard">
+    <div class="dashboard-logo">
+        <img src="/static/images/wod-logo.png?v={{ static_version }}" alt="World of Darkness" class="wod-logo-large">
+    </div>
     <h1>Welcome, {{ user.username }}</h1>
-    
+
     <div class="game-lines">
         <div class="game-line-card vtm-card">
             <h2>🩸 Vampire: The Masquerade</h2>
