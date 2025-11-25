@@ -370,7 +370,7 @@
                     <div class="hobby-stack">
                         <template x-for="i in 4" :key="i">
                             <div>
-                                <div class="portrait-box portrait-hobby" 
+                                <div class="portrait-box portrait-hobby"
                                      @dblclick="$refs[`hobby${i}Input`].click()"
                                      :style="data[`portrait_hobby_${i}`] ? `background-image: url(${data['portrait_hobby_' + i]})` : ''">
                                     <template x-if="!data[`portrait_hobby_${i}`]">
@@ -381,19 +381,20 @@
                             </div>
                         </template>
                     </div>
-                    
+
+                    <!-- Alias Overlay - positioned between body and face -->
+                    <div class="alias-overlay">
+                        <input type="text"
+                               x-model="data.alias"
+                               @input.debounce.300ms="autoSave()"
+                               class="alias-input"
+                               placeholder="Alias">
+                    </div>
+
                     <!-- Bottom: Face (square, below body) -->
-                    <div class="portrait-box portrait-face" 
+                    <div class="portrait-box portrait-face"
                          @dblclick="$refs.faceInput.click()"
                          :style="data.portrait_face ? `background-image: url(${data.portrait_face})` : ''">
-                        <!-- Alias Overlay -->
-                        <div class="alias-overlay">
-                            <input type="text" 
-                                   x-model="data.alias" 
-                                   @input.debounce.300ms="autoSave()"
-                                   class="alias-input"
-                                   placeholder="Alias">
-                        </div>
                         <template x-if="!data.portrait_face">
                             <div class="portrait-placeholder">Face</div>
                         </template>

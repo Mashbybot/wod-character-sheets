@@ -578,6 +578,7 @@
     grid-template-rows: 300px auto;
     gap: 1rem;
     min-height: 600px;
+    position: relative;
 }
 
 .portrait-box {
@@ -670,14 +671,16 @@
     font-size: 2rem;
 }
 
-/* Alias Overlay */
+/* Alias Overlay - positioned between body and face */
 .alias-overlay {
     position: absolute;
-    bottom: 0;
+    top: 270px; /* Position near bottom of body image (300px - 30px overlap) */
     left: 0;
-    right: 0;
+    width: 200px; /* Match body width */
+    z-index: 100;
     background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7) 60%, transparent);
     padding: 1.5rem 1rem;
+    pointer-events: auto;
 }
 
 .alias-input {
@@ -943,14 +946,20 @@
         grid-column: 1;
         min-height: 400px;
     }
-    
+
+    .alias-overlay {
+        position: static;
+        width: 100%;
+        margin: -2rem 0 1rem 0;
+    }
+
     .hobby-stack {
         grid-column: 1;
         grid-row: auto;
         flex-direction: row;
         flex-wrap: wrap;
     }
-    
+
     .portrait-face {
         grid-column: 1;
         grid-row: auto;
@@ -1008,6 +1017,12 @@
     /* Make hobby boxes larger on mobile */
     .portrait-hobby {
         min-height: 120px;
+    }
+
+    /* Adjust alias font size for mobile */
+    .alias-input {
+        font-size: 1.8rem;
+        letter-spacing: 3px;
     }
 
     /* Improve attribute layout on narrow screens */
