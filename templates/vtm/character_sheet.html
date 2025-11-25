@@ -467,8 +467,8 @@
                     <section class="sheet-section identity-box">
                         <h2>Identity</h2>
 
-                        <div class="form-group">
-                            <label>Clan</label>
+                        <div class="form-group-compact-horizontal">
+                            <label>Clan:</label>
                             <select x-model="data.clan" @change="autoSave()">
                                 <option value="">Select Clan</option>
                                 <option value="brujah">Brujah</option>
@@ -489,28 +489,28 @@
                                 <option value="tzimisce">Tzimisce</option>
                             </select>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Generation</label>
+
+                        <div class="form-group-compact-horizontal">
+                            <label>Generation:</label>
                             <select x-model.number="data.generation" @change="autoSave()">
                                 <template x-for="gen in 16" :key="gen">
                                     <option :value="gen" x-text="gen"></option>
                                 </template>
                             </select>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Sire</label>
+
+                        <div class="form-group-compact-horizontal">
+                            <label>Sire:</label>
                             <input type="text" x-model="data.sire" @input.debounce.300ms="autoSave()">
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Predator Type</label>
+
+                        <div class="form-group-compact-horizontal">
+                            <label>Predator Type:</label>
                             <input type="text" x-model="data.predator" @input.debounce.300ms="autoSave()">
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Bane</label>
+
+                        <div class="form-group-compact-horizontal">
+                            <label>Bane:</label>
                             <select x-model="data.bane_type" @change="autoSave()">
                                 <option value="">Select Bane</option>
                                 <option value="Bane of the Clan">Bane of the Clan</option>
@@ -531,16 +531,17 @@
                                 <option value="Vicissitude">Vicissitude (Tzimisce)</option>
                                 <option value="Custom">Custom</option>
                             </select>
-                            <input type="text" 
-                                   x-show="data.bane_type === 'Custom'"
+                        </div>
+                        <div x-show="data.bane_type === 'Custom'" style="margin-left: 90px; margin-bottom: 0.5rem;">
+                            <input type="text"
                                    x-model="data.bane_custom"
                                    @input.debounce.300ms="autoSave()"
                                    placeholder="Enter custom bane"
-                                   style="margin-top: 0.5rem;">
+                                   style="width: 100%; padding: 0.4rem; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 3px; color: var(--text-white); font-size: 0.9rem;">
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Compulsion</label>
+
+                        <div class="form-group-compact-horizontal">
+                            <label>Compulsion:</label>
                             <select x-model="data.compulsion" @change="autoSave()">
                                 <option value="">Select Compulsion</option>
                                 <option value="Domination">Domination (Brujah)</option>
@@ -564,12 +565,13 @@
                                 <option value="Paranoia">Paranoia (General)</option>
                                 <option value="Custom">Custom</option>
                             </select>
-                            <input type="text" 
-                                   x-show="data.compulsion === 'Custom'"
+                        </div>
+                        <div x-show="data.compulsion === 'Custom'" style="margin-left: 90px; margin-bottom: 0.5rem;">
+                            <input type="text"
                                    x-model="data.compulsion_custom"
                                    @input.debounce.300ms="autoSave()"
                                    placeholder="Enter custom compulsion"
-                                   style="margin-top: 0.5rem;">
+                                   style="width: 100%; padding: 0.4rem; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 3px; color: var(--text-white); font-size: 0.9rem;">
                         </div>
                     </section>
                 </div>

@@ -208,7 +208,8 @@
     flex-shrink: 0;
 }
 
-.form-group-compact-horizontal input {
+.form-group-compact-horizontal input,
+.form-group-compact-horizontal select {
     flex: 1;
     padding: 0.4rem;
     background-color: var(--bg-card);
