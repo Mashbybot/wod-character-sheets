@@ -676,30 +676,32 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    padding: 1rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7) 60%, transparent);
+    padding: 1.5rem 1rem;
 }
 
 .alias-input {
     width: 100%;
     background: transparent;
     border: none;
-    color: var(--vtm-red-light);
-    font-size: 1.5rem;
-    font-weight: bold;
+    color: #8B0000;
+    font-size: 2.5rem;
+    font-weight: 900;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 6px;
     font-family: 'Cinzel', 'Georgia', serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .alias-input:focus {
     outline: none;
-    color: var(--vtm-red);
+    color: #A52A2A;
 }
 
 .alias-input::placeholder {
-    color: var(--text-gray);
+    color: rgba(139, 0, 0, 0.5);
+    font-weight: 700;
 }
 
 /* ===== IDENTITY & SKILLS STACKED (was split) ===== */
