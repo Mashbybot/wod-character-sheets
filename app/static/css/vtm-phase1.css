@@ -769,15 +769,23 @@
 
 .identity-box {
     position: relative;
+    padding: 1rem;
 }
 
 .identity-box h2 {
     position: relative;
     z-index: 2;
+    margin: -1rem -1rem 1rem -1rem;
+    padding: 0.5rem 1rem;
 }
 
 .identity-box .form-group {
     margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.identity-box .form-group-compact-horizontal {
     position: relative;
     z-index: 2;
 }
