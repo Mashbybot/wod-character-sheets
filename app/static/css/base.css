@@ -68,6 +68,18 @@ main {
     font-weight: bold;
     color: var(--vtm-red-light);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.wod-logo {
+    height: 40px;
+    width: auto;
+    transition: opacity 0.3s;
+}
+
+.wod-logo:hover {
+    opacity: 0.8;
 }
 
 .nav-links {
