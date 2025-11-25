@@ -80,7 +80,7 @@
 .column-three {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.5rem;
     padding: 0 0.75rem;
     overflow-x: hidden;
 }
@@ -208,7 +208,8 @@
     flex-shrink: 0;
 }
 
-.form-group-compact-horizontal input {
+.form-group-compact-horizontal input,
+.form-group-compact-horizontal select {
     flex: 1;
     padding: 0.4rem;
     background-color: var(--bg-card);
@@ -578,6 +579,7 @@
     grid-template-rows: 300px auto;
     gap: 1rem;
     min-height: 600px;
+    position: relative;
 }
 
 .portrait-box {
@@ -670,43 +672,47 @@
     font-size: 2rem;
 }
 
-/* Alias Overlay */
+/* Alias Overlay - positioned between body and face */
 .alias-overlay {
     position: absolute;
-    bottom: 0;
+    top: 270px; /* Position near bottom of body image (300px - 30px overlap) */
     left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    padding: 1rem;
+    width: 200px; /* Match body width */
+    z-index: 100;
+    background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7) 60%, transparent);
+    padding: 1.5rem 1rem;
+    pointer-events: auto;
 }
 
 .alias-input {
     width: 100%;
     background: transparent;
     border: none;
-    color: var(--vtm-red-light);
-    font-size: 1.5rem;
-    font-weight: bold;
+    color: #8B0000;
+    font-size: 2.5rem;
+    font-weight: 900;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 6px;
     font-family: 'Cinzel', 'Georgia', serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .alias-input:focus {
     outline: none;
-    color: var(--vtm-red);
+    color: #A52A2A;
 }
 
 .alias-input::placeholder {
-    color: var(--text-gray);
+    color: rgba(139, 0, 0, 0.5);
+    font-weight: 700;
 }
 
 /* ===== IDENTITY & SKILLS STACKED (was split) ===== */
 .identity-skills-stacked {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.5rem;
     position: relative;
     margin-bottom: 2rem;
 }
@@ -736,7 +742,25 @@
     font-size: 0.9rem;
 }
 
-/* Clan Symbol Overlay - centered behind Identity box content */
+/* Clan Symbol Watermark in Identity Box */
+.clan-symbol-overlay-identity {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.clan-symbol-image-identity {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
+    opacity: 0.12;
+}
+
+/* Clan Symbol Overlay - centered behind Identity box content (legacy) */
 .clan-symbol-overlay-top {
     position: absolute;
     top: 50%;
@@ -941,14 +965,20 @@
         grid-column: 1;
         min-height: 400px;
     }
-    
+
+    .alias-overlay {
+        position: static;
+        width: 100%;
+        margin: -2rem 0 1rem 0;
+    }
+
     .hobby-stack {
         grid-column: 1;
         grid-row: auto;
         flex-direction: row;
         flex-wrap: wrap;
     }
-    
+
     .portrait-face {
         grid-column: 1;
         grid-row: auto;
@@ -1006,6 +1036,19 @@
     /* Make hobby boxes larger on mobile */
     .portrait-hobby {
         min-height: 120px;
+    }
+
+    /* Adjust alias font size for mobile */
+    .alias-input {
+        font-size: 1.8rem;
+        letter-spacing: 3px;
+    }
+
+    /* Adjust clan symbol size for mobile */
+    .clan-symbol-image-identity {
+        width: 80px;
+        height: 80px;
+        opacity: 0.08;
     }
 
     /* Improve attribute layout on narrow screens */
