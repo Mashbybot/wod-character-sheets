@@ -80,7 +80,7 @@
 .column-three {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.5rem;
     padding: 0 0.75rem;
     overflow-x: hidden;
 }
@@ -712,7 +712,7 @@
 .identity-skills-stacked {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.5rem;
     position: relative;
     margin-bottom: 2rem;
 }
