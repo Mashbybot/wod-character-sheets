@@ -371,7 +371,7 @@
                         <template x-for="i in 4" :key="i">
                             <div>
                                 <div class="portrait-box portrait-hobby"
-                                     @dblclick.prevent="triggerHobbyUpload(i)"
+                                     @dblclick.prevent="triggerHobbyUpload($event)"
                                      :style="data[`portrait_hobby_${i}`] ? `background-image: url(${data['portrait_hobby_' + i]})` : ''">
                                     <template x-if="!data[`portrait_hobby_${i}`]">
                                         <div class="portrait-placeholder-small">
@@ -380,7 +380,7 @@
                                         </div>
                                     </template>
                                 </div>
-                                <input type="file" :x-ref="'hobby' + i + 'Input'" @change="uploadPortrait($event, `hobby_${i}`)" accept="image/*" style="display: none;">
+                                <input type="file" @change="uploadPortrait($event, `hobby_${i}`)" accept="image/*" style="display: none;">
                             </div>
                         </template>
                     </div>

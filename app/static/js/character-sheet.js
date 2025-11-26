@@ -192,6 +192,7 @@ function characterSheet(characterId) {
 
         // Initialize component
         async init() {
+            console.log('Character sheet initializing, ID:', this.characterId);
             if (this.characterId) {
                 await this.loadCharacter();
                 await this.loadUserPreferences();
@@ -337,8 +338,10 @@ function characterSheet(characterId) {
         
         // NEW: Load user preferences separately
         async loadUserPreferences() {
+            console.log('Loading user preferences...');
             try {
                 const response = await fetch('/api/preferences');
+                console.log('Preferences response status:', response.status);
 
                 if (response.ok) {
                     const prefs = await response.json();
@@ -346,13 +349,19 @@ function characterSheet(characterId) {
                     console.log('Loaded user preferences:', prefs);
 
                     // Apply saved column widths
-                    const widthsAbove = prefs.column_widths_above.split(',').map(w => parseInt(w));
-                    const widthsBelow = prefs.column_widths_below.split(',').map(w => parseInt(w));
-
-                    this.applyColumnWidths('above', widthsAbove);
-                    this.applyColumnWidths('below', widthsBelow);
+                    if (prefs.column_widths_above) {
+                        const widthsAbove = prefs.column_widths_above.split(',').map(w => parseInt(w));
+                        this.applyColumnWidths('above', widthsAbove);
+                        console.log('Applied above column widths:', widthsAbove);
+                    }
+                    if (prefs.column_widths_below) {
+                        const widthsBelow = prefs.column_widths_below.split(',').map(w => parseInt(w));
+                        this.applyColumnWidths('below', widthsBelow);
+                        console.log('Applied below column widths:', widthsBelow);
+                    }
                 } else {
-                    console.warn('Preferences not found, using defaults');
+                    const errorText = await response.text();
+                    console.warn('Preferences response not OK:', response.status, errorText);
                     // Use defaults from character data (fallback)
                     if (this.data.column_widths_above) {
                         const widthsAbove = this.data.column_widths_above.split(',').map(w => parseInt(w));
@@ -900,10 +909,15 @@ function characterSheet(characterId) {
         },
 
         // Helper method to trigger hobby portrait upload
-        triggerHobbyUpload(index) {
-            const fileInput = this.$refs['hobby' + index + 'Input'];
+        triggerHobbyUpload(event) {
+            // Find the file input within the same parent container
+            const container = event.currentTarget.parentElement;
+            const fileInput = container.querySelector('input[type="file"]');
             if (fileInput) {
+                console.log('Triggering hobby upload');
                 fileInput.click();
+            } else {
+                console.error('File input not found for hobby upload');
             }
         },
 
