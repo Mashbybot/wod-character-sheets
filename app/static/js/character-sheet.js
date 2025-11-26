@@ -191,10 +191,10 @@ function characterSheet(characterId) {
         isSaving: false,
 
         // Initialize component
-        init() {
+        async init() {
             if (this.characterId) {
-                this.loadCharacter();
-                this.loadUserPreferences();
+                await this.loadCharacter();
+                await this.loadUserPreferences();
             } else {
                 // New character - initialize with one empty touchstone
                 this.touchstones.push({

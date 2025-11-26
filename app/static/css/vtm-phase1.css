@@ -723,7 +723,6 @@
     left: 0;
     width: 200px; /* Match body width */
     z-index: 100;
-    background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.7) 60%, transparent);
     padding: 1.5rem 1rem;
     pointer-events: auto;
 }
