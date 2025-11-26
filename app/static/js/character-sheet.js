@@ -340,7 +340,7 @@ function characterSheet(characterId) {
         async loadUserPreferences() {
             console.log('Loading user preferences...');
             try {
-                const response = await fetch('/api/preferences');
+                const response = await fetch('/vtm/api/preferences');
                 console.log('Preferences response status:', response.status);
 
                 if (response.ok) {
@@ -382,7 +382,7 @@ function characterSheet(characterId) {
         async saveUserPreferences() {
             try {
                 console.log('Saving user preferences:', this.preferences);
-                const response = await fetch('/api/preferences', {
+                const response = await fetch('/vtm/api/preferences', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
