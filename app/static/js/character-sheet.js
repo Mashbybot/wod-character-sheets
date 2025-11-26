@@ -339,18 +339,20 @@ function characterSheet(characterId) {
         async loadUserPreferences() {
             try {
                 const response = await fetch('/api/preferences');
-                
+
                 if (response.ok) {
                     const prefs = await response.json();
                     this.preferences = prefs;
-                    
+                    console.log('Loaded user preferences:', prefs);
+
                     // Apply saved column widths
                     const widthsAbove = prefs.column_widths_above.split(',').map(w => parseInt(w));
                     const widthsBelow = prefs.column_widths_below.split(',').map(w => parseInt(w));
-                    
+
                     this.applyColumnWidths('above', widthsAbove);
                     this.applyColumnWidths('below', widthsBelow);
                 } else {
+                    console.warn('Preferences not found, using defaults');
                     // Use defaults from character data (fallback)
                     if (this.data.column_widths_above) {
                         const widthsAbove = this.data.column_widths_above.split(',').map(w => parseInt(w));
@@ -370,13 +372,20 @@ function characterSheet(characterId) {
         // NEW: Save user preferences separately
         async saveUserPreferences() {
             try {
-                await fetch('/api/preferences', {
+                console.log('Saving user preferences:', this.preferences);
+                const response = await fetch('/api/preferences', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(this.preferences)
                 });
+
+                if (response.ok) {
+                    console.log('Preferences saved successfully');
+                } else {
+                    console.error('Failed to save preferences:', response.status);
+                }
             } catch (error) {
                 console.error('Error saving preferences:', error);
                 // Not critical - don't show error to user
@@ -889,7 +898,15 @@ function characterSheet(characterId) {
                 this.showError('Failed to upload portrait. Please try again.');
             }
         },
-        
+
+        // Helper method to trigger hobby portrait upload
+        triggerHobbyUpload(index) {
+            const fileInput = this.$refs['hobby' + index + 'Input'];
+            if (fileInput) {
+                fileInput.click();
+            }
+        },
+
         // XP MANAGEMENT
         addXP() {
             const amount = prompt('How much XP to add?');
@@ -977,11 +994,30 @@ function characterSheet(characterId) {
             // Account for dividers (16px total for both dividers)
             const availableWidth = gridWidth - 16;
             
-            // Get current widths from preferences
-            const currentWidths = section === 'above'
-                ? this.preferences.column_widths_above.split(',').map(w => parseInt(w))
-                : this.preferences.column_widths_below.split(',').map(w => parseInt(w));
-            
+            // Get current widths from preferences with safety checks
+            const defaultWidths = section === 'above' ? [40, 30, 30] : [33, 33, 34];
+            let currentWidths;
+
+            try {
+                const widthString = section === 'above'
+                    ? this.preferences.column_widths_above
+                    : this.preferences.column_widths_below;
+
+                if (widthString && typeof widthString === 'string') {
+                    currentWidths = widthString.split(',').map(w => parseInt(w));
+                    // Validate we got 3 valid numbers
+                    if (currentWidths.length !== 3 || currentWidths.some(w => isNaN(w))) {
+                        console.warn('Invalid column widths, using defaults');
+                        currentWidths = defaultWidths;
+                    }
+                } else {
+                    currentWidths = defaultWidths;
+                }
+            } catch (error) {
+                console.error('Error parsing column widths:', error);
+                currentWidths = defaultWidths;
+            }
+
             const startWidths = [...currentWidths];
             
             const onMouseMove = (e) => {
@@ -1044,7 +1080,8 @@ function characterSheet(characterId) {
                 } else {
                     this.preferences.column_widths_below = widthsPercent.join(',');
                 }
-                
+
+                console.log(`Saving ${section} column widths:`, widthsPercent.join(','));
                 this.saveUserPreferences();
             };
             
