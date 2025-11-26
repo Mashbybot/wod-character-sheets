@@ -73,7 +73,7 @@ main {
 }
 
 .wod-logo {
-    height: 32px;
+    height: 50px;
     width: auto;
     transition: opacity 0.3s;
 }
@@ -192,16 +192,6 @@ main {
 }
 
 /* Dashboard */
-.dashboard-logo {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.wod-logo-large {
-    height: 140px;
-    width: auto;
-}
-
 .dashboard h1 {
     text-align: center;
     margin-bottom: 3rem;

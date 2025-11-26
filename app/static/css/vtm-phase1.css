@@ -243,7 +243,7 @@
 
 /* Custom input fields for Bane and Compulsion */
 .custom-input-wrapper {
-    margin-left: 90px;
+    margin-left: 105px;
     margin-bottom: 0.5rem;
 }
 
@@ -717,9 +717,9 @@
 }
 
 /* Alias Overlay - positioned between body and face */
-.alias-overlay {
+.portrait-grid-fixed .alias-overlay {
     position: absolute;
-    top: 270px; /* Position near bottom of body image (300px - 30px overlap) */
+    top: 250px; /* Position near bottom of body image (300px - 50px overlap) */
     left: 0;
     width: 200px; /* Match body width */
     z-index: 100;
@@ -769,14 +769,14 @@
 
 .identity-box {
     position: relative;
-    padding: 1rem;
+    padding: 1.5rem;
 }
 
 .identity-box h2 {
     position: relative;
     z-index: 2;
-    margin: -1rem -1rem 1rem -1rem;
-    padding: 0.5rem 1rem;
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
+    padding: 0.5rem 1.5rem;
 }
 
 .identity-box .form-group {
@@ -1018,7 +1018,7 @@
         min-height: 400px;
     }
 
-    .alias-overlay {
+    .portrait-grid-fixed .alias-overlay {
         position: static;
         width: 100%;
         margin: -2rem 0 1rem 0;
