@@ -709,6 +709,9 @@
     color: var(--text-gray);
     font-size: 1.2rem;
     text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 .portrait-placeholder-small {
@@ -736,6 +739,9 @@
     font-size: 1.5rem;
     display: block;
     margin-bottom: 0.25rem;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 /* Alias Overlay - positioned between body and face */
