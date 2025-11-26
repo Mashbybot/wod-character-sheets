@@ -743,7 +743,7 @@
     position: absolute;
     top: 250px; /* Position near bottom of body image (300px - 50px overlap) */
     left: 0;
-    width: 200px; /* Match body width */
+    width: 100%; /* Match face width (spans full grid) */
     z-index: 100;
     padding: 1.5rem 1rem;
     pointer-events: auto;
