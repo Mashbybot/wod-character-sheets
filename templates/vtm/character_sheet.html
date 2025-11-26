@@ -54,7 +54,7 @@
         </div>
         <!-- Clan Symbol in Header -->
         <div class="clan-symbol-header" x-show="data.clan">
-            <img :src="`/static/images/clan-symbols/${data.clan}.png?v=${window.STATIC_VERSION}`"
+            <img :src="`/static/images/clans/${data.clan}.png?v=${window.STATIC_VERSION}`"
                  :alt="data.clan"
                  class="clan-symbol-image-header"
                  onerror="this.style.display='none'">
@@ -508,7 +508,7 @@
 
                         <!-- Clan Symbol Watermark -->
                         <div class="clan-symbol-overlay-identity" x-show="data.clan">
-                            <img :src="`/static/images/clan-symbols/${data.clan}.png?v=${window.STATIC_VERSION}`"
+                            <img :src="`/static/images/clans/${data.clan}.png?v=${window.STATIC_VERSION}`"
                                  :alt="data.clan"
                                  class="clan-symbol-image-identity"
                                  onerror="this.style.display='none'">
