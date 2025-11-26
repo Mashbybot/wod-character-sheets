@@ -716,6 +716,29 @@
     font-size: 2rem;
 }
 
+/* Size hints for image placeholders */
+.size-hint {
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    opacity: 0.7;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.size-hint-small {
+    font-size: 0.6rem;
+    color: var(--text-gray);
+    opacity: 0.7;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.hobby-icon {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
 /* Alias Overlay - positioned between body and face */
 .portrait-grid-fixed .alias-overlay {
     position: absolute;
