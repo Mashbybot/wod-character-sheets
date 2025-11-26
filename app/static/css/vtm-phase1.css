@@ -739,7 +739,6 @@
     text-transform: uppercase;
     letter-spacing: 6px;
     font-family: 'Cinzel', 'Georgia', serif;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .alias-input:focus {
@@ -770,6 +769,7 @@
 .identity-box {
     position: relative;
     padding: 1.5rem;
+    overflow: hidden;
 }
 
 .identity-box h2 {
@@ -788,6 +788,12 @@
 .identity-box .form-group-compact-horizontal {
     position: relative;
     z-index: 2;
+    max-width: 100%;
+}
+
+.identity-box .form-group-compact-horizontal input,
+.identity-box .form-group-compact-horizontal select {
+    min-width: 0;
 }
 
 .identity-box label {
