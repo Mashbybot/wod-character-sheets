@@ -1,7 +1,7 @@
 /* VTM Character Sheet Styles */
 
 .character-sheet {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-black);
     padding: 2rem;
     border-radius: 8px;
     border: 2px solid var(--vtm-red-dark);
