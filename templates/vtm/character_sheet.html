@@ -506,8 +506,9 @@
                     <section class="sheet-section identity-box">
                         <h2>Identity</h2>
 
-                        <!-- Clan Symbol Watermark -->
-                        <div class="clan-symbol-overlay-identity" x-show="data.clan">
+                        <div class="identity-content">
+                            <!-- Clan Symbol Watermark -->
+                            <div class="clan-symbol-overlay-identity" x-show="data.clan">
                             <img :src="`/static/images/clans/${data.clan}.png?v=${window.STATIC_VERSION}`"
                                  :alt="data.clan"
                                  class="clan-symbol-image-identity"
@@ -618,6 +619,7 @@
                                    @input.debounce.300ms="autoSave()"
                                    placeholder="Enter custom compulsion">
                         </div>
+                        </div><!-- /.identity-content -->
                     </section>
                 </div>
                 
@@ -625,7 +627,8 @@
                 <div class="skills-section">
                     <section class="sheet-section skills-clean-list">
                         <h2>Skills</h2>
-                        
+
+                        <div class="skills-content">
                         <!-- Physical Skills -->
                         <template x-for="skill in ['athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny', 'melee', 'stealth', 'survival']" :key="skill">
                             <div class="skill-row-clean">
@@ -719,6 +722,7 @@
                                 </div>
                             </div>
                         </template>
+                        </div><!-- /.skills-content -->
                     </section>
                 </div>
 
@@ -778,7 +782,8 @@
             <!-- Chronicle Tenets (moved from column 3) -->
             <section class="sheet-section chronicle-tenets-numbered">
                 <h2>Chronicle Tenets</h2>
-                
+
+                <div class="tenets-content">
                 <div class="tenet-row">
                     <span class="tenet-numeral">I</span>
                     <input type="text" 
@@ -809,11 +814,12 @@
                 </div>
                 <div class="tenet-row">
                     <span class="tenet-numeral">V</span>
-                    <input type="text" 
+                    <input type="text"
                            x-model="data.chronicle_tenet_5"
                            @input.debounce.300ms="autoSave()"
                            placeholder="Tenet 5">
                 </div>
+                </div><!-- /.tenets-content -->
             </section>
             
             
