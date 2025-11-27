@@ -125,16 +125,34 @@
                 0 0 30px var(--neuro-shadow-glow);
 }
 
-/* Remove neumorphism from parent sections that contain neumorphic children */
+/* Remove neumorphism from parent sections that contain neumorphic children or should have separated headers */
 .sheet-section.chronicle-grid,
 .sheet-section.trackers-section,
 .sheet-section.portrait-six-box,
+.sheet-section.identity-box,
+.sheet-section.skills-clean-list,
+.sheet-section.blood-potency-new,
+.sheet-section.chronicle-tenets-numbered,
+.sheet-section.disciplines-section,
+.sheet-section.xp-section,
 .sheet-section:has(.background-entry),
-.sheet-section:has(.touchstone-entry) {
+.sheet-section:has(.touchstone-entry),
+.sheet-section:has(> textarea) {  /* History, After Death, Notes sections */
     background: transparent;
     box-shadow: none;
     padding: 1.5rem 0;  /* Keep vertical padding for spacing, remove horizontal */
     border-radius: 0;
+}
+
+/* Add neumorphism to textareas in these sections */
+.sheet-section:has(> textarea) textarea {
+    padding: 1.5rem;
+    background: linear-gradient(145deg, var(--neuro-bg-1), var(--neuro-bg-2));
+    border-radius: var(--neuro-radius);
+    box-shadow: 18px 18px 21px var(--neuro-shadow-dark),
+                -18px -18px 21px var(--neuro-shadow-light),
+                0 0 30px var(--neuro-shadow-glow);
+    border: none;
 }
 
 .sheet-section h2 {
@@ -590,6 +608,39 @@
     text-align: center;
     /* This will be at bottom of right column due to flex order */
     order: 999;
+    position: relative;
+}
+
+/* Create neumorphic background for XP content */
+.xp-section::after {
+    content: '';
+    position: absolute;
+    top: calc(1em + 2.5rem); /* Position below h2 */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(145deg, var(--neuro-bg-1), var(--neuro-bg-2));
+    border-radius: var(--neuro-radius);
+    box-shadow: 18px 18px 21px var(--neuro-shadow-dark),
+                -18px -18px 21px var(--neuro-shadow-light),
+                0 0 30px var(--neuro-shadow-glow);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.xp-section .xp-display,
+.xp-section .xp-buttons {
+    position: relative;
+    z-index: 1;
+    padding: 0 1.5rem;
+}
+
+.xp-section .xp-display {
+    padding-top: 1.5rem;
+}
+
+.xp-section .xp-buttons {
+    padding-bottom: 1.5rem;
 }
 
 .xp-display {
@@ -815,11 +866,22 @@
 
 /* ===== DISCIPLINES SECTION ===== */
 .discipline-entry {
-    background-color: var(--bg-dark);
+    background: linear-gradient(145deg, var(--neuro-bg-1), var(--neuro-bg-2));
     padding: 1rem;
     margin-bottom: 1rem;
-    border-radius: 4px;
+    border-radius: var(--neuro-radius);
     border-left: 3px solid var(--vtm-red);
+    box-shadow: 14px 14px 18px var(--neuro-shadow-dark),
+                -14px -14px 18px var(--neuro-shadow-light),
+                0 0 25px var(--neuro-shadow-glow);
+    transition: all 0.3s ease;
+}
+
+.discipline-entry:hover {
+    box-shadow: 14px 14px 18px var(--neuro-shadow-dark),
+                -14px -14px 18px var(--neuro-shadow-light),
+                0 0 35px rgba(139, 0, 0, 0.3),
+                inset 0 0 20px rgba(139, 0, 0, 0.1);
 }
 
 .discipline-header {

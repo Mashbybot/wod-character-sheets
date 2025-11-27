@@ -6,7 +6,7 @@
     margin-bottom: 2rem;
     padding: 1.5rem;
     padding-bottom: 1.5rem;
-    background-color: var(--bg-black);
+    background: linear-gradient(145deg, #0c0808, #0a0707);
     border-bottom: 3px solid var(--vtm-red-dark);
     position: relative;
 }
@@ -421,7 +421,12 @@
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0.5rem;
     overflow-x: auto;
-    padding: 0.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(145deg, var(--neuro-bg-1), var(--neuro-bg-2));
+    border-radius: var(--neuro-radius);
+    box-shadow: 18px 18px 21px var(--neuro-shadow-dark),
+                -18px -18px 21px var(--neuro-shadow-light),
+                0 0 30px var(--neuro-shadow-glow);
 }
 
 .attribute-column {
@@ -626,6 +631,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(145deg, var(--neuro-bg-1), var(--neuro-bg-2));
+    border-radius: var(--neuro-radius);
+    box-shadow: 18px 18px 21px var(--neuro-shadow-dark),
+                -18px -18px 21px var(--neuro-shadow-light),
+                0 0 30px var(--neuro-shadow-glow);
 }
 
 .bp-column-left,
@@ -1005,8 +1016,48 @@
 }
 
 /* ===== CHRONICLE TENETS - NUMBERED INPUTS ===== */
+/* Content wrapper for chronicle tenets - needs wrapper for proper header separation */
 .chronicle-tenets-numbered {
-    padding: 1.5rem;
+    padding: 0;
+}
+
+/* Neumorphic container for tenet content - h2 will be outside this effect via margin */
+.chronicle-tenets-numbered h2 {
+    margin-bottom: 1.5rem;
+}
+
+.chronicle-tenets-numbered .tenet-row:first-of-type {
+    padding-top: 1.5rem;
+}
+
+.chronicle-tenets-numbered .tenet-row {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.chronicle-tenets-numbered .tenet-row:last-of-type {
+    padding-bottom: 1.5rem;
+}
+
+/* Create neumorphic effect for all tenet rows together */
+.chronicle-tenets-numbered {
+    position: relative;
+}
+
+.chronicle-tenets-numbered::after {
+    content: '';
+    position: absolute;
+    top: calc(1em + 2.5rem); /* Position below h2 */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(145deg, var(--neuro-bg-1), var(--neuro-bg-2));
+    border-radius: var(--neuro-radius);
+    box-shadow: 18px 18px 21px var(--neuro-shadow-dark),
+                -18px -18px 21px var(--neuro-shadow-light),
+                0 0 30px var(--neuro-shadow-glow);
+    z-index: -1;
+    pointer-events: none;
 }
 
 .tenet-row {
