@@ -838,7 +838,7 @@
 
 .identity-box {
     position: relative;
-    overflow: hidden;
+    /* Removed overflow: hidden to allow neumorphic shadow to show */
 }
 
 .identity-content {
@@ -849,6 +849,7 @@
     box-shadow: 18px 18px 21px var(--neuro-shadow-dark),
                 -18px -18px 21px var(--neuro-shadow-light),
                 0 0 30px var(--neuro-shadow-glow);
+    overflow: hidden;  /* Contain clan watermark within content box */
 }
 
 .identity-box h2 {
@@ -882,7 +883,7 @@
 /* Clan Symbol Watermark in Identity Box */
 .clan-symbol-overlay-identity {
     position: absolute;
-    top: 30px;  /* Moved up 50px from 80px */
+    top: -20px;  /* Moved up another 50px from 30px */
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
