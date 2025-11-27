@@ -1,7 +1,7 @@
 /* VTM Character Sheet Styles */
 
 .character-sheet {
-    background-color: var(--bg-black);
+    background: linear-gradient(145deg, #0c0808, #0a0707);
     padding: 2rem;
     border-radius: 8px;
     border: 2px solid var(--vtm-red-dark);

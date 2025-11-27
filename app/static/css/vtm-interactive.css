@@ -125,6 +125,18 @@
                 0 0 30px var(--neuro-shadow-glow);
 }
 
+/* Remove neumorphism from parent sections that contain neumorphic children */
+.sheet-section.chronicle-grid,
+.sheet-section.trackers-section,
+.sheet-section.portrait-six-box,
+.sheet-section:has(.background-entry),
+.sheet-section:has(.touchstone-entry) {
+    background: transparent;
+    box-shadow: none;
+    padding: 1.5rem 0;  /* Keep vertical padding for spacing, remove horizontal */
+    border-radius: 0;
+}
+
 .sheet-section h2 {
     color: var(--vtm-red-light);
     font-size: 1.3rem;
