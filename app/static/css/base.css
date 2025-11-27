@@ -70,12 +70,16 @@ main {
     text-decoration: none;
     display: flex;
     align-items: center;
+    overflow: hidden;
+    height: 70px;
 }
 
 .wod-logo {
     height: 70px;
     width: auto;
     transition: opacity 0.3s;
+    transform: scale(1.4);
+    transform-origin: left center;
 }
 
 .wod-logo:hover {
