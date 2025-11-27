@@ -147,14 +147,14 @@
 }
 
 .trackers-section .trackers-compact {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-black);
     padding: 1rem;
     border-radius: 4px;
     border: 1px solid var(--border-color);
 }
 
 .grid-box {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-black);
     padding: 1rem;
     border-radius: 4px;
     border: 1px solid var(--border-color);
@@ -210,6 +210,7 @@
 .form-group-compact-horizontal input,
 .form-group-compact-horizontal select {
     flex: 1;
+    min-width: 0; /* Allow inputs to shrink below content width when column resizes */
     padding: 0.4rem;
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -304,6 +305,13 @@
     height: 14px;
     border: 1.5px solid var(--border-color);
     font-size: 0.7rem;
+}
+
+/* Add spacing between 5th and 6th dots to create visual rows of 5 */
+.health-box.small:nth-child(5),
+.willpower-box.small:nth-child(5),
+.humanity-box.small:nth-child(5) {
+    margin-right: 0.5rem;
 }
 
 /* Hunger dots in compact tracker format - CSS BLOOD DROPS */
@@ -535,7 +543,7 @@
     font-family: inherit;
     font-size: 0.9rem;
     resize: vertical;
-    min-height: 60px; /* Compact like Ambition/Desire */
+    min-height: 30px; /* Halved from 60px for more compact display */
 }
 
 /* Remove background button */
@@ -593,6 +601,12 @@
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border-color);
+}
+
+.blood-potency-new .bp-tracker-header .dot-tracker {
+    display: flex;
+    justify-content: center;
+    gap: 0.3rem;
 }
 
 .bp-two-column {
