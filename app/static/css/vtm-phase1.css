@@ -298,10 +298,10 @@
 }
 
 /* Add spacing between 5th and 6th dots to create visual rows of 5 */
-.health-box.small:nth-child(5),
-.willpower-box.small:nth-child(5),
-.humanity-box.small:nth-child(5) {
-    margin-right: 0.5rem;
+.health-box.small:nth-child(6),
+.willpower-box.small:nth-child(6),
+.humanity-box.small:nth-child(6) {
+    margin-left: 0.5rem;
 }
 
 /* Hunger dots in compact tracker format - CSS BLOOD DROPS */
