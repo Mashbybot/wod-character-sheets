@@ -23,6 +23,11 @@
     margin-bottom: 0.5rem;
     font-weight: 400;
     letter-spacing: 3px;
+    text-shadow:
+        0 0 10px rgba(139, 0, 0, 0.8),
+        0 0 20px rgba(139, 0, 0, 0.6),
+        0 0 30px rgba(139, 0, 0, 0.4),
+        2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .chronicle-subheader {
