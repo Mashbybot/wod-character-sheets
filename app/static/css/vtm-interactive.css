@@ -371,7 +371,6 @@
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: var(--neuro-radius);
-    border-left: 3px solid var(--vtm-red);
     transition: all 0.3s ease;
     animation: slideIn 0.3s ease;
     box-shadow: 14px 14px 18px var(--neuro-shadow-dark),
@@ -396,6 +395,21 @@
 
 .touchstone-header strong {
     color: var(--vtm-red-light);
+}
+
+/* Style touchstone remove button to match background boxes */
+.touchstone-entry .btn-remove-small {
+    background: none;
+    border: none;
+    color: #666;
+    padding: 0;
+    font-size: 1.2rem;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.touchstone-entry .btn-remove-small:hover {
+    color: #999;
 }
 
 /* ===== BACKGROUND ENTRIES ===== */

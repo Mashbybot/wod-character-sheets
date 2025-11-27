@@ -883,7 +883,7 @@
 /* Clan Symbol Watermark in Identity Box */
 .clan-symbol-overlay-identity {
     position: absolute;
-    top: -20px;  /* Moved up another 50px from 30px */
+    top: 5px;  /* Moved down 25px from -20px */
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
