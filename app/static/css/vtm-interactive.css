@@ -137,7 +137,8 @@
 .sheet-section.xp-section,
 .sheet-section:has(.background-entry),
 .sheet-section:has(.touchstone-entry),
-.sheet-section:has(> textarea) {  /* History, After Death, Notes sections */
+.sheet-section:has(> textarea),  /* History, After Death, Notes sections */
+.sheet-section:has(.attributes-three-column) {  /* Attributes section */
     background: transparent;
     box-shadow: none;
     padding: 1.5rem 0;  /* Keep vertical padding for spacing, remove horizontal */
