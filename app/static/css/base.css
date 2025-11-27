@@ -22,6 +22,14 @@
     --success: #28A745;
     --warning: #FFC107;
     --danger: #DC3545;
+
+    /* Neumorphism - Blood Pool Effect */
+    --neuro-radius: 12px;
+    --neuro-bg-1: #0b0b0b;
+    --neuro-bg-2: #090909;
+    --neuro-shadow-dark: #030202;        /* Dark shadow with red tint */
+    --neuro-shadow-light: #120a0a;       /* Light shadow with red tint */
+    --neuro-shadow-glow: rgba(139, 0, 0, 0.15);  /* Subtle red glow */
 }
 
 * {
