@@ -37,7 +37,7 @@
 
 .chronicle-subheader {
     font-family: 'Brush Script MT', 'Brush Script', cursive;
-    font-size: 1.2rem;
+    font-size: 1.7rem;
     color: var(--text-gray);
     font-style: italic;
     margin-bottom: 0.5rem;
@@ -61,7 +61,7 @@
 /* ===== 3-COLUMN GRID (MAIN STRUCTURE) ===== */
 .sheet-grid-three-column {
     display: grid;
-    grid-template-columns: 30% 8px 35% 8px 35%;
+    grid-template-columns: 40% 4px 35% 4px 25%;
     gap: 0;
     margin-bottom: 2rem;
     position: relative;
@@ -71,7 +71,7 @@
 
 /* Adjust for divider width - make total equal 100% */
 .sheet-grid-three-column {
-    grid-template-columns: calc(30% - 5px) 8px calc(35% - 6px) 8px calc(35% - 5px);
+    grid-template-columns: calc(40% - 5px) 4px calc(35% - 6px) 4px calc(25% - 5px);
 }
 
 .column-one,
@@ -86,7 +86,7 @@
 
 /* ===== DRAGGABLE COLUMN DIVIDERS ===== */
 .column-divider {
-    width: 8px;
+    width: 4px;
     background: transparent;
     cursor: col-resize;
     position: relative;
