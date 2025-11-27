@@ -818,8 +818,8 @@
 .identity-box h2 {
     position: relative;
     z-index: 2;
-    margin: -1.5rem -1.5rem 1rem -1.5rem;
-    padding: 0.5rem 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
 }
 
 .identity-box .form-group {
