@@ -11,21 +11,9 @@
     position: relative;
 }
 
-/* Clan Symbol in Header - positioned to the right */
+/* Clan Symbol in Header - hidden for now */
 .clan-symbol-header {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 10;
-    pointer-events: none;
-}
-
-.clan-symbol-image-header {
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(139, 0, 0, 0.4));
-    opacity: 0.8;
+    display: none;
 }
 
 .character-title {
@@ -818,8 +806,8 @@
 .identity-box h2 {
     position: relative;
     z-index: 2;
-    margin: -1.5rem -1.5rem 1rem -1.5rem;
-    padding: 0.5rem 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
 }
 
 .identity-box .form-group {
@@ -854,8 +842,8 @@
 }
 
 .clan-symbol-image-identity {
-    width: 240px;
-    height: 240px;
+    width: 360px;
+    height: 360px;
     object-fit: contain;
     filter: drop-shadow(0 0 5px rgba(139, 0, 0, 0.3));
     opacity: 0.12;

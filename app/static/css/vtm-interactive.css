@@ -456,7 +456,7 @@
 
 /* ===== TRACKERS SECTION ===== */
 .trackers-section {
-    background-color: var(--bg-card);
+    background-color: var(--bg-black);
 }
 
 .tracker-row {
