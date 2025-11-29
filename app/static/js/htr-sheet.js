@@ -96,10 +96,8 @@ function htrCharacterSheet(characterId) {
             in_despair: false,
 
             // Edges & Perks
-            edge_config: '1e2p',
-            edge_1_id: '',
-            edge_2_id: '',
-            selected_perks: '',
+            selected_edges: '',  // JSON array of edge IDs
+            selected_perks: '',  // JSON array of perk IDs
 
             // Equipment
             equipment_weapon: '',
@@ -365,6 +363,14 @@ function htrCharacterSheet(characterId) {
         },
 
         // Edges & Perks
+        get selectedEdgesArray() {
+            try {
+                return JSON.parse(this.data.selected_edges || '[]');
+            } catch {
+                return [];
+            }
+        },
+
         get selectedPerksArray() {
             try {
                 return JSON.parse(this.data.selected_perks || '[]');
@@ -373,49 +379,52 @@ function htrCharacterSheet(characterId) {
             }
         },
 
-        getAvailablePerks() {
-            const perks = [];
-            if (this.data.edge_1_id) {
-                const edge1 = this.edges.find(e => e.id === this.data.edge_1_id);
-                if (edge1 && edge1.perks) {
-                    perks.push(...edge1.perks);
+        getEdgesByCategory(category) {
+            return this.edges.filter(edge => edge.category === category);
+        },
+
+        isEdgeSelected(edgeId) {
+            return this.selectedEdgesArray.includes(edgeId);
+        },
+
+        toggleEdge(edgeId) {
+            let edges = this.selectedEdgesArray;
+
+            if (edges.includes(edgeId)) {
+                // Remove edge and all its perks
+                edges = edges.filter(e => e !== edgeId);
+
+                // Remove all perks associated with this edge
+                const edge = this.edges.find(e => e.id === edgeId);
+                if (edge && edge.perks) {
+                    let perks = this.selectedPerksArray;
+                    const perkIds = edge.perks.map(p => p.id);
+                    perks = perks.filter(p => !perkIds.includes(p));
+                    this.data.selected_perks = JSON.stringify(perks);
                 }
+            } else {
+                edges.push(edgeId);
             }
-            if (this.data.edge_2_id) {
-                const edge2 = this.edges.find(e => e.id === this.data.edge_2_id);
-                if (edge2 && edge2.perks) {
-                    perks.push(...edge2.perks);
-                }
-            }
-            return perks;
+
+            this.data.selected_edges = JSON.stringify(edges);
+            this.autoSave();
+        },
+
+        isPerkSelected(perkId) {
+            return this.selectedPerksArray.includes(perkId);
         },
 
         togglePerk(perkId) {
             let perks = this.selectedPerksArray;
-            const maxPerks = this.data.edge_config === '1e2p' ? 2 : 1;
 
             if (perks.includes(perkId)) {
                 perks = perks.filter(p => p !== perkId);
             } else {
-                if (perks.length < maxPerks) {
-                    perks.push(perkId);
-                }
+                perks.push(perkId);
             }
 
             this.data.selected_perks = JSON.stringify(perks);
             this.autoSave();
-        },
-
-        isEdgeConfigValid() {
-            const edgeCount = [this.data.edge_1_id, this.data.edge_2_id].filter(e => e).length;
-            const perkCount = this.selectedPerksArray.length;
-
-            if (this.data.edge_config === '1e2p') {
-                return edgeCount === 1 && perkCount === 2;
-            } else if (this.data.edge_config === '2e1p') {
-                return edgeCount === 2 && perkCount === 1;
-            }
-            return false;
         },
 
         // Touchstones

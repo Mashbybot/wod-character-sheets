@@ -3,315 +3,639 @@
     {
       "id": "arsenal",
       "name": "Arsenal",
-      "category": "Equipment",
-      "description": "You have access to weapons, tactical equipment, and combat gear. Whether through military connections, black market contacts, or careful acquisition, you're never without the tools of the hunt.",
-      "icon": "arsenal.webp",
+      "category": "Assets",
+      "description": "The Hunter has access to a wide variety of weapons that are generally not available to the public.",
+      "edge_pool": "Intelligence + Craft (own arsenal) or Manipulation + Streetwise (contacts)",
+      "system": "Win test at Difficulty 4 to provide a single personal firearm or melee weapon for one scene.",
       "perks": [
         {
-          "id": "well-armed",
-          "name": "Well-Armed",
-          "description": "You always carry at least one concealed weapon and know how to use it effectively. +1 to attack rolls with your signature weapon.",
-          "mechanical_benefit": "+1 attack with signature weapon"
+          "id": "team-requisition",
+          "name": "Team Requisition",
+          "description": "Up to the margin of the win, provide additional copies of the same weapon."
         },
         {
-          "id": "improvisational-gear",
-          "name": "Improvisational Gear",
-          "description": "You're skilled at creating tools and weapons from everyday objects. You can craft makeshift equipment with what's at hand.",
-          "mechanical_benefit": "Craft improvised weapons and tools"
+          "id": "special-features",
+          "name": "Special Features",
+          "description": "Weapon comes with special features (thermal sights, disguised cases) up to margin of win."
         },
         {
-          "id": "ordnance",
-          "name": "Ordnance",
-          "description": "You have access to explosives, grenades, and other heavy ordnance. Requires proper licensing or black market connections.",
-          "mechanical_benefit": "Access to explosives and grenades"
+          "id": "exotics",
+          "name": "Exotics",
+          "description": "Procure rare or one-of-a-kind weapons or ammunition."
         },
         {
-          "id": "global-access",
-          "name": "Global Access",
-          "description": "Your hunter has access to resources and equipment across international borders. You can acquire specialized gear in most major cities.",
-          "mechanical_benefit": "Acquire gear internationally"
+          "id": "untraceable",
+          "name": "Untraceable",
+          "description": "Weapons are completely untraceable and never lead authorities to the Hunters."
+        },
+        {
+          "id": "backup-piece",
+          "name": "Backup Piece",
+          "description": "Once per scene, declare a hidden weapon even if the main Edge test fails."
+        }
+      ]
+    },
+    {
+      "id": "fleet",
+      "name": "Fleet",
+      "category": "Assets",
+      "description": "The Hunter has access to a wide variety of personal or commercial vehicles on short notice.",
+      "edge_pool": "Intelligence + Technology (own fleet) or Manipulation + Persuasion (contacts)",
+      "system": "Win test at Difficulty 4 to provide a single vehicle for one scene.",
+      "perks": [
+        {
+          "id": "armor",
+          "name": "Armor",
+          "description": "Vehicles are armored against small firearms. +2 dice to defense against ranged weapons."
+        },
+        {
+          "id": "performance",
+          "name": "Performance",
+          "description": "Superior handling. Bonus equal to margin (max 3) on pursuit-related Driving tests."
+        },
+        {
+          "id": "surveillance",
+          "name": "Surveillance",
+          "description": "Concealed surveillance tools. Bonus equal to margin (max 3) on stakeout tests."
+        },
+        {
+          "id": "untraceable",
+          "name": "Untraceable",
+          "description": "Vehicles are completely untraceable."
+        },
+        {
+          "id": "hidden-cache",
+          "name": "Hidden Cache",
+          "description": "Hidden compartment (+2 Difficulty to locate). Can use Arsenal/Ordnance even if gear is taken."
+        },
+        {
+          "id": "wagon-train",
+          "name": "Wagon Train",
+          "description": "If vehicle is lost, make second test for replacement (lacks one Perk or +1 Difficulty)."
+        }
+      ]
+    },
+    {
+      "id": "ordnance",
+      "name": "Ordnance",
+      "category": "Assets",
+      "description": "The Hunter has access to timed or remotely detonated munitions (mines, C4, demolition charges).",
+      "edge_pool": "Composure + Science (builds own) or Composure + Streetwise (contacts)",
+      "system": "Win test at Difficulty 4 to provide a single mine or explosive for one scene.",
+      "perks": [
+        {
+          "id": "multiple-payloads",
+          "name": "Multiple Payloads",
+          "description": "Provide additional explosives up to the margin of the win."
+        },
+        {
+          "id": "non-lethal-munitions",
+          "name": "Non-lethal Munitions",
+          "description": "Obtain flash grenades or tear gas. Dice penalty equal to margin (max 3)."
+        },
+        {
+          "id": "exotics",
+          "name": "Exotics",
+          "description": "Custom or rare substances that can exploit supernatural vulnerabilities."
+        },
+        {
+          "id": "disguised-delivery",
+          "name": "Disguised Delivery",
+          "description": "Items disguised as mundane objects. +Difficulty to detect (equal to margin, max 3)."
         }
       ]
     },
     {
       "id": "library",
       "name": "Library",
-      "category": "Knowledge",
-      "description": "You have access to rare books, ancient texts, and occult knowledge. Your research materials give you an edge in understanding supernatural threats.",
-      "icon": "library.webp",
+      "category": "Assets",
+      "description": "Access to a wealth of information on supernatural creatures through texts or encrypted databases.",
+      "edge_pool": "Resolve + Academics",
+      "system": "Spend a day researching, then win Edge test. Receive clues about quarry. Once per session.",
       "perks": [
         {
-          "id": "antiquarian",
-          "name": "Antiquarian",
-          "description": "You have access to rare books, ancient texts, and occult knowledge. Add 2 dice when researching supernatural threats.",
-          "mechanical_benefit": "+2 dice on research rolls"
+          "id": "where-they-hide",
+          "name": "Where They Hide",
+          "description": "Bonus to locate creature's lair (equal to margin, max 3, expires after use)."
         },
         {
-          "id": "trivia",
-          "name": "Trivia",
-          "description": "Your mind is a repository of obscure facts and useful information. Gain bonus dice on Intelligence + Investigation rolls.",
-          "mechanical_benefit": "+1 dice on Intelligence + Investigation"
+          "id": "who-they-are",
+          "name": "Who They Are",
+          "description": "Bonus to identify the prey (equal to margin, max 3, expires after use)."
         },
         {
-          "id": "archivist",
-          "name": "Archivist",
-          "description": "You maintain detailed records of encounters and supernatural phenomena. You can recall specific details from past hunts.",
-          "mechanical_benefit": "Perfect recall of documented hunts"
+          "id": "how-to-halt-them",
+          "name": "How to Halt Them",
+          "description": "Bonus to ward/protect from prey (equal to margin, max 3, expires after use)."
         },
         {
-          "id": "artifact",
-          "name": "Artifact",
-          "description": "You possess a supernatural artifact with mysterious properties. The artifact has one supernatural ability.",
-          "mechanical_benefit": "Own one supernatural artifact (ST approved)"
+          "id": "how-to-harm-them",
+          "name": "How to Harm Them",
+          "description": "Bonus to exploit supernatural weaknesses (equal to margin, max 3, expires after use)."
         },
         {
-          "id": "tome",
-          "name": "Tome",
-          "description": "You own a grimoire or occult tome containing powerful supernatural knowledge. Consulting it grants bonuses to relevant rolls.",
-          "mechanical_benefit": "Bonus to occult rolls when consulting tome"
+          "id": "binge",
+          "name": "Binge",
+          "description": "Research time is cut in half."
+        },
+        {
+          "id": "friendly-librarian",
+          "name": "Friendly Librarian",
+          "description": "Wait 1-2 days before roll to gain 1 automatic success."
+        },
+        {
+          "id": "group-study",
+          "name": "Group Study",
+          "description": "+1 bonus die per cell member participating in research."
+        },
+        {
+          "id": "permanent-fixture",
+          "name": "Permanent Fixture",
+          "description": "Campus library can be used as a safe house once per semester."
+        },
+        {
+          "id": "how-to-silence-them",
+          "name": "How to Silence Them",
+          "description": "Bonus to damage target in social combat (equal to margin, max 3, expires after use)."
+        },
+        {
+          "id": "pattern-analysis",
+          "name": "Pattern Analysis",
+          "description": "Narrow down monster behavior and find people familiar with the phenomenon."
+        },
+        {
+          "id": "where-they-go",
+          "name": "Where they Go",
+          "description": "Bonus to identify prey's targets/hunting grounds (equal to margin, max 3, expires after use)."
         }
       ]
     },
     {
-      "id": "logistics",
-      "name": "Logistics",
-      "category": "Infrastructure",
-      "description": "You have access to bases, vehicles, and operational infrastructure. These resources provide safety, mobility, and tactical advantages.",
-      "icon": "logistics.webp",
+      "id": "experimental-medicine",
+      "name": "Experimental Medicine",
+      "category": "Assets",
+      "description": "Access to experimental medical procedures in exchange for being a test subject.",
+      "edge_pool": "Stamina + Medicine (Health) or Composure + Insight (Willpower)",
+      "system": "Heal Aggravated damage. Difficulty = half current Aggravated (rounded up). Win heals completely, fail inflicts Impaired + raises Danger by 1.",
       "perks": [
         {
-          "id": "safehouse",
-          "name": "Safehouse",
-          "description": "You maintain a secure location for planning, storing equipment, and recovering between hunts. It's protected and secret.",
-          "mechanical_benefit": "Secure base of operations"
+          "id": "improved-resilience",
+          "name": "Improved Resilience",
+          "description": "Armor Value of 1 when unarmored until end of next story."
         },
         {
-          "id": "safehouse-network",
-          "name": "Safehouse Network",
-          "description": "You have access to multiple safehouses across a region or country, providing shelter and resources wherever you operate.",
-          "mechanical_benefit": "Multiple secure locations"
+          "id": "monstrous-enhancement",
+          "name": "Monstrous Enhancement",
+          "description": "+2 to one Attribute (max 5), but gain weakness to common material (Aggravated damage)."
         },
         {
-          "id": "fleet",
-          "name": "Fleet",
-          "description": "You have access to multiple vehicles for different situations: surveillance van, fast pursuit vehicle, heavy transport.",
-          "mechanical_benefit": "Access to specialized vehicles"
+          "id": "phoenix-protocol",
+          "name": "Phoenix Protocol",
+          "description": "Heal Health twice as fast, Aggravated→Superficial. Can't use Drive for Desperation. End: Aggravated Willpower damage."
         },
         {
-          "id": "mobile-operations-center",
-          "name": "Mobile Operations Center",
-          "description": "You operate from a customized vehicle equipped with surveillance equipment, communications gear, and field hospital supplies.",
-          "mechanical_benefit": "Mobile command center"
-        },
-        {
-          "id": "surveillance-hub",
-          "name": "Surveillance Hub",
-          "description": "Your base is equipped with advanced surveillance equipment: cameras, listening devices, network monitoring tools.",
-          "mechanical_benefit": "Advanced surveillance capabilities"
+          "id": "unstable-steroids",
+          "name": "Unstable Steroids",
+          "description": "+1 to one Attribute until next story. If enter Despair, suffer 1 Aggravated damage."
         }
       ]
     },
     {
-      "id": "ordination",
-      "name": "Ordination",
-      "category": "Faith",
-      "description": "Your faith protects and empowers you. Whether through religious conviction or unwavering belief, you can resist and repel supernatural evil.",
-      "icon": "ordination.webp",
+      "id": "improvised-gear",
+      "name": "Improvised Gear",
+      "category": "Aptitudes",
+      "description": "Create short-lived but useful tools from ordinary materials.",
+      "edge_pool": "Intelligence + Craft/Technology/Science",
+      "system": "Win test at Difficulty 4 to create equipment that adds 2-dice advantage to a Skill. Lasts one scene.",
       "perks": [
         {
-          "id": "true-faith",
-          "name": "True Faith",
-          "description": "Your unwavering belief manifests as tangible power. Supernatural creatures feel pain in your presence.",
-          "mechanical_benefit": "Faith causes pain to supernatural beings"
+          "id": "frugal",
+          "name": "Frugal",
+          "description": "Can apply this Edge anywhere with trinkets/tools in a bag."
         },
         {
-          "id": "body-and-soul",
-          "name": "Body and Soul",
-          "description": "Your faith protects you from supernatural influence. Add dice to resist mental domination, possession, or supernatural fear.",
-          "mechanical_benefit": "+2 dice to resist supernatural mental effects"
+          "id": "mass-production",
+          "name": "Mass Production",
+          "description": "Produce additional identical items equal to the margin."
         },
         {
-          "id": "consecrate",
-          "name": "Consecrate",
-          "description": "You can bless locations, making them uncomfortable or harmful to supernatural creatures. The effect lasts for one scene.",
-          "mechanical_benefit": "Bless locations against supernatural"
+          "id": "specialization",
+          "name": "Specialization",
+          "description": "Items for specific Skill grant 3-dice bonus instead of 2. (Take multiple times, once per Skill)"
         },
         {
-          "id": "holy-icon",
-          "name": "Holy Icon",
-          "description": "You possess a blessed religious symbol that repels certain supernatural creatures. Its effectiveness depends on your faith.",
-          "mechanical_benefit": "Blessed symbol repels supernatural"
+          "id": "speed-crafting",
+          "name": "Speed Crafting",
+          "description": "Can use under duress. Craft in 3 turns minus margin (minimum 1 turn)."
         },
         {
-          "id": "repel-the-unnatural",
-          "name": "Repel the Unnatural",
-          "description": "Your presence disturbs supernatural creatures. They feel uncomfortable near you and may flee if their resolve is weak.",
-          "mechanical_benefit": "Passive supernatural repulsion"
+          "id": "made-to-last",
+          "name": "Made to Last",
+          "description": "Items last for additional scenes equal to margin (minimum 1)."
         }
       ]
     },
     {
-      "id": "tradecraft",
-      "name": "Tradecraft",
-      "category": "Espionage",
-      "description": "You have training in espionage, infiltration, and covert operations. You can disappear, assume new identities, and operate in the shadows.",
-      "icon": "tradecraft.webp",
+      "id": "global-access",
+      "name": "Global Access",
+      "category": "Aptitudes",
+      "description": "Digital larceny beyond normal hacking capabilities.",
+      "edge_pool": "Intelligence + Technology",
+      "system": "Spend a scene, win test at Difficulty 4 to obtain data from any database.",
       "perks": [
         {
-          "id": "alternative-identity",
-          "name": "Alternative Identity",
-          "description": "You maintain one or more fake identities complete with documentation. Useful for infiltration and avoiding detection.",
-          "mechanical_benefit": "Maintain false identities"
+          "id": "watching-big-brother",
+          "name": "Watching Big Brother",
+          "description": "Manipulate digital surveillance footage, edit people in/out of records."
         },
         {
-          "id": "clean-slate",
-          "name": "Clean Slate",
-          "description": "Your records have been scrubbed. Digital searches turn up nothing, and physical records have been destroyed or altered.",
-          "mechanical_benefit": "No traceable records"
+          "id": "all-access-pass",
+          "name": "All-Access Pass",
+          "description": "Bypass electronic locks, disable security (Difficulty 3-5)."
         },
         {
-          "id": "dragnet",
-          "name": "Dragnet",
-          "description": "You can set up an information network to track a target. Once established, you receive updates on their movements.",
-          "mechanical_benefit": "Track targets via information network"
+          "id": "money-trap",
+          "name": "Money Trap",
+          "description": "Manipulate financial data. Lower target's Resources by 1 per margin for 1 month."
         },
         {
-          "id": "sleeper",
-          "name": "Sleeper",
-          "description": "You have a background in intelligence work and can activate old contacts, safe houses, and information channels.",
-          "mechanical_benefit": "Intelligence contacts and resources"
+          "id": "the-letter-of-the-law",
+          "name": "The Letter of the Law",
+          "description": "Manipulate criminal records (Difficulty 3 local, 5 global)."
         },
         {
-          "id": "streetwise-network",
-          "name": "Streetwise Network",
-          "description": "You have contacts in the criminal underworld who provide information, black market access, and street-level intelligence.",
-          "mechanical_benefit": "Criminal underworld contacts"
+          "id": "digital-cannon-fodder",
+          "name": "Digital Cannon Fodder",
+          "description": "Reduce success of digital surveillance/trace by 2."
+        },
+        {
+          "id": "intranet-insertion",
+          "name": "Intranet Insertion",
+          "description": "Access non-networked systems remotely. May auto-increase Danger."
+        },
+        {
+          "id": "spoof",
+          "name": "Spoof",
+          "description": "Pin intrusion on fake/real person (Difficulty 3-5)."
         }
       ]
     },
     {
-      "id": "network",
-      "name": "Network",
-      "category": "Connections",
-      "description": "You're connected to other hunters, community members, and informants. Your network provides intelligence, support, and backup.",
-      "icon": "network.webp",
+      "id": "drone-jockey",
+      "name": "Drone Jockey",
+      "category": "Aptitudes",
+      "description": "Control an advanced drone with expert skill.",
+      "edge_pool": "Wits + Technology (fly), Intelligence + Craft (repair/rebuild)",
+      "system": "Drone performs 2 Skills using Wits+Technology. 5 health, active 1 day + margin. Repair: Difficulty 3, heal margin health.",
       "perks": [
         {
-          "id": "strategic-network",
-          "name": "Strategic Network",
-          "description": "You're connected to hunters across regions who share intelligence and coordinate operations against supernatural threats.",
-          "mechanical_benefit": "Hunter network coordination"
+          "id": "autonomous",
+          "name": "Autonomous",
+          "description": "Run drones with simple patterns (complex needs Resolve+Technology). Uses 5-dice pool."
         },
         {
-          "id": "community-organizer",
-          "name": "Community Organizer",
-          "description": "You can mobilize community members for support, information gathering, or direct action. Your cell gains local allies.",
-          "mechanical_benefit": "Mobilize community support"
+          "id": "variants",
+          "name": "Variants",
+          "description": "Additional drone variant with 2 different Skills. (Take multiple times)"
         },
         {
-          "id": "mole",
-          "name": "Mole",
-          "description": "You have an informant inside a supernatural organization or enemy cell. They provide intelligence but expect protection.",
-          "mechanical_benefit": "Inside informant"
+          "id": "specialist-skill",
+          "name": "Specialist Skill",
+          "description": "Drone gains additional Skill (Larceny, Science, etc.). (Take multiple times per drone)"
         },
         {
-          "id": "victim-support-network",
-          "name": "Victim Support Network",
-          "description": "You maintain connections with survivors of supernatural encounters who provide information and early warnings.",
-          "mechanical_benefit": "Survivor intelligence network"
+          "id": "armaments",
+          "name": "Armaments",
+          "description": "Equipped with SMG/taser (5-dice pool, or Wits+Technology if directly controlled)."
         },
         {
-          "id": "fixation",
-          "name": "Fixation",
-          "description": "You're obsessed with a specific type of supernatural creature. You gain bonus dice when hunting this quarry type.",
-          "mechanical_benefit": "+2 dice against specific creature type"
+          "id": "payload",
+          "name": "Payload",
+          "description": "Carry large cargo. Moves slower, +2 dice to detect."
+        },
+        {
+          "id": "electronic-shield",
+          "name": "Electronic Shield",
+          "description": "Cannot be hacked. If hackable, Difficulty = 2 + operator's margin."
         }
       ]
     },
     {
-      "id": "preparedness",
-      "name": "Preparedness",
-      "category": "Readiness",
-      "description": "You're always ready for the unexpected. Through planning, training, and preparation, you can handle any situation the hunt throws at you.",
-      "icon": "preparedness.webp",
+      "id": "beast-whisperer",
+      "name": "Beast Whisperer",
+      "category": "Aptitudes",
+      "description": "Understand and command loyal animal companions.",
+      "edge_pool": "Charisma + Animal Ken (commands), Composure + Animal Ken (training)",
+      "system": "Choose one animal type with key action pool. Completely loyal companion.",
       "perks": [
         {
-          "id": "go-bag",
-          "name": "Go Bag",
-          "description": "You maintain emergency supplies that let you operate independently for 48 hours: cash, burner phones, basic weapons.",
-          "mechanical_benefit": "48-hour emergency supplies"
+          "id": "incorruptible",
+          "name": "Incorruptible",
+          "description": "Animal immune to supernatural powers that would sway it away."
         },
         {
-          "id": "first-aid",
-          "name": "First Aid",
-          "description": "You carry medical supplies and know emergency trauma care. You can stabilize dying hunters and treat injuries in the field.",
-          "mechanical_benefit": "Field medical treatment"
+          "id": "menagerie",
+          "name": "Menagerie",
+          "description": "Choose another animal type. (Take multiple times)"
         },
         {
-          "id": "fortified-position",
-          "name": "Fortified Position",
-          "description": "You can quickly secure a location with barriers, traps, and defensive measures. Attackers face increased difficulty.",
-          "mechanical_benefit": "Quick defensive fortification"
+          "id": "complex-commands",
+          "name": "Complex Commands",
+          "description": "Animals understand complex commands. Charisma+Animal Ken to command, Intelligence+Animal Ken to understand."
         },
         {
-          "id": "prepared-for-anything",
-          "name": "Prepared for Anything",
-          "description": "Once per session, you can produce an item you 'remembered to pack' that's reasonable for your character to have.",
-          "mechanical_benefit": "1/session produce reasonable item"
+          "id": "incognito",
+          "name": "Incognito",
+          "description": "Animal can stay out of sight or blend into environments."
         },
         {
-          "id": "bystander",
-          "name": "Bystander",
-          "description": "You blend into crowds and appear unremarkable. Supernatural creatures and surveillance systems overlook you.",
-          "mechanical_benefit": "Blend into crowds, avoid detection"
+          "id": "supernatural-scent",
+          "name": "Supernatural Scent",
+          "description": "Track specific supernatural type by scent (max 12 hours old). (Take multiple times per creature type)"
         }
       ]
     },
     {
-      "id": "custom",
-      "name": "Custom Edge",
-      "category": "Custom",
-      "description": "Create your own edge with Storyteller approval. Work with your ST to define the edge's theme and available perks.",
-      "icon": "custom.webp",
+      "id": "turncoat",
+      "name": "Turncoat",
+      "category": "Aptitudes",
+      "description": "Work as a double agent, convincing Quarry of complete loyalty.",
+      "edge_pool": "Manipulation + Subterfuge",
+      "system": "Edge test vs Difficulty = half target's Intelligence+Wits. Target believes Hunter is 100% loyal.",
       "perks": [
         {
-          "id": "custom-perk-1",
-          "name": "Custom Perk 1",
-          "description": "Define this perk with your Storyteller.",
-          "mechanical_benefit": "ST approved"
+          "id": "deathbed-confession",
+          "name": "Deathbed Confession",
+          "description": "Use Turncoat during combat (full action)."
         },
         {
-          "id": "custom-perk-2",
-          "name": "Custom Perk 2",
-          "description": "Define this perk with your Storyteller.",
-          "mechanical_benefit": "ST approved"
+          "id": "poker-face",
+          "name": "Poker Face",
+          "description": "+2 dice when questioned."
         },
         {
-          "id": "custom-perk-3",
-          "name": "Custom Perk 3",
-          "description": "Define this perk with your Storyteller.",
-          "mechanical_benefit": "ST approved"
+          "id": "stick-to-the-plan",
+          "name": "Stick to the Plan",
+          "description": "Cell understands Turncoat Hunter's intent without communication."
+        },
+        {
+          "id": "we-come-as-a-team",
+          "name": "We Come as a Team",
+          "description": "Bring cellmates (up to margin). Can vouch for them with Turncoat test."
+        }
+      ]
+    },
+    {
+      "id": "sense-the-unnatural",
+      "name": "Sense the Unnatural",
+      "category": "Endowments",
+      "description": "Detect nearby supernatural creatures using an object of focus.",
+      "edge_pool": "Wits + Occult/Science",
+      "system": "Win test (Difficulty 3-5) to detect presence. Must hold focus object. Costs 1 Willpower for additional attempts per scene.",
+      "perks": [
+        {
+          "id": "creature-specialization",
+          "name": "Creature Specialization",
+          "description": "+2 dice vs specific creature type. (Take multiple times, once per type)"
+        },
+        {
+          "id": "range",
+          "name": "Range",
+          "description": "Extended to city block size (doesn't give precision beyond same room/farther)."
+        },
+        {
+          "id": "precision",
+          "name": "Precision",
+          "description": "Determine WHO the supernatural creature is (not type unless specialized)."
+        },
+        {
+          "id": "handsfree",
+          "name": "Handsfree",
+          "description": "No longer need object of focus."
+        },
+        {
+          "id": "horrid-detail",
+          "name": "Horrid Detail",
+          "description": "Cut through supernatural disguises to see real/non-physical form."
+        },
+        {
+          "id": "network",
+          "name": "Network",
+          "description": "Wits+Insight: Determine if anyone is under influence or had recent supernatural contact."
+        }
+      ]
+    },
+    {
+      "id": "repel-the-unnatural",
+      "name": "Repel the Unnatural",
+      "category": "Endowments",
+      "description": "Repel supernatural creatures by brandishing an object of focus.",
+      "edge_pool": "Resolve + Occult/Science",
+      "system": "Win test (Difficulty = half creature's Composure+Resolve) to hold back creature while stationary. Moving requires retest each turn.",
+      "perks": [
+        {
+          "id": "ward",
+          "name": "Ward",
+          "description": "Extend protection to 2 meters + 1 meter per margin."
+        },
+        {
+          "id": "damage",
+          "name": "Damage",
+          "description": "Use focus as melee weapon (+0 damage, Aggravated). Must retest or protection fails."
+        },
+        {
+          "id": "creature-specialization",
+          "name": "Creature Specialization",
+          "description": "+2 dice vs specific creature type. (Take multiple times, once per type)"
+        },
+        {
+          "id": "handsfree",
+          "name": "Handsfree",
+          "description": "No longer need object of focus."
+        }
+      ]
+    },
+    {
+      "id": "thwart-the-unnatural",
+      "name": "Thwart the Unnatural",
+      "category": "Endowments",
+      "description": "Highly resistant to supernatural mental abilities.",
+      "edge_pool": "Composure + Occult/Science",
+      "system": "While holding focus: immune to supernatural mental effects requiring resistance. Can resist automatic effects with Edge test.",
+      "perks": [
+        {
+          "id": "creature-specialization",
+          "name": "Creature Specialization",
+          "description": "+2 dice vs specific creature type. (Take multiple times, once per type)"
+        },
+        {
+          "id": "ward",
+          "name": "Ward",
+          "description": "Extend protection to 2 meters + 1 meter per margin. Hunter makes all resistance tests."
+        },
+        {
+          "id": "recognition",
+          "name": "Recognition",
+          "description": "If resist successfully, aware of attempt and what power would have done."
+        },
+        {
+          "id": "handsfree",
+          "name": "Handsfree",
+          "description": "No longer need object of focus."
+        },
+        {
+          "id": "redirection",
+          "name": "Redirection",
+          "description": "On successful resist: Take 1 Superficial Willpower, redirect ability to user."
+        }
+      ]
+    },
+    {
+      "id": "artifact",
+      "name": "Artifact",
+      "category": "Endowments",
+      "description": "Possess a rare tool that provides supernatural benefits.",
+      "edge_pool": "Intelligence + Occult/Science",
+      "system": "Relic provides 1-dice bonus to single Skill (not for Artifact Edge tests). Can be object of focus. Hard to regain if lost.",
+      "perks": [
+        {
+          "id": "empower",
+          "name": "Empower",
+          "description": "Once per scene: Test at Difficulty 4 to increase bonus to 3 dice. Fail: Superficial Willpower damage = margin lost."
+        },
+        {
+          "id": "attraction",
+          "name": "Attraction",
+          "description": "Many seek this item. +2 dice to ambush attempts. Once revealed, seekers will continue looking."
+        },
+        {
+          "id": "detection",
+          "name": "Detection",
+          "description": "Acts like Sense the Unnatural Edge."
+        },
+        {
+          "id": "shield",
+          "name": "Shield",
+          "description": "Physical damage from supernatural sources is halved."
+        },
+        {
+          "id": "feature-unlocked",
+          "name": "Feature Unlocked",
+          "description": "Once per story at Danger 5: Spend Willpower to reroll non-Desperation dice. Successes = critical wins."
+        }
+      ]
+    },
+    {
+      "id": "cleanse-the-unnatural",
+      "name": "Cleanse the Unnatural",
+      "category": "Endowments",
+      "description": "Drive out supernatural influence from victims, freeing them from control.",
+      "edge_pool": "Charisma + Persuasion (Exorcism), Resolve + Science (Psychic), or Manipulation + Occult (Faith)",
+      "system": "Difficulty based on duration (1=same scene, 2=24hrs, 3=week, 4=year, 5=beyond). Target takes 3 Aggravated -1 per margin. Win: Control regained for 24 hours.",
+      "perks": [
+        {
+          "id": "bedside-manner",
+          "name": "Bedside Manner",
+          "description": "Damage becomes Superficial and rounded down after halving."
+        },
+        {
+          "id": "inflict-stigmata",
+          "name": "Inflict Stigmata",
+          "description": "+1 Aggravated Health damage but -2 Difficulty. Stigmata are permanent."
+        },
+        {
+          "id": "trace-the-threads",
+          "name": "Trace the Threads",
+          "description": "ST answers 1 question about controller's location per margin point."
+        },
+        {
+          "id": "psychic-backlash",
+          "name": "Psychic Backlash",
+          "description": "Controlling entity receives 1 Aggravated per 2 margin (Hunter chooses Health/Willpower)."
+        }
+      ]
+    },
+    {
+      "id": "great-destiny",
+      "name": "Great Destiny",
+      "category": "Endowments",
+      "description": "Empowered to fulfill a higher purpose.",
+      "edge_pool": "N/A",
+      "system": "Choose higher purpose/destiny. Start each session with 2-dice pool to add to rolls furthering destiny.",
+      "perks": [
+        {
+          "id": "divine-protection",
+          "name": "Divine Protection",
+          "description": "When taking Health damage serving destiny: reduce by 2 (minimum 0)."
+        },
+        {
+          "id": "heavenly-resolve",
+          "name": "Heavenly Resolve",
+          "description": "When taking Social Combat damage defending/proselytizing destiny: restore 1 Aggravated Willpower."
+        },
+        {
+          "id": "sacred-insight",
+          "name": "Sacred Insight",
+          "description": "Once per story: Supernatural voice/vision provides clue to fulfill destiny."
+        },
+        {
+          "id": "influence-fate",
+          "name": "Influence Fate",
+          "description": "Once per session: Influence target to take 1 action aiding destiny. Charisma+Occult vs Resolve+Occult."
+        }
+      ]
+    },
+    {
+      "id": "unnatural-changes",
+      "name": "Unnatural Changes",
+      "category": "Endowments",
+      "description": "Use body in ways no standard human could.",
+      "edge_pool": "Stamina/Composure/Resolve + Insight",
+      "system": "Select one Attribute. Test at Difficulty 4: Win = +2 dice to all rolls using Attribute for scene. Fail = Aggravated damage = margin. Despair ends effect.",
+      "perks": [
+        {
+          "id": "breadth",
+          "name": "Breadth",
+          "description": "Select second Attribute. +1 die to all pools using that Attribute."
+        },
+        {
+          "id": "maximized-neuropathways",
+          "name": "Maximized Neuropathways",
+          "description": "Activation doesn't use an action."
+        },
+        {
+          "id": "neuropathway-practice",
+          "name": "Neuropathway Practice",
+          "description": "Reduce Difficulty from 4 to 3."
+        },
+        {
+          "id": "handsfree",
+          "name": "Handsfree",
+          "description": "No longer rely on object of focus."
         }
       ]
     }
   ],
-  "character_creation_rules": {
-    "options": [
-      {
-        "id": "1e2p",
-        "name": "1 Edge + 2 Perks",
-        "description": "Choose one Edge and select two Perks from that Edge"
-      },
-      {
-        "id": "2e1p",
-        "name": "2 Edges + 1 Perk",
-        "description": "Choose two different Edges and select one Perk from either Edge"
-      }
-    ],
-    "validation": {
-      "max_edges": 2,
-      "max_perks": 2,
-      "perks_must_match_edges": true
+  "categories": [
+    {
+      "id": "assets",
+      "name": "Assets",
+      "description": "Access to items, tools, or contacts that a typical private citizen wouldn't be able to obtain."
+    },
+    {
+      "id": "aptitudes",
+      "name": "Aptitudes",
+      "description": "Abilities that, while not supernatural, defy what is normally accomplished with skill and instruction."
+    },
+    {
+      "id": "endowments",
+      "name": "Endowments",
+      "description": "Abilities that go beyond what is natural. May seem magical or superhuman."
     }
+  ],
+  "character_creation_rules": {
+    "starting_edges": "Players start with Edges based on their character concept and Storyteller approval.",
+    "purchasing_perks": "Players can purchase additional Perks. Most Perks can only be obtained once. Some (like Creature Specialization) can be learned multiple times with no limit on total Perks.",
+    "note": "Unlike previous versions of Hunter, HTR5e does not have a fixed '1 Edge + 2 Perks' rule. Perks are purchased as character advances."
   }
 }
