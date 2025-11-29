@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}HTR Characters{% endblock %}
+
+{% block content %}
+<div class="character-list htr-theme">
+    <div class="header">
+        <h1>🔶 Hunter: The Reckoning Characters</h1>
+        <div class="character-slots">
+            <span>{{ characters|length }} / {{ character_limit }} characters</span>
+        </div>
+    </div>
+
+    {% if request.query_params.get('error') == 'limit_reached' %}
+    <div class="alert alert-warning">
+        <strong>Character Limit Reached!</strong>
+        <p>You have {{ character_limit }} characters. Delete one to create a new character.</p>
+    </div>
+    {% endif %}
+
+    <div class="character-grid">
+        {% for character in characters %}
+        <div class="character-card">
+            {% if character.portrait_face %}
+            <img src="{{ character.portrait_face }}" alt="{{ character.name }}" loading="lazy">
+            {% elif character.portrait_body %}
+            <img src="{{ character.portrait_body }}" alt="{{ character.name }}" loading="lazy">
+            {% else %}
+            <div class="placeholder-portrait">No Portrait</div>
+            {% endif %}
+
+            <div class="character-info">
+                <h3>{{ character.name or 'Unnamed Hunter' }}</h3>
+                <p class="creed">{{ character.creed|title or 'No Creed' }}</p>
+                <p class="cell">{{ character.cell or 'Independent' }}</p>
+            </div>
+
+            <div class="character-actions">
+                <a href="/htr/character/{{ character.id }}" class="btn-view">View</a>
+                <a href="/htr/character/{{ character.id }}/edit" class="btn-edit">Edit</a>
+                <form method="post" action="/htr/character/{{ character.id }}/delete"
+                      onsubmit="return confirm('Delete this character? This cannot be undone.');">
+                    <button type="submit" class="btn-delete">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if can_create %}
+        <div class="character-card create-new">
+            <a href="/htr/character/new">
+                <div class="create-icon">+</div>
+                <p>Create New Hunter</p>
+            </a>
+        </div>
+        {% else %}
+        <div class="character-card limit-reached">
+            <div class="limit-icon">⚠</div>
+            <p>Character Limit Reached</p>
+            <small>Delete a character to create a new one</small>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="back-link">
+        <a href="/">← Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

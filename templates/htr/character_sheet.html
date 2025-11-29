@@ -1,0 +1,721 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if character %}{{ character.name }} - HTR Character{% else %}New HTR Character{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="/static/css/htr-sheet.css?v={{ static_version }}">
+<script>
+    // Global static version for cache-busting
+    window.STATIC_VERSION = '{{ static_version }}';
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="character-sheet htr-sheet" x-data="htrCharacterSheet({{ character.id if character else 'null' }})">
+
+    <!-- Despair Overlay (activated when in_despair = true) -->
+    <div class="despair-overlay" x-show="data.in_despair" x-transition></div>
+
+    <!-- Loading Spinner -->
+    <div x-show="isLoading" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading character data...</p>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div x-show="loadError && !isLoading" class="error-overlay">
+        <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <h2>Error Loading Character</h2>
+            <p x-text="loadError"></p>
+            <button @click="location.reload()" class="btn-retry">Retry</button>
+            <a href="/htr" class="btn-back">Back to Character List</a>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden while loading) -->
+    <div x-show="!isLoading && !loadError">
+
+    <!-- Header -->
+    <div class="sheet-header">
+        <h1 class="character-title"
+            contenteditable="true"
+            @blur="data.name = $event.target.textContent; autoSave()"
+            @keydown.enter.prevent="$event.target.blur()"
+            x-text="data.name || 'Unnamed Hunter'"></h1>
+        <div class="header-details">
+            <div class="form-group-inline">
+                <label>Cell:</label>
+                <input type="text" x-model="data.cell" @input.debounce.300ms="autoSave()" placeholder="Cell name">
+            </div>
+            <div class="form-group-inline">
+                <label>Chronicle:</label>
+                <input type="text" x-model="data.chronicle" @input.debounce.300ms="autoSave()" placeholder="Chronicle">
+            </div>
+            <div class="form-group-inline">
+                <label>Creed:</label>
+                <select x-model="data.creed" @change="autoSave()">
+                    <option value="">Select Creed</option>
+                    <option value="faithful">Faithful</option>
+                    <option value="inquisitive">Inquisitive</option>
+                    <option value="martial">Martial</option>
+                    <option value="entrepreneurial">Entrepreneurial</option>
+                    <option value="underground">Underground</option>
+                </select>
+            </div>
+            <div class="form-group-inline">
+                <label>Drive:</label>
+                <select x-model="data.drive" @change="autoSave()">
+                    <option value="">Select Drive</option>
+                    <option value="atonement">Atonement</option>
+                    <option value="justice">Justice</option>
+                    <option value="legacy">Legacy</option>
+                    <option value="pride">Pride</option>
+                    <option value="revenge">Revenge</option>
+                </select>
+            </div>
+        </div>
+        <div class="save-indicator" x-show="saveStatus !== ''">
+            <span x-show="saveStatus === 'saving'">⏳ Saving...</span>
+            <span x-show="saveStatus === 'saved'" class="saved">✓ Saved</span>
+            <span x-show="saveStatus === 'error'" class="error">⚠ Save Failed</span>
+        </div>
+    </div>
+
+    <!-- TOP GRID: 3-Column Layout (25% | 50% | 25%) -->
+    <div class="sheet-grid-three-column sheet-grid-above">
+
+        <!-- COLUMN 1: Identity -->
+        <div class="column-one">
+            <section class="sheet-section identity-box">
+                <h2>Identity</h2>
+                <div class="form-group-compact">
+                    <label>Age:</label>
+                    <input type="text" x-model="data.age" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group-compact">
+                    <label>Blood Type:</label>
+                    <select x-model="data.blood_type" @change="autoSave()">
+                        <option value="">Select</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                    <span x-show="isRareBloodType()" class="blood-warning">⚠️ RARE</span>
+                </div>
+                <div class="form-group-compact">
+                    <label>Pronouns:</label>
+                    <input type="text" x-model="data.pronouns" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group-compact">
+                    <label>Origin:</label>
+                    <input type="text" x-model="data.origin" @input.debounce.300ms="autoSave()">
+                </div>
+            </section>
+        </div>
+
+        <!-- COLUMN 2: Character Portraits -->
+        <div class="column-two">
+            <section class="sheet-section portrait-six-box">
+                <h2>Character Portraits</h2>
+                <div class="portrait-grid-htr">
+                    <!-- Left: Body (tall) -->
+                    <div class="portrait-box portrait-body"
+                         @dblclick="$refs.bodyInput.click()"
+                         :style="data.portrait_body ? `background-image: url(${data.portrait_body})` : ''">
+                        <template x-if="!data.portrait_body">
+                            <div class="portrait-placeholder">Full Body<br><span class="size-hint">(200x300)</span></div>
+                        </template>
+                    </div>
+                    <input type="file" x-ref="bodyInput" @change="uploadPortrait($event, 'body')" accept="image/*" style="display: none;">
+
+                    <!-- Right: 4 hobbies stacked -->
+                    <div class="hobby-stack">
+                        <div class="portrait-box portrait-hobby"
+                             @dblclick="$refs.hobby1Input.click()"
+                             :style="data.portrait_hobby_1 ? `background-image: url(${data.portrait_hobby_1})` : ''">
+                            <template x-if="!data.portrait_hobby_1">
+                                <div class="portrait-placeholder-small">📷</div>
+                            </template>
+                        </div>
+                        <input type="file" x-ref="hobby1Input" @change="uploadPortrait($event, 'hobby_1')" accept="image/*" style="display: none;">
+
+                        <div class="portrait-box portrait-hobby"
+                             @dblclick="$refs.hobby2Input.click()"
+                             :style="data.portrait_hobby_2 ? `background-image: url(${data.portrait_hobby_2})` : ''">
+                            <template x-if="!data.portrait_hobby_2">
+                                <div class="portrait-placeholder-small">📷</div>
+                            </template>
+                        </div>
+                        <input type="file" x-ref="hobby2Input" @change="uploadPortrait($event, 'hobby_2')" accept="image/*" style="display: none;">
+
+                        <div class="portrait-box portrait-hobby"
+                             @dblclick="$refs.hobby3Input.click()"
+                             :style="data.portrait_hobby_3 ? `background-image: url(${data.portrait_hobby_3})` : ''">
+                            <template x-if="!data.portrait_hobby_3">
+                                <div class="portrait-placeholder-small">📷</div>
+                            </template>
+                        </div>
+                        <input type="file" x-ref="hobby3Input" @change="uploadPortrait($event, 'hobby_3')" accept="image/*" style="display: none;">
+
+                        <div class="portrait-box portrait-hobby"
+                             @dblclick="$refs.hobby4Input.click()"
+                             :style="data.portrait_hobby_4 ? `background-image: url(${data.portrait_hobby_4})` : ''">
+                            <template x-if="!data.portrait_hobby_4">
+                                <div class="portrait-placeholder-small">📷</div>
+                            </template>
+                        </div>
+                        <input type="file" x-ref="hobby4Input" @change="uploadPortrait($event, 'hobby_4')" accept="image/*" style="display: none;">
+                    </div>
+
+                    <!-- Alias Overlay -->
+                    <div class="alias-overlay">
+                        <input type="text"
+                               x-model="data.alias"
+                               @input.debounce.300ms="autoSave()"
+                               class="alias-input"
+                               placeholder="ALIAS">
+                    </div>
+
+                    <!-- Bottom: Face (square) -->
+                    <div class="portrait-box portrait-face"
+                         @dblclick="$refs.faceInput.click()"
+                         :style="data.portrait_face ? `background-image: url(${data.portrait_face})` : ''">
+                        <template x-if="!data.portrait_face">
+                            <div class="portrait-placeholder">Face<br><span class="size-hint">(300x300)</span></div>
+                        </template>
+                    </div>
+                    <input type="file" x-ref="faceInput" @change="uploadPortrait($event, 'face')" accept="image/*" style="display: none;">
+                </div>
+            </section>
+        </div>
+
+        <!-- COLUMN 3: Trackers -->
+        <div class="column-three">
+            <section class="sheet-section trackers-section">
+                <h2>Trackers</h2>
+
+                <!-- Danger Tracker (ECG Monitor) -->
+                <div class="tracker-row">
+                    <label>DANGER</label>
+                    <div class="tracker-bar danger-tracker">
+                        <template x-for="i in 20" :key="i">
+                            <span class="tracker-box"
+                                  :class="[i <= (data.danger_current || 0) ? 'filled' : 'empty', getDangerColor(i)]"
+                                  @click="clickDot('danger_current', i, 0, 20)">■</span>
+                        </template>
+                    </div>
+                    <span class="tracker-value" x-text="`${data.danger_current || 0}/20`"></span>
+                </div>
+
+                <!-- Desperation Tracker (Stress Monitor) -->
+                <div class="tracker-row">
+                    <label>DESPERATION</label>
+                    <div class="tracker-bar desperation-tracker">
+                        <template x-for="i in 20" :key="i">
+                            <span class="tracker-box"
+                                  :class="[i <= (data.desperation_current || 0) ? 'filled' : 'empty', i >= 15 ? 'warning' : '']"
+                                  @click="clickDot('desperation_current', i, 0, 20)">■</span>
+                        </template>
+                    </div>
+                    <span class="tracker-value" x-text="`${data.desperation_current || 0}/20`"></span>
+                    <span x-show="data.desperation_current >= 15" class="warning-text">⚠️ HIGH</span>
+                </div>
+
+                <!-- Health Tracker -->
+                <div class="tracker-row">
+                    <label>HEALTH</label>
+                    <div class="tracker-bar health-tracker">
+                        <template x-for="i in 10" :key="i">
+                            <div class="health-box"
+                                 :class="getHealthState(i)"
+                                 @click="cycleHealth(i)">
+                                <span x-show="getHealthState(i) === 'superficial'">/</span>
+                                <span x-show="getHealthState(i) === 'aggravated'">×</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Willpower Tracker -->
+                <div class="tracker-row">
+                    <label>WILLPOWER</label>
+                    <div class="tracker-bar willpower-tracker">
+                        <template x-for="i in 10" :key="i">
+                            <div class="willpower-box"
+                                 :class="getWillpowerState(i)"
+                                 @click="cycleWillpower(i)">
+                                <span x-show="getWillpowerState(i) === 'superficial'">/</span>
+                                <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Despair Indicator -->
+                <div class="despair-indicator">
+                    <label>
+                        <input type="checkbox" x-model="data.in_despair" @change="autoSave()">
+                        Currently in Despair
+                    </label>
+                    <div x-show="data.in_despair" class="bullet-hole-container">
+                        <img src="/static/images/bullet-hole.png" alt="Despair" class="bullet-hole-graphic">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- FULL-WIDTH: ATTRIBUTES -->
+    <section class="sheet-section attributes-section">
+        <h2>Attributes</h2>
+        <div class="attributes-three-column">
+            <!-- Physical -->
+            <div class="attribute-column">
+                <div class="attribute-category-label">PHYSICAL</div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Strength</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.strength || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('strength', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Dexterity</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.dexterity || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('dexterity', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Stamina</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.stamina || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('stamina', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social -->
+            <div class="attribute-column">
+                <div class="attribute-category-label">SOCIAL</div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Charisma</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.charisma || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('charisma', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Manipulation</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.manipulation || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('manipulation', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Composure</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.composure || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('composure', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mental -->
+            <div class="attribute-column">
+                <div class="attribute-category-label">MENTAL</div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Intelligence</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.intelligence || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('intelligence', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Wits</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.wits || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('wits', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+                <div class="attribute-row">
+                    <span class="attribute-name">Resolve</span>
+                    <div class="dot-tracker">
+                        <template x-for="i in 5" :key="i">
+                            <span class="dot"
+                                  :class="i <= (data.resolve || 1) ? 'filled' : 'empty'"
+                                  @click="clickDot('resolve', i, 1, 5)">●</span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FULL-WIDTH: SKILLS -->
+    <section class="sheet-section skills-section">
+        <h2>Skills</h2>
+        <div class="skills-three-column">
+            <!-- Physical Skills -->
+            <div class="skills-column">
+                <div class="skill-category-label">PHYSICAL</div>
+                <template x-for="skill in physicalSkills" :key="skill">
+                    <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
+                        <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                        <div class="skill-right">
+                            <div class="dot-tracker">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot"
+                                          :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                          @click="clickDot(skill, i, 0, 5)">●</span>
+                                </template>
+                            </div>
+                            <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
+                        </div>
+                        <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                            <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                <span class="specialty-tag">
+                                    <span x-text="spec"></span>
+                                    <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Social Skills -->
+            <div class="skills-column">
+                <div class="skill-category-label">SOCIAL</div>
+                <template x-for="skill in socialSkills" :key="skill">
+                    <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
+                        <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                        <div class="skill-right">
+                            <div class="dot-tracker">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot"
+                                          :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                          @click="clickDot(skill, i, 0, 5)">●</span>
+                                </template>
+                            </div>
+                            <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
+                        </div>
+                        <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                            <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                <span class="specialty-tag">
+                                    <span x-text="spec"></span>
+                                    <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Mental Skills -->
+            <div class="skills-column">
+                <div class="skill-category-label">MENTAL</div>
+                <template x-for="skill in mentalSkills" :key="skill">
+                    <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
+                        <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                        <div class="skill-right">
+                            <div class="dot-tracker">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot"
+                                          :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                          @click="clickDot(skill, i, 0, 5)">●</span>
+                                </template>
+                            </div>
+                            <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
+                        </div>
+                        <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
+                            <template x-for="spec in getSpecialties(skill)" :key="spec">
+                                <span class="specialty-tag">
+                                    <span x-text="spec"></span>
+                                    <button type="button" @click="removeSpecialty(skill, spec)">×</button>
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE BREAK: Orange Caution Tape -->
+    <div class="page-break-divider htr-caution-tape">
+        <span class="diamond">🔶</span>
+        <span class="diamond">🔶</span>
+        <span class="diamond">🔶</span>
+    </div>
+
+    <!-- BOTTOM GRID: 2-Column Layout (50% | 50%) -->
+    <div class="sheet-grid-two-column">
+
+        <!-- LEFT: Edges & Perks -->
+        <div class="column-left">
+            <section class="sheet-section edges-section">
+                <h2>Edges & Perks</h2>
+                <p class="edges-note">Choose: 1 Edge + 2 Perks OR 2 Edges + 1 Perk</p>
+
+                <div class="edge-config">
+                    <label>
+                        <input type="radio" x-model="data.edge_config" value="1e2p" @change="autoSave()">
+                        1 Edge + 2 Perks
+                    </label>
+                    <label>
+                        <input type="radio" x-model="data.edge_config" value="2e1p" @change="autoSave()">
+                        2 Edges + 1 Perk
+                    </label>
+                </div>
+
+                <div class="edge-selection">
+                    <label>Edge 1:</label>
+                    <select x-model="data.edge_1_id" @change="autoSave()">
+                        <option value="">None</option>
+                        <template x-for="edge in edges" :key="edge.id">
+                            <option :value="edge.id" x-text="edge.name"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="edge-selection" x-show="data.edge_config === '2e1p'">
+                    <label>Edge 2:</label>
+                    <select x-model="data.edge_2_id" @change="autoSave()">
+                        <option value="">None</option>
+                        <template x-for="edge in edges" :key="edge.id">
+                            <option :value="edge.id" x-text="edge.name"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="perk-selection">
+                    <label>Selected Perks:</label>
+                    <div class="perks-list">
+                        <template x-for="perk in getAvailablePerks()" :key="perk.id">
+                            <label class="perk-checkbox">
+                                <input type="checkbox"
+                                       :value="perk.id"
+                                       :checked="selectedPerksArray.includes(perk.id)"
+                                       @change="togglePerk(perk.id)">
+                                <span x-text="perk.name"></span>
+                            </label>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="edge-validation" :class="{ 'valid': isEdgeConfigValid(), 'invalid': !isEdgeConfigValid() }">
+                    <span x-show="isEdgeConfigValid()">✓ Valid configuration</span>
+                    <span x-show="!isEdgeConfigValid()">⚠️ Invalid: Check your Edge/Perk selection</span>
+                </div>
+            </section>
+        </div>
+
+        <!-- RIGHT: Touchstones & Drive -->
+        <div class="column-right">
+            <section class="sheet-section touchstones-section">
+                <h2>Touchstones</h2>
+
+                <template x-for="(touchstone, index) in touchstones" :key="index">
+                    <div class="touchstone-entry">
+                        <div class="touchstone-header">
+                            <strong>Touchstone <span x-text="index + 1"></span></strong>
+                            <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
+                        </div>
+                    </div>
+                </template>
+
+                <button type="button" @click="addTouchstone()" x-show="touchstones.length < 3" class="btn-add">+ Add Touchstone</button>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM GRID: 3-Column Layout (33% | 33% | 34%) -->
+    <div class="sheet-grid-three-column">
+
+        <!-- LEFT: Advantages -->
+        <div class="column-left">
+            <section class="sheet-section advantages-section">
+                <h2>Advantages</h2>
+                <p class="limit-note">Max: 7 dots total</p>
+
+                <template x-for="(adv, index) in advantages" :key="index">
+                    <div class="advantage-entry">
+                        <div class="advantage-header">
+                            <input type="text" x-model="adv.type" @input.debounce.300ms="autoSave()" placeholder="Type">
+                            <div class="dot-tracker">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot"
+                                          :class="i <= (adv.dots || 0) ? 'filled' : 'empty'"
+                                          @click="adv.dots = i; autoSave()">●</span>
+                                </template>
+                            </div>
+                            <button type="button" @click="removeAdvantage(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <textarea x-model="adv.description" @input.debounce.300ms="autoSave()" rows="1" placeholder="Description"></textarea>
+                    </div>
+                </template>
+
+                <button type="button" @click="addAdvantage()" x-show="advantages.length < 10 && getAdvantageTotalDots() < 7" class="btn-add">+ Add Advantage</button>
+                <div class="dots-total">Total: <span x-text="getAdvantageTotalDots()"></span>/7</div>
+            </section>
+        </div>
+
+        <!-- MIDDLE: Flaws & Equipment -->
+        <div class="column-middle">
+            <section class="sheet-section flaws-section">
+                <h2>Flaws</h2>
+                <p class="limit-note">Max: 2 dots total</p>
+
+                <template x-for="(flaw, index) in flaws" :key="index">
+                    <div class="flaw-entry">
+                        <div class="flaw-header">
+                            <input type="text" x-model="flaw.type" @input.debounce.300ms="autoSave()" placeholder="Type">
+                            <div class="dot-tracker">
+                                <template x-for="i in 5" :key="i">
+                                    <span class="dot"
+                                          :class="i <= (flaw.dots || 0) ? 'filled' : 'empty'"
+                                          @click="flaw.dots = i; autoSave()">●</span>
+                                </template>
+                            </div>
+                            <button type="button" @click="removeFlaw(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <textarea x-model="flaw.description" @input.debounce.300ms="autoSave()" rows="1" placeholder="Description"></textarea>
+                    </div>
+                </template>
+
+                <button type="button" @click="addFlaw()" x-show="flaws.length < 5 && getFlawTotalDots() < 2" class="btn-add">+ Add Flaw</button>
+                <div class="dots-total">Total: <span x-text="getFlawTotalDots()"></span>/2</div>
+            </section>
+
+            <section class="sheet-section equipment-section">
+                <h2>Equipment</h2>
+                <div class="form-group">
+                    <label>Weapon:</label>
+                    <input type="text" x-model="data.equipment_weapon" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group">
+                    <label>Damage:</label>
+                    <input type="number" x-model.number="data.equipment_weapon_damage" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group">
+                    <label>Armor Rating:</label>
+                    <input type="number" x-model.number="data.equipment_armor_rating" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group">
+                    <label>Notes:</label>
+                    <textarea x-model="data.equipment_notes" @input.debounce.300ms="autoSave()" rows="3"></textarea>
+                </div>
+            </section>
+        </div>
+
+        <!-- RIGHT: Experience -->
+        <div class="column-right">
+            <section class="sheet-section xp-section">
+                <h2>Experience</h2>
+                <div class="xp-display">
+                    <span class="xp-value" x-text="data.exp_available || 0"></span>
+                    <span class="xp-separator">/</span>
+                    <span class="xp-total" x-text="data.exp_total || 0"></span>
+                </div>
+                <div class="xp-buttons">
+                    <button type="button" class="btn-small" @click="addXP()">+ Add XP</button>
+                    <button type="button" class="btn-small" @click="spendXP()">Spend XP</button>
+                </div>
+
+                <div class="xp-log">
+                    <h3>XP Log</h3>
+                    <div x-show="xpLog.length === 0" class="empty-state">No XP history yet</div>
+                    <div x-show="xpLog.length > 0" class="xp-log-entries">
+                        <template x-for="(entry, idx) in xpLog.slice().reverse()" :key="idx">
+                            <div class="xp-log-entry" :class="entry.type">
+                                <span class="xp-date" x-text="entry.date"></span>
+                                <span class="xp-amount" x-text="(entry.type === 'add' ? '+' : '-') + entry.amount"></span>
+                                <span class="xp-reason" x-text="entry.reason"></span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- FULL-WIDTH: HISTORY & NOTES -->
+    <section class="sheet-section first-encounter-section">
+        <h2>🔶 FIRST ENCOUNTER 🔶</h2>
+        <p class="first-encounter-prompt">
+            CRITICAL: Your First Encounter defines you as a Hunter. This is the moment you saw the truth and could never look away.
+        </p>
+        <textarea x-model="data.first_encounter"
+                  @input.debounce.300ms="autoSave()"
+                  rows="8"
+                  placeholder="Describe: What did you see? What happened? Who was there? How did you survive? What changed in you that night?"></textarea>
+    </section>
+
+    <section class="sheet-section">
+        <h2>History & Background</h2>
+        <textarea x-model="data.history" @input.debounce.300ms="autoSave()" rows="6" placeholder="Character's history..."></textarea>
+    </section>
+
+    <section class="sheet-section">
+        <h2>Notes & Mission Log</h2>
+        <textarea x-model="data.notes" @input.debounce.300ms="autoSave()" rows="6" placeholder="Notes..."></textarea>
+    </section>
+
+    <div class="back-link">
+        <a href="/htr">← Back to Character List</a>
+    </div>
+
+    </div><!-- End main content wrapper -->
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/htr-sheet.js?v={{ static_version }}"></script>
+{% endblock %}

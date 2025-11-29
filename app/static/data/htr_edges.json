@@ -1,0 +1,317 @@
+{
+  "edges": [
+    {
+      "id": "arsenal",
+      "name": "Arsenal",
+      "category": "Equipment",
+      "description": "You have access to weapons, tactical equipment, and combat gear. Whether through military connections, black market contacts, or careful acquisition, you're never without the tools of the hunt.",
+      "icon": "arsenal.webp",
+      "perks": [
+        {
+          "id": "well-armed",
+          "name": "Well-Armed",
+          "description": "You always carry at least one concealed weapon and know how to use it effectively. +1 to attack rolls with your signature weapon.",
+          "mechanical_benefit": "+1 attack with signature weapon"
+        },
+        {
+          "id": "improvisational-gear",
+          "name": "Improvisational Gear",
+          "description": "You're skilled at creating tools and weapons from everyday objects. You can craft makeshift equipment with what's at hand.",
+          "mechanical_benefit": "Craft improvised weapons and tools"
+        },
+        {
+          "id": "ordnance",
+          "name": "Ordnance",
+          "description": "You have access to explosives, grenades, and other heavy ordnance. Requires proper licensing or black market connections.",
+          "mechanical_benefit": "Access to explosives and grenades"
+        },
+        {
+          "id": "global-access",
+          "name": "Global Access",
+          "description": "Your hunter has access to resources and equipment across international borders. You can acquire specialized gear in most major cities.",
+          "mechanical_benefit": "Acquire gear internationally"
+        }
+      ]
+    },
+    {
+      "id": "library",
+      "name": "Library",
+      "category": "Knowledge",
+      "description": "You have access to rare books, ancient texts, and occult knowledge. Your research materials give you an edge in understanding supernatural threats.",
+      "icon": "library.webp",
+      "perks": [
+        {
+          "id": "antiquarian",
+          "name": "Antiquarian",
+          "description": "You have access to rare books, ancient texts, and occult knowledge. Add 2 dice when researching supernatural threats.",
+          "mechanical_benefit": "+2 dice on research rolls"
+        },
+        {
+          "id": "trivia",
+          "name": "Trivia",
+          "description": "Your mind is a repository of obscure facts and useful information. Gain bonus dice on Intelligence + Investigation rolls.",
+          "mechanical_benefit": "+1 dice on Intelligence + Investigation"
+        },
+        {
+          "id": "archivist",
+          "name": "Archivist",
+          "description": "You maintain detailed records of encounters and supernatural phenomena. You can recall specific details from past hunts.",
+          "mechanical_benefit": "Perfect recall of documented hunts"
+        },
+        {
+          "id": "artifact",
+          "name": "Artifact",
+          "description": "You possess a supernatural artifact with mysterious properties. The artifact has one supernatural ability.",
+          "mechanical_benefit": "Own one supernatural artifact (ST approved)"
+        },
+        {
+          "id": "tome",
+          "name": "Tome",
+          "description": "You own a grimoire or occult tome containing powerful supernatural knowledge. Consulting it grants bonuses to relevant rolls.",
+          "mechanical_benefit": "Bonus to occult rolls when consulting tome"
+        }
+      ]
+    },
+    {
+      "id": "logistics",
+      "name": "Logistics",
+      "category": "Infrastructure",
+      "description": "You have access to bases, vehicles, and operational infrastructure. These resources provide safety, mobility, and tactical advantages.",
+      "icon": "logistics.webp",
+      "perks": [
+        {
+          "id": "safehouse",
+          "name": "Safehouse",
+          "description": "You maintain a secure location for planning, storing equipment, and recovering between hunts. It's protected and secret.",
+          "mechanical_benefit": "Secure base of operations"
+        },
+        {
+          "id": "safehouse-network",
+          "name": "Safehouse Network",
+          "description": "You have access to multiple safehouses across a region or country, providing shelter and resources wherever you operate.",
+          "mechanical_benefit": "Multiple secure locations"
+        },
+        {
+          "id": "fleet",
+          "name": "Fleet",
+          "description": "You have access to multiple vehicles for different situations: surveillance van, fast pursuit vehicle, heavy transport.",
+          "mechanical_benefit": "Access to specialized vehicles"
+        },
+        {
+          "id": "mobile-operations-center",
+          "name": "Mobile Operations Center",
+          "description": "You operate from a customized vehicle equipped with surveillance equipment, communications gear, and field hospital supplies.",
+          "mechanical_benefit": "Mobile command center"
+        },
+        {
+          "id": "surveillance-hub",
+          "name": "Surveillance Hub",
+          "description": "Your base is equipped with advanced surveillance equipment: cameras, listening devices, network monitoring tools.",
+          "mechanical_benefit": "Advanced surveillance capabilities"
+        }
+      ]
+    },
+    {
+      "id": "ordination",
+      "name": "Ordination",
+      "category": "Faith",
+      "description": "Your faith protects and empowers you. Whether through religious conviction or unwavering belief, you can resist and repel supernatural evil.",
+      "icon": "ordination.webp",
+      "perks": [
+        {
+          "id": "true-faith",
+          "name": "True Faith",
+          "description": "Your unwavering belief manifests as tangible power. Supernatural creatures feel pain in your presence.",
+          "mechanical_benefit": "Faith causes pain to supernatural beings"
+        },
+        {
+          "id": "body-and-soul",
+          "name": "Body and Soul",
+          "description": "Your faith protects you from supernatural influence. Add dice to resist mental domination, possession, or supernatural fear.",
+          "mechanical_benefit": "+2 dice to resist supernatural mental effects"
+        },
+        {
+          "id": "consecrate",
+          "name": "Consecrate",
+          "description": "You can bless locations, making them uncomfortable or harmful to supernatural creatures. The effect lasts for one scene.",
+          "mechanical_benefit": "Bless locations against supernatural"
+        },
+        {
+          "id": "holy-icon",
+          "name": "Holy Icon",
+          "description": "You possess a blessed religious symbol that repels certain supernatural creatures. Its effectiveness depends on your faith.",
+          "mechanical_benefit": "Blessed symbol repels supernatural"
+        },
+        {
+          "id": "repel-the-unnatural",
+          "name": "Repel the Unnatural",
+          "description": "Your presence disturbs supernatural creatures. They feel uncomfortable near you and may flee if their resolve is weak.",
+          "mechanical_benefit": "Passive supernatural repulsion"
+        }
+      ]
+    },
+    {
+      "id": "tradecraft",
+      "name": "Tradecraft",
+      "category": "Espionage",
+      "description": "You have training in espionage, infiltration, and covert operations. You can disappear, assume new identities, and operate in the shadows.",
+      "icon": "tradecraft.webp",
+      "perks": [
+        {
+          "id": "alternative-identity",
+          "name": "Alternative Identity",
+          "description": "You maintain one or more fake identities complete with documentation. Useful for infiltration and avoiding detection.",
+          "mechanical_benefit": "Maintain false identities"
+        },
+        {
+          "id": "clean-slate",
+          "name": "Clean Slate",
+          "description": "Your records have been scrubbed. Digital searches turn up nothing, and physical records have been destroyed or altered.",
+          "mechanical_benefit": "No traceable records"
+        },
+        {
+          "id": "dragnet",
+          "name": "Dragnet",
+          "description": "You can set up an information network to track a target. Once established, you receive updates on their movements.",
+          "mechanical_benefit": "Track targets via information network"
+        },
+        {
+          "id": "sleeper",
+          "name": "Sleeper",
+          "description": "You have a background in intelligence work and can activate old contacts, safe houses, and information channels.",
+          "mechanical_benefit": "Intelligence contacts and resources"
+        },
+        {
+          "id": "streetwise-network",
+          "name": "Streetwise Network",
+          "description": "You have contacts in the criminal underworld who provide information, black market access, and street-level intelligence.",
+          "mechanical_benefit": "Criminal underworld contacts"
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "name": "Network",
+      "category": "Connections",
+      "description": "You're connected to other hunters, community members, and informants. Your network provides intelligence, support, and backup.",
+      "icon": "network.webp",
+      "perks": [
+        {
+          "id": "strategic-network",
+          "name": "Strategic Network",
+          "description": "You're connected to hunters across regions who share intelligence and coordinate operations against supernatural threats.",
+          "mechanical_benefit": "Hunter network coordination"
+        },
+        {
+          "id": "community-organizer",
+          "name": "Community Organizer",
+          "description": "You can mobilize community members for support, information gathering, or direct action. Your cell gains local allies.",
+          "mechanical_benefit": "Mobilize community support"
+        },
+        {
+          "id": "mole",
+          "name": "Mole",
+          "description": "You have an informant inside a supernatural organization or enemy cell. They provide intelligence but expect protection.",
+          "mechanical_benefit": "Inside informant"
+        },
+        {
+          "id": "victim-support-network",
+          "name": "Victim Support Network",
+          "description": "You maintain connections with survivors of supernatural encounters who provide information and early warnings.",
+          "mechanical_benefit": "Survivor intelligence network"
+        },
+        {
+          "id": "fixation",
+          "name": "Fixation",
+          "description": "You're obsessed with a specific type of supernatural creature. You gain bonus dice when hunting this quarry type.",
+          "mechanical_benefit": "+2 dice against specific creature type"
+        }
+      ]
+    },
+    {
+      "id": "preparedness",
+      "name": "Preparedness",
+      "category": "Readiness",
+      "description": "You're always ready for the unexpected. Through planning, training, and preparation, you can handle any situation the hunt throws at you.",
+      "icon": "preparedness.webp",
+      "perks": [
+        {
+          "id": "go-bag",
+          "name": "Go Bag",
+          "description": "You maintain emergency supplies that let you operate independently for 48 hours: cash, burner phones, basic weapons.",
+          "mechanical_benefit": "48-hour emergency supplies"
+        },
+        {
+          "id": "first-aid",
+          "name": "First Aid",
+          "description": "You carry medical supplies and know emergency trauma care. You can stabilize dying hunters and treat injuries in the field.",
+          "mechanical_benefit": "Field medical treatment"
+        },
+        {
+          "id": "fortified-position",
+          "name": "Fortified Position",
+          "description": "You can quickly secure a location with barriers, traps, and defensive measures. Attackers face increased difficulty.",
+          "mechanical_benefit": "Quick defensive fortification"
+        },
+        {
+          "id": "prepared-for-anything",
+          "name": "Prepared for Anything",
+          "description": "Once per session, you can produce an item you 'remembered to pack' that's reasonable for your character to have.",
+          "mechanical_benefit": "1/session produce reasonable item"
+        },
+        {
+          "id": "bystander",
+          "name": "Bystander",
+          "description": "You blend into crowds and appear unremarkable. Supernatural creatures and surveillance systems overlook you.",
+          "mechanical_benefit": "Blend into crowds, avoid detection"
+        }
+      ]
+    },
+    {
+      "id": "custom",
+      "name": "Custom Edge",
+      "category": "Custom",
+      "description": "Create your own edge with Storyteller approval. Work with your ST to define the edge's theme and available perks.",
+      "icon": "custom.webp",
+      "perks": [
+        {
+          "id": "custom-perk-1",
+          "name": "Custom Perk 1",
+          "description": "Define this perk with your Storyteller.",
+          "mechanical_benefit": "ST approved"
+        },
+        {
+          "id": "custom-perk-2",
+          "name": "Custom Perk 2",
+          "description": "Define this perk with your Storyteller.",
+          "mechanical_benefit": "ST approved"
+        },
+        {
+          "id": "custom-perk-3",
+          "name": "Custom Perk 3",
+          "description": "Define this perk with your Storyteller.",
+          "mechanical_benefit": "ST approved"
+        }
+      ]
+    }
+  ],
+  "character_creation_rules": {
+    "options": [
+      {
+        "id": "1e2p",
+        "name": "1 Edge + 2 Perks",
+        "description": "Choose one Edge and select two Perks from that Edge"
+      },
+      {
+        "id": "2e1p",
+        "name": "2 Edges + 1 Perk",
+        "description": "Choose two different Edges and select one Perk from either Edge"
+      }
+    ],
+    "validation": {
+      "max_edges": 2,
+      "max_perks": 2,
+      "perks_must_match_edges": true
+    }
+  }
+}

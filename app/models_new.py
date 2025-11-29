@@ -309,28 +309,234 @@ class VTMCharacter(Base):
         return f"<VTMCharacter {self.name} ({self.clan})>"
 
 
+class HTRTouchstone(Base):
+    """Touchstone - separate table for HTR characters"""
+    __tablename__ = "htr_touchstones"
+
+    id = Column(Integer, primary_key=True, index=True)
+    character_id = Column(Integer, ForeignKey("htr_characters.id"), nullable=False)
+
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+
+    # Order for display
+    display_order = Column(Integer, default=0)
+
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship
+    character = relationship("HTRCharacter", back_populates="touchstones")
+
+    def __repr__(self):
+        return f"<HTRTouchstone {self.name}>"
+
+
+class HTRAdvantage(Base):
+    """Advantages/Merits - separate table for HTR characters (max 7 dots total)"""
+    __tablename__ = "htr_advantages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    character_id = Column(Integer, ForeignKey("htr_characters.id"), nullable=False)
+
+    type = Column(String(100), nullable=False)  # e.g., "Resources", "Contacts", "Allies"
+    description = Column(Text)
+    dots = Column(Integer, default=1)  # 1-5 rating
+
+    # Order for display
+    display_order = Column(Integer, default=0)
+
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship
+    character = relationship("HTRCharacter", back_populates="advantages")
+
+    def __repr__(self):
+        return f"<HTRAdvantage {self.type} ({self.dots} dots)>"
+
+
+class HTRFlaw(Base):
+    """Flaws - separate table for HTR characters (max 2 dots total)"""
+    __tablename__ = "htr_flaws"
+
+    id = Column(Integer, primary_key=True, index=True)
+    character_id = Column(Integer, ForeignKey("htr_characters.id"), nullable=False)
+
+    type = Column(String(100), nullable=False)  # e.g., "Enemy", "Dark Secret"
+    description = Column(Text)
+    dots = Column(Integer, default=1)  # 1-5 rating
+
+    # Order for display
+    display_order = Column(Integer, default=0)
+
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship
+    character = relationship("HTRCharacter", back_populates="flaws")
+
+    def __repr__(self):
+        return f"<HTRFlaw {self.type} ({self.dots} dots)>"
+
+
+class HTRXPLogEntry(Base):
+    """Experience log entry - separate table for HTR characters"""
+    __tablename__ = "htr_xp_log_entries"
+
+    id = Column(Integer, primary_key=True, index=True)
+    character_id = Column(Integer, ForeignKey("htr_characters.id"), nullable=False)
+
+    date = Column(String(50), nullable=False)  # ISO date string
+    type = Column(String(10), nullable=False)  # 'add' or 'spend'
+    amount = Column(Integer, nullable=False)
+    reason = Column(String(200), nullable=False)
+
+    # Order for display (newest first)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationship
+    character = relationship("HTRCharacter", back_populates="xp_log")
+
+    def __repr__(self):
+        return f"<HTRXPLogEntry {self.type} {self.amount} XP>"
+
+
 class HTRCharacter(Base):
-    """Hunter: The Reckoning 5e Character Sheet (placeholder for future implementation)"""
+    """Hunter: The Reckoning 5e Character Sheet"""
     __tablename__ = "htr_characters"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    
-    # Relationship
+
+    # Relationships
     user = relationship("User", back_populates="htr_characters")
-    
-    # Basic fields - will be expanded when HTR implementation begins
+    touchstones = relationship("HTRTouchstone", back_populates="character", cascade="all, delete-orphan", order_by="HTRTouchstone.display_order")
+    advantages = relationship("HTRAdvantage", back_populates="character", cascade="all, delete-orphan", order_by="HTRAdvantage.display_order")
+    flaws = relationship("HTRFlaw", back_populates="character", cascade="all, delete-orphan", order_by="HTRFlaw.display_order")
+    xp_log = relationship("HTRXPLogEntry", back_populates="character", cascade="all, delete-orphan", order_by="HTRXPLogEntry.created_at.desc()")
+
+    # HEADER - Chronicle Information
     name = Column(String(100))
-    concept = Column(String(200))
-    creed = Column(String(50))
-    
-    # Portrait
-    portrait_url = Column(String(500))
-    
-    # Placeholder for full HTR5e mechanics
-    character_data = Column(Text)
-    
+    cell = Column(String(100))  # Cell/group name
+    chronicle = Column(String(100))
+
+    # IDENTITY
+    creed = Column(String(50))  # faithful, inquisitive, martial, entrepreneurial, underground
+    drive = Column(String(50))  # atonement, justice, legacy, pride, revenge
+
+    # Personal Info
+    age = Column(String(50))
+    blood_type = Column(String(10))
+    pronouns = Column(String(50))
+    origin = Column(String(100))
+
+    # CHARACTER PORTRAITS (6 slots)
+    portrait_face = Column(String(500))
+    portrait_body = Column(String(500))
+    portrait_hobby_1 = Column(String(500))
+    portrait_hobby_2 = Column(String(500))
+    portrait_hobby_3 = Column(String(500))
+    portrait_hobby_4 = Column(String(500))
+    alias = Column(String(100))  # Graffiti alias
+
+    # ATTRIBUTES (1-5)
+    # Physical
+    strength = Column(Integer, default=1)
+    dexterity = Column(Integer, default=1)
+    stamina = Column(Integer, default=1)
+
+    # Social
+    charisma = Column(Integer, default=1)
+    manipulation = Column(Integer, default=1)
+    composure = Column(Integer, default=1)
+
+    # Mental
+    intelligence = Column(Integer, default=1)
+    wits = Column(Integer, default=1)
+    resolve = Column(Integer, default=1)
+
+    # SKILLS (0-5)
+    # Physical Skills
+    athletics = Column(Integer, default=0)
+    brawl = Column(Integer, default=0)
+    craft = Column(Integer, default=0)
+    drive_skill = Column(Integer, default=0)  # Renamed from 'drive' to avoid conflict with Drive mechanic
+    firearms = Column(Integer, default=0)
+    larceny = Column(Integer, default=0)
+    melee = Column(Integer, default=0)
+    stealth = Column(Integer, default=0)
+    survival = Column(Integer, default=0)
+
+    # Social Skills
+    animal_ken = Column(Integer, default=0)
+    etiquette = Column(Integer, default=0)
+    insight = Column(Integer, default=0)
+    intimidation = Column(Integer, default=0)
+    leadership = Column(Integer, default=0)
+    performance = Column(Integer, default=0)
+    persuasion = Column(Integer, default=0)
+    streetwise = Column(Integer, default=0)
+    subterfuge = Column(Integer, default=0)
+
+    # Mental Skills
+    academics = Column(Integer, default=0)
+    awareness = Column(Integer, default=0)
+    finance = Column(Integer, default=0)
+    investigation = Column(Integer, default=0)
+    medicine = Column(Integer, default=0)
+    occult = Column(Integer, default=0)
+    politics = Column(Integer, default=0)
+    science = Column(Integer, default=0)
+    technology = Column(Integer, default=0)
+
+    # Skill Specialties (JSON stored as text)
+    skill_specialties = Column(Text)
+
+    # TRACKERS
+    danger_current = Column(Integer, default=0)  # 0-20
+    desperation_current = Column(Integer, default=0)  # 0-20
+
+    health_max = Column(Integer, default=6)
+    health_superficial = Column(Integer, default=0)
+    health_aggravated = Column(Integer, default=0)
+
+    willpower_max = Column(Integer, default=5)
+    willpower_superficial = Column(Integer, default=0)
+    willpower_aggravated = Column(Integer, default=0)
+
+    in_despair = Column(Boolean, default=False)  # Triggers overlay!
+
+    # EDGES & PERKS
+    edge_config = Column(String(10), default='1e2p')  # '1e2p' or '2e1p'
+    edge_1_id = Column(String(50))  # e.g., 'arsenal'
+    edge_2_id = Column(String(50))  # null if only 1 edge chosen
+    selected_perks = Column(Text)  # JSON array: ["well-armed", "ordnance"]
+
+    # EQUIPMENT
+    equipment_weapon = Column(String(100))
+    equipment_weapon_damage = Column(Integer, default=0)
+    equipment_armor_rating = Column(Integer, default=0)
+    equipment_notes = Column(Text)
+
+    # EXPERIENCE TRACKING
+    exp_total = Column(Integer, default=0)
+    exp_available = Column(Integer, default=0)
+    exp_spent = Column(Integer, default=0)
+
+    # HISTORY & NOTES
+    first_encounter = Column(Text)  # CRITICAL FIELD - defining moment
+    history = Column(Text)
+    notes = Column(Text)
+    current_mission = Column(Text)
+
+    # CHARACTER CREATION
+    creation_complete = Column(Boolean, default=False)
+
     def __repr__(self):
         return f"<HTRCharacter {self.name} ({self.creed})>"

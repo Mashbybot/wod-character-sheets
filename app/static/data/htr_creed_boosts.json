@@ -1,0 +1,88 @@
+{
+  "creeds": {
+    "faithful": {
+      "name": "Faithful",
+      "description": "Religious and spiritual hunters who draw strength from belief and faith. They see the Hunt as a sacred calling.",
+      "philosophy": "Faith is our shield and our weapon. We hunt not from hate, but from duty to protect the innocent.",
+      "boosted_skills": ["insight", "medicine", "occult"],
+      "typical_drives": ["atonement", "justice"],
+      "color": "#4a90e2"
+    },
+    "inquisitive": {
+      "name": "Inquisitive",
+      "description": "Researchers, scientists, and investigators who approach the supernatural analytically. Knowledge is their greatest weapon.",
+      "philosophy": "Understanding our enemy is the first step to defeating them. We hunt with information and preparation.",
+      "boosted_skills": ["academics", "investigation", "science"],
+      "typical_drives": ["justice", "legacy"],
+      "color": "#7b68ee"
+    },
+    "martial": {
+      "name": "Martial",
+      "description": "Soldiers, law enforcement, and fighters who confront supernatural threats with direct force and tactical expertise.",
+      "philosophy": "When diplomacy fails, we stand ready. Superior firepower and training win hunts.",
+      "boosted_skills": ["athletics", "brawl", "firearms"],
+      "typical_drives": ["pride", "revenge"],
+      "color": "#dc3545"
+    },
+    "entrepreneurial": {
+      "name": "Entrepreneurial",
+      "description": "Networkers, fixers, and resource managers who leverage connections and capital against supernatural threats.",
+      "philosophy": "Everything has a price, and we know how to pay it. Resources and contacts are as deadly as bullets.",
+      "boosted_skills": ["finance", "persuasion", "streetwise"],
+      "typical_drives": ["legacy", "pride"],
+      "color": "#ffc107"
+    },
+    "underground": {
+      "name": "Underground",
+      "description": "Street-level survivors, criminals, and outcasts who fight supernatural threats from society's shadows.",
+      "philosophy": "The system failed us, so we hunt alone. Survival and cunning are our edges.",
+      "boosted_skills": ["larceny", "stealth", "survival"],
+      "typical_drives": ["revenge", "atonement"],
+      "color": "#ff8c00"
+    }
+  },
+  "drives": {
+    "atonement": {
+      "name": "Atonement",
+      "description": "You hunt to make up for past sins or failures. Every monster you stop is a step toward redemption."
+    },
+    "justice": {
+      "name": "Justice",
+      "description": "You hunt to protect the innocent and punish the guilty. The law may fail, but you won't."
+    },
+    "legacy": {
+      "name": "Legacy",
+      "description": "You hunt to leave the world better than you found it. Your deeds will outlive you."
+    },
+    "pride": {
+      "name": "Pride",
+      "description": "You hunt to prove your superiority. You're the apex predator, and monsters should fear you."
+    },
+    "revenge": {
+      "name": "Revenge",
+      "description": "You hunt because they took something from you. Every kill brings you closer to settling the score."
+    }
+  },
+  "skill_descriptions": {
+    "insight": "Read people and situations, detect lies, understand motivations",
+    "medicine": "Treat wounds, diagnose conditions, understand biology",
+    "occult": "Knowledge of supernatural lore, rituals, and hidden truths",
+    "academics": "Formal education, research skills, theoretical knowledge",
+    "investigation": "Gather clues, follow leads, solve mysteries",
+    "science": "Scientific method, empirical analysis, technical understanding",
+    "athletics": "Physical fitness, running, climbing, swimming",
+    "brawl": "Hand-to-hand combat, grappling, close quarters fighting",
+    "firearms": "Shooting, gun maintenance, tactical firearm use",
+    "finance": "Money management, investment, financial crimes",
+    "persuasion": "Convince others, negotiate, influence decisions",
+    "streetwise": "Urban survival, criminal contacts, black market",
+    "larceny": "Lockpicking, breaking and entering, theft skills",
+    "stealth": "Move silently, hide, avoid detection",
+    "survival": "Wilderness skills, tracking, foraging, endurance"
+  },
+  "game_mechanics": {
+    "drive_bonus": "When using a Drive-boosted skill in pursuit of your Drive, you may add Desperation dice to the roll.",
+    "visual_indicator": "Drive-boosted skills are highlighted with the 🔶 icon and orange background gradient.",
+    "desperation_mechanics": "Drive-boosted skills are the primary way hunters use Desperation dice without risking Despair."
+  }
+}
