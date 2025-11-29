@@ -513,8 +513,10 @@ class HTRCharacter(Base):
     in_despair = Column(Boolean, default=False)  # Triggers overlay!
 
     # EDGES & PERKS
-    selected_edges = Column(Text)  # JSON array of edge IDs - unlimited selection as character advances
-    selected_perks = Column(Text)  # JSON array of perk IDs - unlimited selection
+    edge_config = Column(String(10), default='1e2p')  # '1e2p' or '2e1p'
+    edge_1_id = Column(String(50))  # e.g., 'arsenal'
+    edge_2_id = Column(String(50))  # null if only 1 edge chosen
+    selected_perks = Column(Text)  # JSON array: ["well-armed", "ordnance"]
 
     # EQUIPMENT
     equipment_weapon = Column(String(100))

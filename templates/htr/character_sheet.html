@@ -491,102 +491,57 @@
         <div class="column-left">
             <section class="sheet-section edges-section">
                 <h2>Edges & Perks</h2>
-                <p class="edges-note">Purchase Edges and their Perks as your character advances. Edges are grouped by type: Assets, Aptitudes, and Endowments.</p>
+                <p class="edges-note">Choose: 1 Edge + 2 Perks OR 2 Edges + 1 Perk</p>
 
-                <!-- Assets Category -->
-                <div class="edge-category">
-                    <h3 class="edge-category-title">Assets</h3>
-                    <template x-for="edge in getEdgesByCategory('Assets')" :key="edge.id">
-                        <div class="edge-item">
-                            <div class="edge-header">
-                                <label class="edge-checkbox">
-                                    <input type="checkbox"
-                                           :checked="isEdgeSelected(edge.id)"
-                                           @change="toggleEdge(edge.id)">
-                                    <strong x-text="edge.name"></strong>
-                                </label>
-                            </div>
-                            <div class="edge-description" x-show="edge.description">
-                                <p x-text="edge.description" class="edge-desc-text"></p>
-                            </div>
-                            <div class="perks-list" x-show="isEdgeSelected(edge.id) && edge.perks && edge.perks.length > 0">
-                                <label class="perks-label">Perks:</label>
-                                <template x-for="perk in edge.perks" :key="perk.id">
-                                    <label class="perk-checkbox">
-                                        <input type="checkbox"
-                                               :checked="isPerkSelected(perk.id)"
-                                               @change="togglePerk(perk.id)">
-                                        <span x-text="perk.name"></span>
-                                        <span x-show="perk.description" class="perk-desc" x-text="' - ' + perk.description"></span>
-                                    </label>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
+                <div class="edge-config">
+                    <label>
+                        <input type="radio" x-model="data.edge_config" value="1e2p" @change="autoSave()">
+                        1 Edge + 2 Perks
+                    </label>
+                    <label>
+                        <input type="radio" x-model="data.edge_config" value="2e1p" @change="autoSave()">
+                        2 Edges + 1 Perk
+                    </label>
                 </div>
 
-                <!-- Aptitudes Category -->
-                <div class="edge-category">
-                    <h3 class="edge-category-title">Aptitudes</h3>
-                    <template x-for="edge in getEdgesByCategory('Aptitudes')" :key="edge.id">
-                        <div class="edge-item">
-                            <div class="edge-header">
-                                <label class="edge-checkbox">
-                                    <input type="checkbox"
-                                           :checked="isEdgeSelected(edge.id)"
-                                           @change="toggleEdge(edge.id)">
-                                    <strong x-text="edge.name"></strong>
-                                </label>
-                            </div>
-                            <div class="edge-description" x-show="edge.description">
-                                <p x-text="edge.description" class="edge-desc-text"></p>
-                            </div>
-                            <div class="perks-list" x-show="isEdgeSelected(edge.id) && edge.perks && edge.perks.length > 0">
-                                <label class="perks-label">Perks:</label>
-                                <template x-for="perk in edge.perks" :key="perk.id">
-                                    <label class="perk-checkbox">
-                                        <input type="checkbox"
-                                               :checked="isPerkSelected(perk.id)"
-                                               @change="togglePerk(perk.id)">
-                                        <span x-text="perk.name"></span>
-                                        <span x-show="perk.description" class="perk-desc" x-text="' - ' + perk.description"></span>
-                                    </label>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
+                <div class="edge-selection">
+                    <label>Edge 1:</label>
+                    <select x-model="data.edge_1_id" @change="autoSave()">
+                        <option value="">None</option>
+                        <template x-for="edge in edges" :key="edge.id">
+                            <option :value="edge.id" x-text="edge.name"></option>
+                        </template>
+                    </select>
                 </div>
 
-                <!-- Endowments Category -->
-                <div class="edge-category">
-                    <h3 class="edge-category-title">Endowments</h3>
-                    <template x-for="edge in getEdgesByCategory('Endowments')" :key="edge.id">
-                        <div class="edge-item">
-                            <div class="edge-header">
-                                <label class="edge-checkbox">
-                                    <input type="checkbox"
-                                           :checked="isEdgeSelected(edge.id)"
-                                           @change="toggleEdge(edge.id)">
-                                    <strong x-text="edge.name"></strong>
-                                </label>
-                            </div>
-                            <div class="edge-description" x-show="edge.description">
-                                <p x-text="edge.description" class="edge-desc-text"></p>
-                            </div>
-                            <div class="perks-list" x-show="isEdgeSelected(edge.id) && edge.perks && edge.perks.length > 0">
-                                <label class="perks-label">Perks:</label>
-                                <template x-for="perk in edge.perks" :key="perk.id">
-                                    <label class="perk-checkbox">
-                                        <input type="checkbox"
-                                               :checked="isPerkSelected(perk.id)"
-                                               @change="togglePerk(perk.id)">
-                                        <span x-text="perk.name"></span>
-                                        <span x-show="perk.description" class="perk-desc" x-text="' - ' + perk.description"></span>
-                                    </label>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
+                <div class="edge-selection" x-show="data.edge_config === '2e1p'">
+                    <label>Edge 2:</label>
+                    <select x-model="data.edge_2_id" @change="autoSave()">
+                        <option value="">None</option>
+                        <template x-for="edge in edges" :key="edge.id">
+                            <option :value="edge.id" x-text="edge.name"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="perk-selection">
+                    <label>Selected Perks:</label>
+                    <div class="perks-list">
+                        <template x-for="perk in getAvailablePerks()" :key="perk.id">
+                            <label class="perk-checkbox">
+                                <input type="checkbox"
+                                       :value="perk.id"
+                                       :checked="selectedPerksArray.includes(perk.id)"
+                                       @change="togglePerk(perk.id)">
+                                <span x-text="perk.name"></span>
+                            </label>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="edge-validation" :class="{ 'valid': isEdgeConfigValid(), 'invalid': !isEdgeConfigValid() }">
+                    <span x-show="isEdgeConfigValid()">✓ Valid configuration</span>
+                    <span x-show="!isEdgeConfigValid()">⚠️ Invalid: Check your Edge/Perk selection</span>
                 </div>
             </section>
         </div>
