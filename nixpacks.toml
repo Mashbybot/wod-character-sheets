@@ -1,6 +1,5 @@
 # Nixpacks configuration for Railway
-# Let Nixpacks auto-detect Python and dependencies
-# Only override the start command to run migrations first
+# Use startup script to run migrations at runtime (not during build)
 
 [start]
-cmd = "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+cmd = "bash start.sh"
