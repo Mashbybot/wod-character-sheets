@@ -1,5 +1,0 @@
-# Nixpacks configuration for Railway
-# Use startup script to run migrations at runtime (not during build)
-
-[start]
-cmd = "bash start.sh"
