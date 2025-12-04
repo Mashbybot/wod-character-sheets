@@ -192,7 +192,7 @@
                          @dblclick="$refs.faceInput.click()"
                          :style="data.portrait_face ? `background-image: url(${data.portrait_face})` : ''">
                         <template x-if="!data.portrait_face">
-                            <div class="portrait-placeholder">Face<br><span class="size-hint">(200x200)</span></div>
+                            <div class="portrait-placeholder">Face<br><span class="size-hint">(180x180)</span></div>
                         </template>
                     </div>
                     <input type="file" x-ref="faceInput" @change="uploadPortrait($event, 'face')" accept="image/*" style="display: none;">
