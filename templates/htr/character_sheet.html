@@ -128,54 +128,55 @@
             <section class="sheet-section portrait-six-box">
                 <h2>Character Portraits</h2>
                 <div class="portrait-grid-htr">
-                    <!-- Left: Body (tall) -->
+                    <!-- Column 1: Body (tall) -->
                     <div class="portrait-box portrait-body"
                          @dblclick="$refs.bodyInput.click()"
                          :style="data.portrait_body ? `background-image: url(${data.portrait_body})` : ''">
                         <template x-if="!data.portrait_body">
-                            <div class="portrait-placeholder">Full Body<br><span class="size-hint">(200x300)</span></div>
+                            <div class="portrait-placeholder">Full Body<br><span class="size-hint">(300x450)</span></div>
                         </template>
                     </div>
                     <input type="file" x-ref="bodyInput" @change="uploadPortrait($event, 'body')" accept="image/*" style="display: none;">
 
-                    <!-- Right: 4 hobbies stacked -->
-                    <div class="hobby-stack">
-                        <div class="portrait-box portrait-hobby"
-                             @dblclick="$refs.hobby1Input.click()"
-                             :style="data.portrait_hobby_1 ? `background-image: url(${data.portrait_hobby_1})` : ''">
-                            <template x-if="!data.portrait_hobby_1">
-                                <div class="portrait-placeholder-small">📷</div>
-                            </template>
-                        </div>
-                        <input type="file" x-ref="hobby1Input" @change="uploadPortrait($event, 'hobby_1')" accept="image/*" style="display: none;">
-
-                        <div class="portrait-box portrait-hobby"
-                             @dblclick="$refs.hobby2Input.click()"
-                             :style="data.portrait_hobby_2 ? `background-image: url(${data.portrait_hobby_2})` : ''">
-                            <template x-if="!data.portrait_hobby_2">
-                                <div class="portrait-placeholder-small">📷</div>
-                            </template>
-                        </div>
-                        <input type="file" x-ref="hobby2Input" @change="uploadPortrait($event, 'hobby_2')" accept="image/*" style="display: none;">
-
-                        <div class="portrait-box portrait-hobby"
-                             @dblclick="$refs.hobby3Input.click()"
-                             :style="data.portrait_hobby_3 ? `background-image: url(${data.portrait_hobby_3})` : ''">
-                            <template x-if="!data.portrait_hobby_3">
-                                <div class="portrait-placeholder-small">📷</div>
-                            </template>
-                        </div>
-                        <input type="file" x-ref="hobby3Input" @change="uploadPortrait($event, 'hobby_3')" accept="image/*" style="display: none;">
-
-                        <div class="portrait-box portrait-hobby"
-                             @dblclick="$refs.hobby4Input.click()"
-                             :style="data.portrait_hobby_4 ? `background-image: url(${data.portrait_hobby_4})` : ''">
-                            <template x-if="!data.portrait_hobby_4">
-                                <div class="portrait-placeholder-small">📷</div>
-                            </template>
-                        </div>
-                        <input type="file" x-ref="hobby4Input" @change="uploadPortrait($event, 'hobby_4')" accept="image/*" style="display: none;">
+                    <!-- Column 2, Row 1: Hobby 1 -->
+                    <div class="portrait-box portrait-hobby"
+                         @dblclick="$refs.hobby1Input.click()"
+                         :style="data.portrait_hobby_1 ? `background-image: url(${data.portrait_hobby_1})` : ''">
+                        <template x-if="!data.portrait_hobby_1">
+                            <div class="portrait-placeholder-small">📷</div>
+                        </template>
                     </div>
+                    <input type="file" x-ref="hobby1Input" @change="uploadPortrait($event, 'hobby_1')" accept="image/*" style="display: none;">
+
+                    <!-- Column 3, Row 1: Hobby 2 -->
+                    <div class="portrait-box portrait-hobby"
+                         @dblclick="$refs.hobby2Input.click()"
+                         :style="data.portrait_hobby_2 ? `background-image: url(${data.portrait_hobby_2})` : ''">
+                        <template x-if="!data.portrait_hobby_2">
+                            <div class="portrait-placeholder-small">📷</div>
+                        </template>
+                    </div>
+                    <input type="file" x-ref="hobby2Input" @change="uploadPortrait($event, 'hobby_2')" accept="image/*" style="display: none;">
+
+                    <!-- Column 2, Row 2: Hobby 3 -->
+                    <div class="portrait-box portrait-hobby"
+                         @dblclick="$refs.hobby3Input.click()"
+                         :style="data.portrait_hobby_3 ? `background-image: url(${data.portrait_hobby_3})` : ''">
+                        <template x-if="!data.portrait_hobby_3">
+                            <div class="portrait-placeholder-small">📷</div>
+                        </template>
+                    </div>
+                    <input type="file" x-ref="hobby3Input" @change="uploadPortrait($event, 'hobby_3')" accept="image/*" style="display: none;">
+
+                    <!-- Column 3, Row 2: Hobby 4 -->
+                    <div class="portrait-box portrait-hobby"
+                         @dblclick="$refs.hobby4Input.click()"
+                         :style="data.portrait_hobby_4 ? `background-image: url(${data.portrait_hobby_4})` : ''">
+                        <template x-if="!data.portrait_hobby_4">
+                            <div class="portrait-placeholder-small">📷</div>
+                        </template>
+                    </div>
+                    <input type="file" x-ref="hobby4Input" @change="uploadPortrait($event, 'hobby_4')" accept="image/*" style="display: none;">
 
                     <!-- Alias Overlay -->
                     <div class="alias-overlay">
@@ -186,12 +187,12 @@
                                placeholder="ALIAS">
                     </div>
 
-                    <!-- Bottom: Face (square) -->
+                    <!-- Columns 2-3, Row 3: Face (spans 2 columns) -->
                     <div class="portrait-box portrait-face"
                          @dblclick="$refs.faceInput.click()"
                          :style="data.portrait_face ? `background-image: url(${data.portrait_face})` : ''">
                         <template x-if="!data.portrait_face">
-                            <div class="portrait-placeholder">Face<br><span class="size-hint">(300x300)</span></div>
+                            <div class="portrait-placeholder">Face<br><span class="size-hint">(300x200)</span></div>
                         </template>
                     </div>
                     <input type="file" x-ref="faceInput" @change="uploadPortrait($event, 'face')" accept="image/*" style="display: none;">
