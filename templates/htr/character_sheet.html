@@ -276,8 +276,14 @@
 
     </div>
 
-    <!-- FULL-WIDTH: ATTRIBUTES -->
-    <section class="sheet-section attributes-section">
+    <!-- 2-COLUMN: ATTRIBUTES/SKILLS (60%) | EDGES & PERKS (40%) -->
+    <div class="attributes-skills-edges-grid">
+
+        <!-- LEFT: ATTRIBUTES & SKILLS -->
+        <div class="attributes-skills-column">
+
+            <!-- ATTRIBUTES -->
+            <section class="sheet-section attributes-section">
         <h2>Attributes</h2>
         <div class="attributes-three-column">
             <!-- Physical -->
@@ -387,8 +393,8 @@
         </div>
     </section>
 
-    <!-- FULL-WIDTH: SKILLS -->
-    <section class="sheet-section skills-section">
+            <!-- SKILLS -->
+            <section class="sheet-section skills-section">
         <h2>Skills</h2>
         <div class="skills-three-column">
             <!-- Physical Skills -->
@@ -477,18 +483,10 @@
         </div>
     </section>
 
-    <!-- PAGE BREAK: Orange Caution Tape -->
-    <div class="page-break-divider htr-caution-tape">
-        <span class="diamond">🔶</span>
-        <span class="diamond">🔶</span>
-        <span class="diamond">🔶</span>
-    </div>
+        </div><!-- End attributes-skills-column -->
 
-    <!-- BOTTOM GRID: 2-Column Layout (50% | 50%) -->
-    <div class="sheet-grid-two-column">
-
-        <!-- LEFT: Edges & Perks -->
-        <div class="column-left">
+        <!-- RIGHT: EDGES & PERKS -->
+        <div class="edges-perks-column">
             <section class="sheet-section edges-section">
                 <h2>Edges & Perks</h2>
                 <p class="edges-note">Choose: 1 Edge + 2 Perks OR 2 Edges + 1 Perk</p>
@@ -544,35 +542,40 @@
                     <span x-show="!isEdgeConfigValid()">⚠️ Invalid: Check your Edge/Perk selection</span>
                 </div>
             </section>
-        </div>
+        </div><!-- End edges-perks-column -->
 
-        <!-- RIGHT: Touchstones & Drive -->
-        <div class="column-right">
-            <section class="sheet-section touchstones-section">
-                <h2>Touchstones</h2>
+    </div><!-- End attributes-skills-edges-grid -->
 
-                <template x-for="(touchstone, index) in touchstones" :key="index">
-                    <div class="touchstone-entry">
-                        <div class="touchstone-header">
-                            <strong>Touchstone <span x-text="index + 1"></span></strong>
-                            <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
-                        </div>
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
-                        </div>
-                    </div>
-                </template>
-
-                <button type="button" @click="addTouchstone()" x-show="touchstones.length < 3" class="btn-add">+ Add Touchstone</button>
-            </section>
-        </div>
-
+    <!-- PAGE BREAK: Orange Caution Tape -->
+    <div class="page-break-divider htr-caution-tape">
+        <span class="diamond">🔶</span>
+        <span class="diamond">🔶</span>
+        <span class="diamond">🔶</span>
     </div>
+
+    <!-- FULL-WIDTH: TOUCHSTONES -->
+    <section class="sheet-section touchstones-section">
+        <h2>Touchstones</h2>
+
+        <template x-for="(touchstone, index) in touchstones" :key="index">
+            <div class="touchstone-entry">
+                <div class="touchstone-header">
+                    <strong>Touchstone <span x-text="index + 1"></span></strong>
+                    <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
+                </div>
+            </div>
+        </template>
+
+        <button type="button" @click="addTouchstone()" x-show="touchstones.length < 3" class="btn-add">+ Add Touchstone</button>
+    </section>
 
     <!-- BOTTOM GRID: 3-Column Layout (33% | 33% | 34%) -->
     <div class="sheet-grid-three-column">
