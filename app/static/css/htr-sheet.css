@@ -208,8 +208,8 @@
 /* Portrait Grid */
 .portrait-grid-htr {
     display: grid;
-    grid-template-columns: 300px 150px 150px;
-    grid-template-rows: 150px 150px auto 150px;
+    grid-template-columns: 200px 100px 100px;
+    grid-template-rows: 100px 100px auto 200px;
     gap: 0.5rem;
     position: relative;
 }
@@ -220,8 +220,8 @@
 }
 
 .portrait-hobby {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
 }
 
 /* Hobby grid positioning (2x2 in columns 2-3) */
@@ -273,8 +273,8 @@
 .portrait-face {
     grid-row: 4;
     grid-column: 2 / 4;  /* Span columns 2 and 3 */
-    width: 300px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
 }
 
 .portrait-box {
