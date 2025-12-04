@@ -56,28 +56,6 @@
                 <label>Cell:</label>
                 <input type="text" x-model="data.cell" @input.debounce.300ms="autoSave()" placeholder="Cell name">
             </div>
-            <div class="form-group-inline">
-                <label>Creed:</label>
-                <select x-model="data.creed" @change="autoSave()">
-                    <option value="">Select Creed</option>
-                    <option value="faithful">Faithful</option>
-                    <option value="inquisitive">Inquisitive</option>
-                    <option value="martial">Martial</option>
-                    <option value="entrepreneurial">Entrepreneurial</option>
-                    <option value="underground">Underground</option>
-                </select>
-            </div>
-            <div class="form-group-inline">
-                <label>Drive:</label>
-                <select x-model="data.drive" @change="autoSave()">
-                    <option value="">Select Drive</option>
-                    <option value="atonement">Atonement</option>
-                    <option value="justice">Justice</option>
-                    <option value="legacy">Legacy</option>
-                    <option value="pride">Pride</option>
-                    <option value="revenge">Revenge</option>
-                </select>
-            </div>
         </div>
         <div class="save-indicator" x-show="saveStatus !== ''">
             <span x-show="saveStatus === 'saving'">⏳ Saving...</span>
@@ -119,6 +97,28 @@
                 <div class="form-group-compact">
                     <label>Origin:</label>
                     <input type="text" x-model="data.origin" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group-compact">
+                    <label>Creed:</label>
+                    <select x-model="data.creed" @change="autoSave()">
+                        <option value="">Select Creed</option>
+                        <option value="faithful">Faithful</option>
+                        <option value="inquisitive">Inquisitive</option>
+                        <option value="martial">Martial</option>
+                        <option value="entrepreneurial">Entrepreneurial</option>
+                        <option value="underground">Underground</option>
+                    </select>
+                </div>
+                <div class="form-group-compact">
+                    <label>Drive:</label>
+                    <select x-model="data.drive" @change="autoSave()">
+                        <option value="">Select Drive</option>
+                        <option value="atonement">Atonement</option>
+                        <option value="justice">Justice</option>
+                        <option value="legacy">Legacy</option>
+                        <option value="pride">Pride</option>
+                        <option value="revenge">Revenge</option>
+                    </select>
                 </div>
             </section>
         </div>
