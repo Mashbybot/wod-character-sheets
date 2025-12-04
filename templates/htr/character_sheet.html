@@ -218,31 +218,28 @@
                     </div>
                 </div>
 
-                <!-- Danger Tracker (ECG Monitor) -->
+                <!-- Danger Tracker -->
                 <div class="tracker-row">
                     <label>DANGER</label>
                     <div class="tracker-bar danger-tracker">
-                        <template x-for="i in 20" :key="i">
-                            <span class="tracker-box"
-                                  :class="[i <= (data.danger_current || 0) ? 'filled' : 'empty', getDangerColor(i)]"
-                                  @click="clickDot('danger_current', i, 0, 20)">■</span>
+                        <template x-for="i in 10" :key="i">
+                            <div class="danger-box"
+                                 :class="i <= (data.danger_current || 0) ? 'filled' : 'empty'"
+                                 @click="clickDot('danger_current', i, 0, 10)"></div>
                         </template>
                     </div>
-                    <span class="tracker-value" x-text="`${data.danger_current || 0}/20`"></span>
                 </div>
 
-                <!-- Desperation Tracker (Stress Monitor) -->
+                <!-- Desperation Tracker -->
                 <div class="tracker-row">
                     <label>DESPERATION</label>
                     <div class="tracker-bar desperation-tracker">
-                        <template x-for="i in 20" :key="i">
-                            <span class="tracker-box"
-                                  :class="[i <= (data.desperation_current || 0) ? 'filled' : 'empty', i >= 15 ? 'warning' : '']"
-                                  @click="clickDot('desperation_current', i, 0, 20)">■</span>
+                        <template x-for="i in 10" :key="i">
+                            <div class="desperation-box"
+                                 :class="i <= (data.desperation_current || 0) ? 'filled' : 'empty'"
+                                 @click="clickDot('desperation_current', i, 0, 10)"></div>
                         </template>
                     </div>
-                    <span class="tracker-value" x-text="`${data.desperation_current || 0}/20`"></span>
-                    <span x-show="data.desperation_current >= 15" class="warning-text">⚠️ HIGH</span>
                 </div>
 
                 <!-- Health Tracker -->

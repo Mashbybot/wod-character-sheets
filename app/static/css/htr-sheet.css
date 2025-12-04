@@ -326,7 +326,9 @@
 
 /* Health & Willpower Boxes */
 .health-box,
-.willpower-box {
+.willpower-box,
+.danger-box,
+.desperation-box {
     width: 30px;
     height: 30px;
     border: 2px solid var(--border-color);
@@ -341,7 +343,9 @@
 }
 
 .health-box.empty,
-.willpower-box.empty {
+.willpower-box.empty,
+.danger-box.empty,
+.desperation-box.empty {
     background: var(--bg-dark);
 }
 
@@ -357,8 +361,22 @@
     color: var(--text-white);
 }
 
+.danger-box.filled {
+    background: var(--danger-red);
+    border-color: var(--danger-red);
+    box-shadow: 0 0 8px rgba(220, 53, 69, 0.4);
+}
+
+.desperation-box.filled {
+    background: var(--warning-yellow);
+    border-color: var(--warning-yellow);
+    box-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
+}
+
 .health-box:hover,
-.willpower-box:hover {
+.willpower-box:hover,
+.danger-box:hover,
+.desperation-box:hover {
     border-color: var(--htr-orange);
     box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
 }
