@@ -150,16 +150,15 @@
 /* Portrait Grid */
 .portrait-grid-htr {
     display: grid;
-    grid-template-columns: 200px 1fr;
-    grid-template-rows: 300px auto 300px;
+    grid-template-columns: 200px 120px;
+    grid-template-rows: auto auto auto;
     gap: 0.5rem;
     position: relative;
 }
 
 .portrait-body {
-    grid-row: 1;
+    grid-row: 1 / -1;  /* Span all rows */
     grid-column: 1;
-    height: 300px;
 }
 
 .hobby-stack {
@@ -171,8 +170,9 @@
 }
 
 .portrait-hobby {
-    flex: 1;
-    min-height: 70px;
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
 }
 
 .alias-overlay {
@@ -202,8 +202,9 @@
 
 .portrait-face {
     grid-row: 3;
-    grid-column: 1 / -1;
-    height: 300px;
+    grid-column: 2;
+    width: 120px;
+    height: 120px;
 }
 
 .portrait-box {
