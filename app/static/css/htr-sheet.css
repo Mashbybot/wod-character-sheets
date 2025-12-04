@@ -188,6 +188,23 @@
     flex-direction: column;
 }
 
+.experience-equipment-grid {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.experience-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.equipment-column {
+    display: flex;
+    flex-direction: column;
+}
+
 /* Portrait Grid */
 .portrait-grid-htr {
     display: grid;
@@ -1056,6 +1073,10 @@
     }
 
     .attributes-skills-edges-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .experience-equipment-grid {
         grid-template-columns: 1fr;
     }
 }

@@ -553,32 +553,8 @@
         <span class="diamond">🔶</span>
     </div>
 
-    <!-- FULL-WIDTH: TOUCHSTONES -->
-    <section class="sheet-section touchstones-section">
-        <h2>Touchstones</h2>
-
-        <template x-for="(touchstone, index) in touchstones" :key="index">
-            <div class="touchstone-entry">
-                <div class="touchstone-header">
-                    <strong>Touchstone <span x-text="index + 1"></span></strong>
-                    <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
-                </div>
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
-                </div>
-            </div>
-        </template>
-
-        <button type="button" @click="addTouchstone()" x-show="touchstones.length < 3" class="btn-add">+ Add Touchstone</button>
-    </section>
-
-    <!-- BOTTOM GRID: 3-Column Layout (33% | 33% | 34%) -->
-    <div class="sheet-grid-three-column">
+    <!-- 3-COLUMN: Advantages | Flaws | Touchstones -->
+    <div class="sheet-grid-three-column advantages-flaws-touchstones-grid">
 
         <!-- LEFT: Advantages -->
         <div class="column-left">
@@ -608,7 +584,7 @@
             </section>
         </div>
 
-        <!-- MIDDLE: Flaws & Equipment -->
+        <!-- MIDDLE: Flaws -->
         <div class="column-middle">
             <section class="sheet-section flaws-section">
                 <h2>Flaws</h2>
@@ -634,30 +610,41 @@
                 <button type="button" @click="addFlaw()" x-show="flaws.length < 5 && getFlawTotalDots() < 2" class="btn-add">+ Add Flaw</button>
                 <div class="dots-total">Total: <span x-text="getFlawTotalDots()"></span>/2</div>
             </section>
+        </div>
 
-            <section class="sheet-section equipment-section">
-                <h2>Equipment</h2>
-                <div class="form-group">
-                    <label>Weapon:</label>
-                    <input type="text" x-model="data.equipment_weapon" @input.debounce.300ms="autoSave()">
-                </div>
-                <div class="form-group">
-                    <label>Damage:</label>
-                    <input type="number" x-model.number="data.equipment_weapon_damage" @input.debounce.300ms="autoSave()">
-                </div>
-                <div class="form-group">
-                    <label>Armor Rating:</label>
-                    <input type="number" x-model.number="data.equipment_armor_rating" @input.debounce.300ms="autoSave()">
-                </div>
-                <div class="form-group">
-                    <label>Notes:</label>
-                    <textarea x-model="data.equipment_notes" @input.debounce.300ms="autoSave()" rows="3"></textarea>
-                </div>
+        <!-- RIGHT: Touchstones -->
+        <div class="column-right">
+            <section class="sheet-section touchstones-section">
+                <h2>Touchstones</h2>
+
+                <template x-for="(touchstone, index) in touchstones" :key="index">
+                    <div class="touchstone-entry">
+                        <div class="touchstone-header">
+                            <strong>Touchstone <span x-text="index + 1"></span></strong>
+                            <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
+                        </div>
+                    </div>
+                </template>
+
+                <button type="button" @click="addTouchstone()" x-show="touchstones.length < 3" class="btn-add">+ Add Touchstone</button>
             </section>
         </div>
 
-        <!-- RIGHT: Experience -->
-        <div class="column-right">
+    </div>
+
+    <!-- 2-COLUMN: Experience | Equipment -->
+    <div class="experience-equipment-grid">
+
+        <!-- LEFT: Experience -->
+        <div class="experience-column">
             <section class="sheet-section xp-section">
                 <h2>Experience</h2>
                 <div class="xp-display">
@@ -682,6 +669,29 @@
                             </div>
                         </template>
                     </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- RIGHT: Equipment -->
+        <div class="equipment-column">
+            <section class="sheet-section equipment-section">
+                <h2>Equipment</h2>
+                <div class="form-group">
+                    <label>Weapon:</label>
+                    <input type="text" x-model="data.equipment_weapon" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group">
+                    <label>Damage:</label>
+                    <input type="number" x-model.number="data.equipment_weapon_damage" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group">
+                    <label>Armor Rating:</label>
+                    <input type="number" x-model.number="data.equipment_armor_rating" @input.debounce.300ms="autoSave()">
+                </div>
+                <div class="form-group">
+                    <label>Notes:</label>
+                    <textarea x-model="data.equipment_notes" @input.debounce.300ms="autoSave()" rows="3"></textarea>
                 </div>
             </section>
         </div>
