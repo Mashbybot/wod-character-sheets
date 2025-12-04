@@ -204,6 +204,20 @@
             <section class="sheet-section trackers-section">
                 <h2>Trackers</h2>
 
+                <!-- Despair Toggle Button -->
+                <div class="despair-toggle-container">
+                    <button type="button"
+                            class="despair-toggle-button"
+                            :class="{ 'active': data.in_despair }"
+                            @click="data.in_despair = !data.in_despair; autoSave()">
+                        <span class="despair-icon">⚠️</span>
+                        <span class="despair-label" x-text="data.in_despair ? 'IN DESPAIR' : 'DESPAIR'"></span>
+                    </button>
+                    <div x-show="data.in_despair" class="bullet-hole-container">
+                        <img src="/static/images/bullet-hole.png" alt="Despair" class="bullet-hole-graphic">
+                    </div>
+                </div>
+
                 <!-- Danger Tracker (ECG Monitor) -->
                 <div class="tracker-row">
                     <label>DANGER</label>
@@ -258,17 +272,6 @@
                                 <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
                             </div>
                         </template>
-                    </div>
-                </div>
-
-                <!-- Despair Indicator -->
-                <div class="despair-indicator">
-                    <label>
-                        <input type="checkbox" x-model="data.in_despair" @change="autoSave()">
-                        Currently in Despair
-                    </label>
-                    <div x-show="data.in_despair" class="bullet-hole-container">
-                        <img src="/static/images/bullet-hole.png" alt="Despair" class="bullet-hole-graphic">
                     </div>
                 </div>
             </section>
