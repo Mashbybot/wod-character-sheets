@@ -158,7 +158,7 @@
 /* Grid Layouts */
 .sheet-grid-three-column {
     display: grid;
-    grid-template-columns: 25% 50% 25%;
+    grid-template-columns: 25% 40% 35%;
     gap: 1.5rem;
     margin-bottom: 1.5rem;
 }
