@@ -437,9 +437,15 @@
 .despair-toggle-button {
     width: 100%;
     padding: 1rem 1.5rem;
-    border: 3px solid var(--danger-red);
+    border: 3px solid var(--htr-orange);
     border-radius: 12px;
-    background: linear-gradient(145deg, #1a0a0a, #0a0000);
+    background: repeating-linear-gradient(
+        45deg,
+        var(--htr-orange),
+        var(--htr-orange) 10px,
+        var(--bg-black) 10px,
+        var(--bg-black) 20px
+    );
     color: var(--text-white);
     font-size: 1.1rem;
     font-weight: bold;
@@ -456,10 +462,9 @@
 }
 
 .despair-toggle-button:hover {
-    border-color: #ff4444;
-    background: linear-gradient(145deg, #2a0a0a, #1a0000);
+    border-color: var(--htr-orange-light);
     box-shadow:
-        0 6px 12px rgba(220, 53, 69, 0.4),
+        0 6px 12px rgba(255, 140, 0, 0.4),
         inset 0 2px 4px rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
 }
@@ -477,11 +482,6 @@
 
 .despair-toggle-button.active:hover {
     background: linear-gradient(145deg, #ff4444, #cc1a27);
-}
-
-.despair-icon {
-    font-size: 1.5rem;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
 }
 
 .despair-label {

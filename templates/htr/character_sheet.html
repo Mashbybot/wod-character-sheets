@@ -211,7 +211,6 @@
                             class="despair-toggle-button"
                             :class="{ 'active': data.in_despair }"
                             @click="data.in_despair = !data.in_despair; autoSave()">
-                        <span class="despair-icon">⚠️</span>
                         <span class="despair-label" x-text="data.in_despair ? 'IN DESPAIR' : 'DESPAIR'"></span>
                     </button>
                     <div x-show="data.in_despair" class="bullet-hole-container">
