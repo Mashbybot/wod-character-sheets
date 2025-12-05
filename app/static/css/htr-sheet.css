@@ -448,7 +448,7 @@
         var(--bg-black) 10px,
         var(--bg-black) 20px
     );
-    color: var(--text-white);
+    color: #000000;
     font-size: 1.1rem;
     font-weight: bold;
     letter-spacing: 2px;
@@ -488,6 +488,9 @@
 
 .despair-label {
     font-family: 'Courier New', monospace;
+}
+
+.despair-toggle-button.active .despair-label {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 

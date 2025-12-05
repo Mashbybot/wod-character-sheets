@@ -213,9 +213,6 @@
                             @click="data.in_despair = !data.in_despair; autoSave()">
                         <span class="despair-label" x-text="data.in_despair ? 'IN DESPAIR' : 'DESPAIR'"></span>
                     </button>
-                    <div x-show="data.in_despair" class="bullet-hole-container">
-                        <img src="/static/images/bullet-hole.png" alt="Despair" class="bullet-hole-graphic">
-                    </div>
                 </div>
 
                 <!-- Danger Tracker -->
