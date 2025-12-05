@@ -499,11 +499,15 @@
         0 4px 8px rgba(0, 0, 0, 0.6),
         inset 0 2px 4px rgba(255, 255, 255, 0.05);
     text-shadow:
-        -1px -1px 0 #000,
-        1px -1px 0 #000,
-        -1px 1px 0 #000,
-        1px 1px 0 #000,
-        0 0 3px rgba(0, 0, 0, 0.8);
+        -2px -2px 0 var(--bg-black),
+        2px -2px 0 var(--bg-black),
+        -2px 2px 0 var(--bg-black),
+        2px 2px 0 var(--bg-black),
+        -2px 0 0 var(--bg-black),
+        2px 0 0 var(--bg-black),
+        0 -2px 0 var(--bg-black),
+        0 2px 0 var(--bg-black),
+        0 0 4px rgba(10, 10, 10, 0.9);
 }
 
 .despair-toggle-button:hover {
@@ -859,6 +863,26 @@
     background: rgba(220, 53, 69, 0.2);
     border: 1px solid var(--danger-red);
     color: var(--danger-red);
+}
+
+/* Touchstones, Advantages, Flaws Grid */
+.advantages-flaws-touchstones-grid {
+    align-items: start;
+}
+
+.advantages-flaws-touchstones-grid .column-left,
+.advantages-flaws-touchstones-grid .column-middle,
+.advantages-flaws-touchstones-grid .column-right {
+    height: 100%;
+}
+
+/* Equal height for sections by default, but allow them to grow with content */
+.advantages-section,
+.flaws-section,
+.touchstones-section {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Touchstones, Advantages, Flaws */
