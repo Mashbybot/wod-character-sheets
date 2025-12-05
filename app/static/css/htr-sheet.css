@@ -1175,6 +1175,16 @@
     .experience-equipment-grid {
         grid-template-columns: 1fr;
     }
+
+    /* Adjust portrait grid for medium screens */
+    .portrait-grid-htr {
+        min-height: 350px;
+    }
+
+    .alias-input {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1193,5 +1203,45 @@
 
     .sheet-grid-two-column {
         grid-template-columns: 1fr;
+    }
+
+    /* Compact portrait grid for mobile */
+    .portrait-grid-htr {
+        min-height: 300px;
+        gap: 0.3rem;
+    }
+
+    .alias-input {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+
+    .portrait-placeholder {
+        font-size: 0.8rem;
+    }
+
+    .size-hint {
+        font-size: 0.6rem;
+    }
+
+    /* Adjust tracker boxes for touch */
+    .health-box,
+    .willpower-box,
+    .danger-box,
+    .desperation-box {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+
+    /* Larger dots for touch screens */
+    .dot {
+        font-size: 1.4rem;
+    }
+
+    /* Make Despair button more touch-friendly */
+    .despair-toggle-button {
+        padding: 1.2rem 1.5rem;
+        font-size: 1rem;
     }
 }
