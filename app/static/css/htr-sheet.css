@@ -163,6 +163,21 @@
     margin-bottom: 1.5rem;
 }
 
+/* Grid Column Classes */
+.column-one,
+.column-two,
+.column-three {
+    display: flex;
+    flex-direction: column;
+}
+
+.column-left,
+.column-middle,
+.column-right {
+    display: flex;
+    flex-direction: column;
+}
+
 .sheet-grid-two-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -304,6 +319,12 @@
 
 .portrait-placeholder-small {
     font-size: 2rem;
+}
+
+.size-hint {
+    font-size: 0.7rem;
+    color: var(--text-gray);
+    opacity: 0.7;
 }
 
 /* Trackers */
@@ -729,6 +750,18 @@
     margin-bottom: 1rem;
 }
 
+/* Limit Note (for Advantages/Flaws) */
+.limit-note {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-bottom: 1rem;
+    padding: 0.3rem 0.6rem;
+    background: rgba(255, 140, 0, 0.05);
+    border-left: 3px solid var(--htr-orange);
+    border-radius: 3px;
+}
+
 .edge-config {
     display: flex;
     gap: 1rem;
@@ -898,6 +931,40 @@
     box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a, 0 0 8px rgba(255, 140, 0, 0.4);
 }
 
+/* Compact Form Groups (for Identity section) */
+.form-group-compact {
+    margin-bottom: 0.8rem;
+}
+
+.form-group-compact label {
+    display: block;
+    color: var(--htr-orange);
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.5px;
+}
+
+.form-group-compact input,
+.form-group-compact select {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-white);
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a;
+    transition: all 0.2s ease;
+}
+
+.form-group-compact input:focus,
+.form-group-compact select:focus {
+    outline: none;
+    border-color: var(--htr-orange);
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a, 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
 /* Blood Type Warning */
 .blood-warning {
     display: inline-block;
@@ -996,6 +1063,18 @@
 
 .xp-log-entry.spend .xp-amount {
     color: var(--danger-red);
+}
+
+.xp-date {
+    color: var(--text-gray);
+    font-size: 0.8rem;
+}
+
+.xp-reason {
+    color: var(--text-white);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Empty State */
