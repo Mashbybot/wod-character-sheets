@@ -103,19 +103,19 @@
 
 .form-group-inline input,
 .form-group-inline select {
-    background: #0d0d0d;
-    border: 1px solid var(--border-color);
+    background: transparent;
+    border: none;
     border-radius: 6px;
     color: var(--text-white);
     padding: 0.4rem 0.8rem;
-    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a;
+    box-shadow: none;
 }
 
 .form-group-inline input:focus,
 .form-group-inline select:focus {
     outline: none;
-    border-color: var(--htr-orange);
-    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a, 0 0 8px rgba(255, 140, 0, 0.4);
+    border-color: transparent;
+    box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
 }
 
 /* Save Indicator */
