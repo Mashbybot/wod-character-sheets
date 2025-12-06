@@ -1,4 +1,20 @@
-"""Storyteller view routes - read-only access to all characters"""
+"""Storyteller view routes - read-only access to all characters
+
+This module provides storyteller-only routes for viewing all player characters
+in read-only mode across all game types.
+
+Currently supported:
+- VTM (Vampire: The Masquerade)
+- HTR (Hunter: The Reckoning)
+
+To add support for future game types (e.g., WTA - Werewolf: The Apocalypse):
+1. Import the character model (e.g., from app.models_new import WTACharacter)
+2. Add character query to storyteller_dashboard() function
+3. Create HTML view route: @router.get("/wta/character/{character_id}")
+4. Create API endpoint: @router.get("/wta/api/character/{character_id}")
+5. Update character sheet template to include storyteller_mode flag
+6. Update JavaScript to use storyteller API when STORYTELLER_MODE=true
+"""
 
 from typing import List, Dict, Any
 from fastapi import APIRouter, Request, Depends, HTTPException
@@ -332,6 +348,170 @@ async def get_vtm_character_api(
                 "dots": bg.dots
             }
             for bg in character.backgrounds
+        ],
+        "xp_log": [
+            {
+                "date": entry.date,
+                "type": entry.type,
+                "amount": entry.amount,
+                "reason": entry.reason
+            }
+            for entry in character.xp_log
+        ]
+    }
+
+    return JSONResponse(content=char_dict)
+
+
+@router.get("/htr/api/character/{character_id}")
+async def get_htr_character_api(
+    character_id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """API endpoint to get HTR character data - storyteller access"""
+    user = require_storyteller(request)
+
+    # Get character with all related data
+    character = db.query(HTRCharacter).filter(
+        HTRCharacter.id == character_id
+    ).first()
+
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+
+    # Build response with all character data
+    char_dict = {
+        "id": character.id,
+        "user_id": character.user_id,
+        "name": character.name,
+        "cell": character.cell,
+        "chronicle": character.chronicle,
+
+        # Identity
+        "creed": character.creed,
+        "drive": character.drive,
+        "age": character.age,
+        "blood_type": character.blood_type,
+        "pronouns": character.pronouns,
+        "origin": character.origin,
+        "alias": character.alias,
+
+        # Attributes
+        "strength": character.strength,
+        "dexterity": character.dexterity,
+        "stamina": character.stamina,
+        "charisma": character.charisma,
+        "manipulation": character.manipulation,
+        "composure": character.composure,
+        "intelligence": character.intelligence,
+        "wits": character.wits,
+        "resolve": character.resolve,
+
+        # Skills - Physical
+        "athletics": character.athletics,
+        "brawl": character.brawl,
+        "craft": character.craft,
+        "drive_skill": character.drive_skill,
+        "firearms": character.firearms,
+        "larceny": character.larceny,
+        "melee": character.melee,
+        "stealth": character.stealth,
+        "survival": character.survival,
+
+        # Skills - Social
+        "animal_ken": character.animal_ken,
+        "etiquette": character.etiquette,
+        "insight": character.insight,
+        "intimidation": character.intimidation,
+        "leadership": character.leadership,
+        "performance": character.performance,
+        "persuasion": character.persuasion,
+        "streetwise": character.streetwise,
+        "subterfuge": character.subterfuge,
+
+        # Skills - Mental
+        "academics": character.academics,
+        "awareness": character.awareness,
+        "finance": character.finance,
+        "investigation": character.investigation,
+        "medicine": character.medicine,
+        "occult": character.occult,
+        "politics": character.politics,
+        "science": character.science,
+        "technology": character.technology,
+
+        "skill_specialties": character.skill_specialties,
+
+        # Trackers
+        "danger_current": character.danger_current,
+        "desperation_current": character.desperation_current,
+        "health_max": character.health_max,
+        "health_superficial": character.health_superficial,
+        "health_aggravated": character.health_aggravated,
+        "willpower_max": character.willpower_max,
+        "willpower_superficial": character.willpower_superficial,
+        "willpower_aggravated": character.willpower_aggravated,
+        "in_despair": character.in_despair,
+
+        # Edges & Perks
+        "edge_config": character.edge_config,
+        "edge_1_id": character.edge_1_id,
+        "edge_2_id": character.edge_2_id,
+        "selected_perks": character.selected_perks,
+
+        # Equipment
+        "equipment_weapon": character.equipment_weapon,
+        "equipment_weapon_damage": character.equipment_weapon_damage,
+        "equipment_armor_rating": character.equipment_armor_rating,
+        "equipment_notes": character.equipment_notes,
+
+        # Experience
+        "exp_total": character.exp_total,
+        "exp_available": character.exp_available,
+        "exp_spent": character.exp_spent,
+
+        # History & Notes
+        "first_encounter": character.first_encounter,
+        "history": character.history,
+        "notes": character.notes,
+        "current_mission": character.current_mission,
+
+        # Portraits
+        "portrait_face": character.portrait_face,
+        "portrait_body": character.portrait_body,
+        "portrait_hobby_1": character.portrait_hobby_1,
+        "portrait_hobby_2": character.portrait_hobby_2,
+        "portrait_hobby_3": character.portrait_hobby_3,
+        "portrait_hobby_4": character.portrait_hobby_4,
+
+        # Character creation
+        "creation_complete": character.creation_complete,
+
+        # Related data
+        "touchstones": [
+            {
+                "name": ts.name,
+                "description": ts.description,
+                "conviction": ts.conviction
+            }
+            for ts in character.touchstones
+        ],
+        "advantages": [
+            {
+                "name": adv.name,
+                "description": adv.description,
+                "dots": adv.dots
+            }
+            for adv in character.advantages
+        ],
+        "flaws": [
+            {
+                "name": flaw.name,
+                "description": flaw.description,
+                "dots": flaw.dots
+            }
+            for flaw in character.flaws
         ],
         "xp_log": [
             {
