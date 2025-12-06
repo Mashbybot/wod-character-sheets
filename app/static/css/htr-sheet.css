@@ -1056,6 +1056,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    width: 100%;
 }
 
 .form-group-compact label {
@@ -1064,12 +1065,13 @@
     font-weight: bold;
     letter-spacing: 0.5px;
     white-space: nowrap;
-    min-width: fit-content;
+    flex-shrink: 0;
 }
 
 .form-group-compact input,
 .form-group-compact select {
     flex: 1;
+    min-width: 0;
     background: #0d0d0d;
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -1085,6 +1087,15 @@
     outline: none;
     border-color: var(--htr-orange);
     box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a, 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+/* Identity box specific constraints */
+.identity-box {
+    overflow: hidden;
+}
+
+.identity-box .form-group-compact {
+    max-width: 100%;
 }
 
 /* Blood Type Warning */
