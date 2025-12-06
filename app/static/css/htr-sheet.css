@@ -700,6 +700,9 @@
     padding: 0.3rem;
     border-radius: 4px;
     transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .skill-row.drive-boosted {
@@ -719,12 +722,14 @@
 .skill-name {
     color: var(--text-white);
     font-size: 0.9rem;
+    flex-shrink: 0;
 }
 
 .skill-right {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-shrink: 0;
 }
 
 .btn-add-specialty {
@@ -750,20 +755,40 @@
 
 .specialties-list {
     display: flex;
-    gap: 0.4rem;
+    gap: 0.3rem;
     flex-wrap: wrap;
-    margin-top: 0.3rem;
+    margin-top: 0;
+    padding-left: 0.5rem;
+    max-height: 50px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-content: flex-start;
+}
+
+.specialties-list::-webkit-scrollbar {
+    width: 3px;
+}
+
+.specialties-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.specialties-list::-webkit-scrollbar-thumb {
+    background: var(--htr-orange);
+    border-radius: 3px;
 }
 
 .specialty-tag {
     background: var(--bg-dark);
     border: 1px solid var(--htr-orange);
-    border-radius: 4px;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.8rem;
-    display: flex;
+    border-radius: 3px;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.75rem;
+    display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.25rem;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .specialty-tag button {
