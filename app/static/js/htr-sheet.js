@@ -155,7 +155,11 @@ function htrCharacterSheet(characterId) {
 
         async loadCharacter() {
             try {
-                const response = await fetch(`/htr/api/character/${this.characterId}`);
+                // Use storyteller API endpoint if in storyteller mode
+                const apiPath = window.STORYTELLER_MODE
+                    ? `/storyteller/htr/api/character/${this.characterId}`
+                    : `/htr/api/character/${this.characterId}`;
+                const response = await fetch(apiPath);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

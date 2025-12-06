@@ -232,7 +232,11 @@ function characterSheet(characterId) {
             this.loadError = null;
 
             try {
-                const response = await fetch(`/vtm/api/character/${this.characterId}`);
+                // Use storyteller API endpoint if in storyteller mode
+                const apiPath = window.STORYTELLER_MODE
+                    ? `/storyteller/vtm/api/character/${this.characterId}`
+                    : `/vtm/api/character/${this.characterId}`;
+                const response = await fetch(apiPath);
 
                 if (!response.ok) {
                     const errorData = await response.json();

@@ -9,6 +9,8 @@
 <script>
     // Global static version for cache-busting
     window.STATIC_VERSION = '{{ static_version }}';
+    // Storyteller mode flag - use storyteller API endpoints
+    window.STORYTELLER_MODE = {{ 'true' if storyteller_mode else 'false' }};
 </script>
 {% if view_mode %}
 <style>
