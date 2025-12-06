@@ -299,5 +299,80 @@ def format_column_widths(width1: int, width2: int, width3: int) -> str:
     if total != 100:
         # Adjust the third column to make it 100
         width3 = 100 - width1 - width2
-    
+
     return f"{width1},{width2},{width3}"
+
+
+# ===== STORYTELLER UTILITIES =====
+
+def is_storyteller(user: Optional[Dict[str, Any]]) -> bool:
+    """
+    Check if the current user is a storyteller
+
+    Args:
+        user: User dict from session (contains discord_id)
+
+    Returns:
+        True if user is a storyteller, False otherwise
+    """
+    if not user:
+        return False
+
+    storyteller_id = os.getenv("STORYTELLER_DISCORD_ID", "")
+    if not storyteller_id:
+        return False
+
+    user_discord_id = str(user.get("discord_id", ""))
+    return user_discord_id == storyteller_id
+
+
+def normalize_chronicle_name(chronicle: Optional[str]) -> str:
+    """
+    Normalize chronicle name for fuzzy matching
+
+    Args:
+        chronicle: Chronicle name string
+
+    Returns:
+        Normalized lowercase string with extra whitespace removed
+    """
+    if not chronicle:
+        return "uncategorized"
+
+    # Convert to lowercase, strip whitespace, collapse multiple spaces
+    normalized = ' '.join(chronicle.lower().strip().split())
+    return normalized if normalized else "uncategorized"
+
+
+def group_characters_by_chronicle(characters: list) -> Dict[str, list]:
+    """
+    Group characters by normalized chronicle name
+
+    Args:
+        characters: List of character objects (VTM or HTR)
+
+    Returns:
+        Dict mapping normalized chronicle names to lists of characters
+    """
+    grouped = {}
+
+    for char in characters:
+        # Get chronicle name (works for both VTM and HTR)
+        chronicle = getattr(char, 'chronicle', None)
+        normalized = normalize_chronicle_name(chronicle)
+
+        if normalized not in grouped:
+            grouped[normalized] = []
+
+        grouped[normalized].append(char)
+
+    # Sort chronicles alphabetically, but put "uncategorized" last
+    sorted_groups = {}
+    for key in sorted(grouped.keys()):
+        if key != "uncategorized":
+            sorted_groups[key] = grouped[key]
+
+    if "uncategorized" in grouped:
+        sorted_groups["uncategorized"] = grouped["uncategorized"]
+
+    return sorted_groups

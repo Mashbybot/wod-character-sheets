@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import init_db
-from app.routes import auth, vtm, htr
+from app.routes import auth, vtm, htr, storyteller
 from app.auth import get_current_user
 from app.exceptions import (
     wod_exception_handler,
@@ -76,11 +76,15 @@ STATIC_VERSION = os.getenv("STATIC_VERSION", str(int(time.time())))
 templates = Jinja2Templates(directory="templates")
 # Make STATIC_VERSION available to all templates
 templates.env.globals["static_version"] = STATIC_VERSION
+# Make is_storyteller function available to all templates
+from app.utils import is_storyteller
+templates.env.globals["is_storyteller"] = is_storyteller
 
 # Include routers
 app.include_router(auth.router)
 app.include_router(vtm.router)
 app.include_router(htr.router)
+app.include_router(storyteller.router)
 
 
 @app.on_event("startup")

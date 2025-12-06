@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+
+{% block title %}Storyteller Dashboard - World of Darkness{% endblock %}
+
+{% block extra_head %}
+<style>
+    .storyteller-header {
+        background: linear-gradient(135deg, #4a0e0e 0%, #1a1a2e 100%);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .storyteller-header h1 {
+        color: #d4af37;
+        font-size: 2.5rem;
+        margin: 0 0 0.5rem 0;
+        font-family: 'UnifrakturMaguntia', cursive;
+    }
+
+    .storyteller-header .subtitle {
+        color: #b8b8b8;
+        font-size: 1.1rem;
+    }
+
+    .stats-bar {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .stat-item {
+        color: #fff;
+    }
+
+    .stat-item .number {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #d4af37;
+    }
+
+    .stat-item .label {
+        font-size: 0.9rem;
+        color: #b8b8b8;
+    }
+
+    .view-toggle {
+        margin: 2rem 0;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .view-toggle button {
+        padding: 0.75rem 1.5rem;
+        background: #2a2a3e;
+        color: #fff;
+        border: 2px solid #3a3a4e;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+
+    .view-toggle button:hover {
+        background: #3a3a4e;
+        border-color: #d4af37;
+    }
+
+    .view-toggle button.active {
+        background: #d4af37;
+        color: #1a1a2e;
+        border-color: #d4af37;
+        font-weight: bold;
+    }
+
+    .chronicle-group {
+        margin-bottom: 3rem;
+    }
+
+    .chronicle-header {
+        background: #2a2a3e;
+        padding: 1rem 1.5rem;
+        border-radius: 6px 6px 0 0;
+        border-left: 4px solid #d4af37;
+    }
+
+    .chronicle-header h2 {
+        margin: 0;
+        color: #d4af37;
+        font-size: 1.5rem;
+    }
+
+    .character-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+        background: #1a1a2e;
+        padding: 1.5rem;
+        border-radius: 0 0 6px 6px;
+    }
+
+    .character-card {
+        background: #2a2a3e;
+        border: 1px solid #3a3a4e;
+        border-radius: 6px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+    }
+
+    .character-card:hover {
+        border-color: #d4af37;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(212, 175, 55, 0.2);
+    }
+
+    .character-card .game-badge {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+
+    .character-card .game-badge.vtm {
+        background: #8b0000;
+        color: #fff;
+    }
+
+    .character-card .game-badge.htr {
+        background: #ff8c00;
+        color: #fff;
+    }
+
+    .character-card h3 {
+        margin: 0 0 0.5rem 0;
+        color: #fff;
+        font-size: 1.3rem;
+        padding-right: 4rem; /* Space for badge */
+    }
+
+    .character-card .player-info {
+        color: #b8b8b8;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .character-card .chronicle-name {
+        color: #d4af37;
+        font-size: 0.85rem;
+        font-style: italic;
+    }
+
+    .character-card .updated {
+        color: #888;
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+    }
+
+    .flat-list {
+        background: #1a1a2e;
+        padding: 1.5rem;
+        border-radius: 6px;
+    }
+
+    .flat-list table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .flat-list th {
+        background: #2a2a3e;
+        color: #d4af37;
+        padding: 1rem;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #d4af37;
+    }
+
+    .flat-list td {
+        padding: 1rem;
+        border-bottom: 1px solid #3a3a4e;
+        color: #fff;
+    }
+
+    .flat-list tr:hover {
+        background: #2a2a3e;
+        cursor: pointer;
+    }
+
+    .flat-list .game-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .no-characters {
+        text-align: center;
+        padding: 3rem;
+        color: #888;
+        font-size: 1.2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="storyteller-dashboard" x-data="{ viewMode: 'grouped' }">
+    <div class="storyteller-header">
+        <h1>📖 Storyteller Dashboard</h1>
+        <p class="subtitle">View all player character sheets across all chronicles</p>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="number">{{ total_count }}</div>
+                <div class="label">Total Characters</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">{{ vtm_count }}</div>
+                <div class="label">VTM Characters</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">{{ htr_count }}</div>
+                <div class="label">HTR Characters</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="view-toggle">
+        <button @click="viewMode = 'grouped'" :class="{ 'active': viewMode === 'grouped' }">
+            📚 Grouped by Chronicle
+        </button>
+        <button @click="viewMode = 'flat'" :class="{ 'active': viewMode === 'flat' }">
+            📋 Flat List
+        </button>
+    </div>
+
+    {% if total_count == 0 %}
+    <div class="no-characters">
+        <p>No characters found. Players haven't created any characters yet!</p>
+    </div>
+    {% else %}
+        <!-- Grouped View -->
+        <div x-show="viewMode === 'grouped'" x-cloak>
+            {% for chronicle_key, characters in grouped_characters.items() %}
+            <div class="chronicle-group">
+                <div class="chronicle-header">
+                    <h2>{{ chronicle_display_names[chronicle_key] }}</h2>
+                </div>
+                <div class="character-grid">
+                    {% for char in characters %}
+                    <div class="character-card" onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
+                        <span class="game-badge {{ char.game_type|lower }}">{{ char.game_type }}</span>
+                        <h3>{{ char.name or "Unnamed Character" }}</h3>
+                        <div class="player-info">
+                            👤 Player: {{ char.player_name }}
+                        </div>
+                        {% if char.chronicle %}
+                        <div class="chronicle-name">
+                            📖 {{ char.chronicle }}
+                        </div>
+                        {% endif %}
+                        {% if char.updated_at %}
+                        <div class="updated">
+                            Last updated: {{ char.updated_at.strftime('%Y-%m-%d %H:%M') if char.updated_at else 'Never' }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Flat List View -->
+        <div x-show="viewMode === 'flat'" x-cloak>
+            <div class="flat-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Character Name</th>
+                            <th>Game Type</th>
+                            <th>Chronicle</th>
+                            <th>Player</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for char in all_characters|sort(attribute='name') %}
+                        <tr onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
+                            <td><strong>{{ char.name or "Unnamed Character" }}</strong></td>
+                            <td>
+                                <span class="game-badge {{ char.game_type|lower }}">{{ char.game_type }}</span>
+                            </td>
+                            <td>{{ char.chronicle or "Uncategorized" }}</td>
+                            <td>{{ char.player_name }}</td>
+                            <td>{{ char.updated_at.strftime('%Y-%m-%d %H:%M') if char.updated_at else 'Never' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
+{% endblock %}

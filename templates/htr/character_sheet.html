@@ -10,10 +10,64 @@
     // Global static version for cache-busting
     window.STATIC_VERSION = '{{ static_version }}';
 </script>
+{% if view_mode %}
+<style>
+    /* View-Only Mode Styles */
+    .view-only-mode input,
+    .view-only-mode textarea,
+    .view-only-mode select,
+    .view-only-mode [contenteditable] {
+        pointer-events: none !important;
+        cursor: default !important;
+        background: rgba(100, 100, 100, 0.1) !important;
+        border-color: rgba(100, 100, 100, 0.3) !important;
+    }
+
+    .view-only-mode [contenteditable] {
+        user-select: text !important;
+    }
+
+    .view-only-mode .dot,
+    .view-only-mode .danger-box,
+    .view-only-mode .desperation-box,
+    .view-only-mode .health-box,
+    .view-only-mode .willpower-box,
+    .view-only-mode .box-tracker-small span,
+    .view-only-mode .skill-dot,
+    .view-only-mode .attribute-dot,
+    .view-only-mode button,
+    .view-only-mode .btn,
+    .view-only-mode .portrait-upload,
+    .view-only-mode .image-upload-overlay {
+        pointer-events: none !important;
+        cursor: default !important;
+    }
+
+    /* Hide save indicator and buttons in view mode */
+    .view-only-mode .save-indicator,
+    .view-only-mode .btn-delete,
+    .view-only-mode .btn-save,
+    .view-only-mode .upload-btn {
+        display: none !important;
+    }
+
+    /* Allow text selection for copying */
+    .view-only-mode * {
+        user-select: text !important;
+    }
+</style>
+{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="character-sheet htr-sheet" x-data="htrCharacterSheet({{ character.id if character else 'null' }})">
+{% if view_mode %}
+<!-- Storyteller View Mode Banner -->
+<div style="background: linear-gradient(135deg, #d4af37 0%, #8b6914 100%); color: #1a1a2e; padding: 1rem 2rem; text-align: center; font-weight: bold; margin-bottom: 1rem; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+    📖 STORYTELLER VIEW - Read-Only Mode | Character owned by: {{ character_owner }}
+</div>
+{% endif %}
+
+<div class="character-sheet htr-sheet{% if view_mode %} view-only-mode{% endif %}" x-data="htrCharacterSheet({{ character.id if character else 'null' }})">
 
     <!-- Despair Overlay (activated when in_despair = true) -->
     <div class="despair-overlay" x-show="data.in_despair" x-transition></div>
