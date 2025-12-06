@@ -562,7 +562,7 @@
                 <template x-for="(adv, index) in advantages" :key="index">
                     <div class="advantage-entry">
                         <div class="advantage-header">
-                            <input type="text" x-model="adv.type" @input.debounce.300ms="autoSave()" placeholder="Type">
+                            <strong>Advantage <span x-text="index + 1"></span></strong>
                             <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
                                     <span class="dot"
@@ -572,7 +572,14 @@
                             </div>
                             <button type="button" @click="removeAdvantage(index)" class="btn-remove-small">×</button>
                         </div>
-                        <textarea x-model="adv.description" @input.debounce.300ms="autoSave()" rows="1" placeholder="Description"></textarea>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <input type="text" x-model="adv.type" @input.debounce.300ms="autoSave()">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea x-model="adv.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
+                        </div>
                     </div>
                 </template>
 
@@ -590,7 +597,7 @@
                 <template x-for="(flaw, index) in flaws" :key="index">
                     <div class="flaw-entry">
                         <div class="flaw-header">
-                            <input type="text" x-model="flaw.type" @input.debounce.300ms="autoSave()" placeholder="Type">
+                            <strong>Flaw <span x-text="index + 1"></span></strong>
                             <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
                                     <span class="dot"
@@ -600,7 +607,14 @@
                             </div>
                             <button type="button" @click="removeFlaw(index)" class="btn-remove-small">×</button>
                         </div>
-                        <textarea x-model="flaw.description" @input.debounce.300ms="autoSave()" rows="1" placeholder="Description"></textarea>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <input type="text" x-model="flaw.type" @input.debounce.300ms="autoSave()">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea x-model="flaw.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
+                        </div>
                     </div>
                 </template>
 
