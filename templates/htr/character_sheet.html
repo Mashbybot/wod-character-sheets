@@ -48,14 +48,8 @@
             @keydown.enter.prevent="$event.target.blur()"
             x-text="data.name || 'Unnamed Hunter'"></h1>
         <div class="header-details">
-            <div class="form-group-inline">
-                <label>Chronicle:</label>
-                <input type="text" x-model="data.chronicle" @input.debounce.300ms="autoSave()" placeholder="Chronicle">
-            </div>
-            <div class="form-group-inline">
-                <label>Cell:</label>
-                <input type="text" x-model="data.cell" @input.debounce.300ms="autoSave()" placeholder="Cell name">
-            </div>
+            <input type="text" x-model="data.chronicle" @input.debounce.300ms="autoSave()" placeholder="Chronicle" class="header-input">
+            <input type="text" x-model="data.cell" @input.debounce.300ms="autoSave()" placeholder="Cell" class="header-input">
         </div>
         <div class="save-indicator" x-show="saveStatus !== ''">
             <span x-show="saveStatus === 'saving'">⏳ Saving...</span>
