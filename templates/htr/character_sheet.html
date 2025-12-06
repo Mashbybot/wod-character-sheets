@@ -562,24 +562,17 @@
                 <template x-for="(adv, index) in advantages" :key="index">
                     <div class="advantage-entry">
                         <div class="advantage-header">
-                            <strong>Advantage <span x-text="index + 1"></span></strong>
                             <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot"
-                                          :class="i <= (adv.dots || 0) ? 'filled' : 'empty'"
-                                          @click="adv.dots = i; autoSave()">●</span>
+                                    <div class="advantage-box"
+                                         :class="i <= (adv.dots || 0) ? 'filled' : 'empty'"
+                                         @click="adv.dots = i; autoSave()"></div>
                                 </template>
                             </div>
                             <button type="button" @click="removeAdvantage(index)" class="btn-remove-small">×</button>
                         </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <input type="text" x-model="adv.type" @input.debounce.300ms="autoSave()">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea x-model="adv.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
-                        </div>
+                        <input type="text" x-model="adv.type" @input.debounce.300ms="autoSave()" :placeholder="'Advantage ' + (index + 1)" class="advantage-flaw-input">
+                        <textarea x-model="adv.description" @input.debounce.300ms="autoSave()" rows="2" placeholder="Description" class="advantage-flaw-textarea"></textarea>
                     </div>
                 </template>
 
@@ -597,24 +590,17 @@
                 <template x-for="(flaw, index) in flaws" :key="index">
                     <div class="flaw-entry">
                         <div class="flaw-header">
-                            <strong>Flaw <span x-text="index + 1"></span></strong>
                             <div class="dot-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="dot"
-                                          :class="i <= (flaw.dots || 0) ? 'filled' : 'empty'"
-                                          @click="flaw.dots = i; autoSave()">●</span>
+                                    <div class="flaw-box"
+                                         :class="i <= (flaw.dots || 0) ? 'filled' : 'empty'"
+                                         @click="flaw.dots = i; autoSave()"></div>
                                 </template>
                             </div>
                             <button type="button" @click="removeFlaw(index)" class="btn-remove-small">×</button>
                         </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <input type="text" x-model="flaw.type" @input.debounce.300ms="autoSave()">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea x-model="flaw.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
-                        </div>
+                        <input type="text" x-model="flaw.type" @input.debounce.300ms="autoSave()" :placeholder="'Flaw ' + (index + 1)" class="advantage-flaw-input">
+                        <textarea x-model="flaw.description" @input.debounce.300ms="autoSave()" rows="2" placeholder="Description" class="advantage-flaw-textarea"></textarea>
                     </div>
                 </template>
 

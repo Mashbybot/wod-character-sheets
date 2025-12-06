@@ -962,13 +962,95 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     gap: 0.5rem;
 }
 
 .advantage-header .dot-tracker,
 .flaw-header .dot-tracker {
     flex-shrink: 0;
+}
+
+/* Advantage and Flaw boxes - square style like Health/Willpower */
+.advantage-box,
+.flaw-box {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--bg-dark);
+}
+
+.advantage-box.empty,
+.flaw-box.empty {
+    background: var(--bg-dark);
+}
+
+.advantage-box.filled,
+.flaw-box.filled {
+    background: var(--htr-orange);
+    border-color: var(--htr-orange);
+    box-shadow: 0 0 6px rgba(255, 140, 0, 0.4);
+}
+
+.advantage-box:hover,
+.flaw-box:hover {
+    border-color: var(--htr-orange);
+    box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+/* Advantage/Flaw inputs without labels */
+.advantage-flaw-input {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-white);
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a;
+    box-sizing: border-box;
+}
+
+.advantage-flaw-input:focus {
+    outline: none;
+    border-color: var(--htr-orange);
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a, 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+.advantage-flaw-input::placeholder {
+    color: var(--text-gray);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.advantage-flaw-textarea {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-white);
+    padding: 0.5rem;
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.advantage-flaw-textarea:focus {
+    outline: none;
+    border-color: var(--htr-orange);
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a, 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+.advantage-flaw-textarea::placeholder {
+    color: var(--text-gray);
+    font-style: italic;
+    opacity: 0.7;
 }
 
 .btn-remove-small {
