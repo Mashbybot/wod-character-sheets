@@ -316,8 +316,8 @@ async def get_vtm_character_api(
         "chronicle_tenet_5": character.chronicle_tenet_5,
 
         # Experience
-        "xp_total": character.xp_total,
-        "xp_spent": character.xp_spent,
+        "exp_total": character.exp_total,
+        "exp_spent": character.exp_spent,
 
         # Text fields
         "notes": character.notes,
@@ -492,8 +492,7 @@ async def get_htr_character_api(
         "touchstones": [
             {
                 "name": ts.name,
-                "description": ts.description,
-                "conviction": ts.conviction
+                "description": ts.description
             }
             for ts in character.touchstones
         ],
