@@ -575,8 +575,8 @@
                     </div>
                 </template>
 
-                <button type="button" @click="addAdvantage()" x-show="advantages.length < 10 && getAdvantageTotalDots() < 7" class="btn-add">+ Add Advantage</button>
-                <div class="dots-total">Total: <span x-text="getAdvantageTotalDots()"></span>/7</div>
+                <button type="button" @click="addAdvantage()" x-show="advantages.length < 10" class="btn-add">+ Add Advantage</button>
+                <div class="dots-total">Total: <span x-text="getAdvantageTotalDots()"></span> dots</div>
             </section>
         </div>
 
@@ -602,8 +602,8 @@
                     </div>
                 </template>
 
-                <button type="button" @click="addFlaw()" x-show="flaws.length < 5 && getFlawTotalDots() < 2" class="btn-add">+ Add Flaw</button>
-                <div class="dots-total">Total: <span x-text="getFlawTotalDots()"></span>/2</div>
+                <button type="button" @click="addFlaw()" x-show="flaws.length < 5" class="btn-add">+ Add Flaw</button>
+                <div class="dots-total">Total: <span x-text="getFlawTotalDots()"></span> dots</div>
             </section>
         </div>
 
