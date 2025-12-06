@@ -114,13 +114,13 @@
                         <option value="revenge">Revenge</option>
                     </select>
                 </div>
-                <div class="form-group-compact">
+                <div class="form-group">
                     <label>Desire:</label>
-                    <input type="text" x-model="data.desire" @input.debounce.300ms="autoSave()" placeholder="Desire is a smaller scale goal or a momentary want">
+                    <textarea x-model="data.desire" @input.debounce.300ms="autoSave()" rows="2" placeholder="Desire is a smaller scale goal or a momentary want"></textarea>
                 </div>
-                <div class="form-group-compact">
+                <div class="form-group">
                     <label>Ambition:</label>
-                    <input type="text" x-model="data.ambition" @input.debounce.300ms="autoSave()" placeholder="Ambition is a long-term goal the character wishes to accomplish.">
+                    <textarea x-model="data.ambition" @input.debounce.300ms="autoSave()" rows="2" placeholder="Ambition is a long-term goal the character wishes to accomplish."></textarea>
                 </div>
             </section>
         </div>
