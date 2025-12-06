@@ -557,7 +557,6 @@
         <div class="column-left">
             <section class="sheet-section advantages-section">
                 <h2>Advantages</h2>
-                <p class="limit-note">Max: 7 dots total</p>
 
                 <template x-for="(adv, index) in advantages" :key="index">
                     <div class="advantage-entry">
@@ -585,7 +584,6 @@
         <div class="column-middle">
             <section class="sheet-section flaws-section">
                 <h2>Flaws</h2>
-                <p class="limit-note">Max: 2 dots total</p>
 
                 <template x-for="(flaw, index) in flaws" :key="index">
                     <div class="flaw-entry">
@@ -617,17 +615,10 @@
                 <template x-for="(touchstone, index) in touchstones" :key="index">
                     <div class="touchstone-entry">
                         <div class="touchstone-header">
-                            <strong>Touchstone <span x-text="index + 1"></span></strong>
                             <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
                         </div>
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
-                        </div>
+                        <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()" :placeholder="'Touchstone ' + (index + 1)" class="touchstone-input">
+                        <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2" placeholder="Description" class="touchstone-textarea"></textarea>
                     </div>
                 </template>
 
