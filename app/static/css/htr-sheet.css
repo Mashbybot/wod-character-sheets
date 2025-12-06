@@ -700,9 +700,6 @@
     padding: 0.3rem;
     border-radius: 4px;
     transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
 }
 
 .skill-row.drive-boosted {
@@ -713,23 +710,22 @@
     padding-left: 0.5rem;
 }
 
-.skill-row > div:first-child {
+.skill-main {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 0.25rem;
 }
 
 .skill-name {
     color: var(--text-white);
     font-size: 0.9rem;
-    flex-shrink: 0;
 }
 
 .skill-right {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    flex-shrink: 0;
 }
 
 .btn-add-specialty {

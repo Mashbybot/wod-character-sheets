@@ -393,16 +393,18 @@
                 <div class="skill-category-label">PHYSICAL</div>
                 <template x-for="skill in physicalSkills" :key="skill">
                     <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
-                        <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
-                        <div class="skill-right">
-                            <div class="dot-tracker">
-                                <template x-for="i in 5" :key="i">
-                                    <span class="dot"
-                                          :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
-                                          @click="clickDot(skill, i, 0, 5)">●</span>
-                                </template>
+                        <div class="skill-main">
+                            <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                            <div class="skill-right">
+                                <div class="dot-tracker">
+                                    <template x-for="i in 5" :key="i">
+                                        <span class="dot"
+                                              :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                              @click="clickDot(skill, i, 0, 5)">●</span>
+                                    </template>
+                                </div>
+                                <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
                             </div>
-                            <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
                         </div>
                         <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
                             <template x-for="spec in getSpecialties(skill)" :key="spec">
@@ -421,16 +423,18 @@
                 <div class="skill-category-label">SOCIAL</div>
                 <template x-for="skill in socialSkills" :key="skill">
                     <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
-                        <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
-                        <div class="skill-right">
-                            <div class="dot-tracker">
-                                <template x-for="i in 5" :key="i">
-                                    <span class="dot"
-                                          :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
-                                          @click="clickDot(skill, i, 0, 5)">●</span>
-                                </template>
+                        <div class="skill-main">
+                            <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                            <div class="skill-right">
+                                <div class="dot-tracker">
+                                    <template x-for="i in 5" :key="i">
+                                        <span class="dot"
+                                              :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                              @click="clickDot(skill, i, 0, 5)">●</span>
+                                    </template>
+                                </div>
+                                <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
                             </div>
-                            <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
                         </div>
                         <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
                             <template x-for="spec in getSpecialties(skill)" :key="spec">
@@ -449,16 +453,18 @@
                 <div class="skill-category-label">MENTAL</div>
                 <template x-for="skill in mentalSkills" :key="skill">
                     <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
-                        <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
-                        <div class="skill-right">
-                            <div class="dot-tracker">
-                                <template x-for="i in 5" :key="i">
-                                    <span class="dot"
-                                          :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
-                                          @click="clickDot(skill, i, 0, 5)">●</span>
-                                </template>
+                        <div class="skill-main">
+                            <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                            <div class="skill-right">
+                                <div class="dot-tracker">
+                                    <template x-for="i in 5" :key="i">
+                                        <span class="dot"
+                                              :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
+                                              @click="clickDot(skill, i, 0, 5)">●</span>
+                                    </template>
+                                </div>
+                                <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
                             </div>
-                            <button type="button" class="btn-add-specialty" x-show="data[skill] > 0" @click="addSpecialty(skill)">+</button>
                         </div>
                         <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
                             <template x-for="spec in getSpecialties(skill)" :key="spec">
