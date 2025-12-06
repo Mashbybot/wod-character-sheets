@@ -1,16 +1,15 @@
 """Main FastAPI application"""
 
 import os
-import time
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import init_db
 from app.routes import auth, vtm, htr, storyteller
 from app.auth import get_current_user
+from app.template_config import templates
 from app.exceptions import (
     wod_exception_handler,
     validation_exception_handler,
@@ -23,12 +22,12 @@ from sqlalchemy.exc import SQLAlchemyError
 # ✅ CRITICAL: Import new models so SQLAlchemy knows about them
 # This ensures init_db() creates all tables properly
 from app.models_new import (
-    User, 
-    UserPreferences, 
-    VTMCharacter, 
-    HTRCharacter, 
-    Touchstone, 
-    Background, 
+    User,
+    UserPreferences,
+    VTMCharacter,
+    HTRCharacter,
+    Touchstone,
+    Background,
     XPLogEntry
 )
 
@@ -68,17 +67,7 @@ PORTRAITS_DIR = os.path.join(VOLUME_PATH, "character_portraits")
 os.makedirs(PORTRAITS_DIR, exist_ok=True)
 app.mount("/portraits", StaticFiles(directory=PORTRAITS_DIR), name="portraits")
 
-# Static version for cache-busting
-# Use timestamp for development, or set STATIC_VERSION env var in production
-STATIC_VERSION = os.getenv("STATIC_VERSION", str(int(time.time())))
-
-# Templates
-templates = Jinja2Templates(directory="templates")
-# Make STATIC_VERSION available to all templates
-templates.env.globals["static_version"] = STATIC_VERSION
-# Make is_storyteller function available to all templates
-from app.utils import is_storyteller
-templates.env.globals["is_storyteller"] = is_storyteller
+# Templates are configured in app/template_config.py and imported above
 
 # Include routers
 app.include_router(auth.router)

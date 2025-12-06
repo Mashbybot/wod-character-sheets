@@ -3,16 +3,15 @@
 from typing import List, Dict, Any
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.template_config import templates
 from app.models_new import VTMCharacter, HTRCharacter, User
 from app.auth import require_auth
 from app.utils import is_storyteller, group_characters_by_chronicle
 
 router = APIRouter(prefix="/storyteller", tags=["storyteller"])
-templates = Jinja2Templates(directory="templates")
 
 
 def require_storyteller(request: Request) -> dict:

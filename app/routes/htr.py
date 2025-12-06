@@ -5,10 +5,10 @@ import json
 from typing import Optional, List
 from fastapi import APIRouter, Request, Depends, HTTPException, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.template_config import templates
 from app.models_new import HTRCharacter, HTRTouchstone, HTRAdvantage, HTRFlaw, HTRXPLogEntry, UserPreferences
 from app.auth import require_auth
 from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS
@@ -29,7 +29,6 @@ from app.utils import (
 )
 
 router = APIRouter(prefix="/htr", tags=["htr"])
-templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/", response_class=HTMLResponse)
