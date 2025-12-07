@@ -578,15 +578,15 @@
 .despair-label {
     font-family: 'Courier New', monospace;
     text-shadow:
-        -2px -2px 0 #000,
-        2px -2px 0 #000,
-        -2px 2px 0 #000,
-        2px 2px 0 #000,
-        -2px 0 0 #000,
-        2px 0 0 #000,
-        0 -2px 0 #000,
-        0 2px 0 #000,
-        0 0 4px #000;
+        -2px -2px 0 var(--bg-dark),
+        2px -2px 0 var(--bg-dark),
+        -2px 2px 0 var(--bg-dark),
+        2px 2px 0 var(--bg-dark),
+        -2px 0 0 var(--bg-dark),
+        2px 0 0 var(--bg-dark),
+        0 -2px 0 var(--bg-dark),
+        0 2px 0 var(--bg-dark),
+        0 0 4px var(--bg-dark);
 }
 
 .despair-toggle-button.active .despair-label {
