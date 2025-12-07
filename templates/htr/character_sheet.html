@@ -549,59 +549,64 @@
         <!-- RIGHT: EDGES & PERKS -->
         <div class="edges-perks-column">
             <section class="sheet-section edges-section">
-                <h2>Edges & Perks</h2>
-                <p class="edges-note">Choose: 1 Edge + 2 Perks OR 2 Edges + 1 Perk</p>
+                <h2>Edges</h2>
+                <p class="edges-note">Edges cost 6 EXP each. Starting characters begin with either 2 Edges or 1 Edge + 2 Perks.</p>
 
-                <div class="edge-config">
-                    <label>
-                        <input type="radio" x-model="data.edge_config" value="1e2p" @change="autoSave()">
-                        1 Edge + 2 Perks
-                    </label>
-                    <label>
-                        <input type="radio" x-model="data.edge_config" value="2e1p" @change="autoSave()">
-                        2 Edges + 1 Perk
-                    </label>
-                </div>
-
-                <div class="edge-selection">
-                    <label>Edge 1:</label>
-                    <select x-model="data.edge_1_id" @change="autoSave()">
-                        <option value="">None</option>
-                        <template x-for="edge in edges" :key="edge.id">
-                            <option :value="edge.id" x-text="edge.name"></option>
-                        </template>
-                    </select>
-                </div>
-
-                <div class="edge-selection" x-show="data.edge_config === '2e1p'">
-                    <label>Edge 2:</label>
-                    <select x-model="data.edge_2_id" @change="autoSave()">
-                        <option value="">None</option>
-                        <template x-for="edge in edges" :key="edge.id">
-                            <option :value="edge.id" x-text="edge.name"></option>
-                        </template>
-                    </select>
-                </div>
-
-                <div class="perk-selection">
-                    <label>Selected Perks:</label>
-                    <div class="perks-list">
-                        <template x-for="perk in getAvailablePerks()" :key="perk.id">
-                            <label class="perk-checkbox">
-                                <input type="checkbox"
-                                       :value="perk.id"
-                                       :checked="selectedPerksArray.includes(perk.id)"
-                                       @change="togglePerk(perk.id)">
-                                <span x-text="perk.name"></span>
-                            </label>
+                <!-- Edge List -->
+                <template x-for="(edge_entry, index) in characterEdges" :key="index">
+                    <div class="edge-entry">
+                        <div class="edge-header">
+                            <select x-model="edge_entry.edge_id" @change="autoSave()" class="edge-select">
+                                <option value="">Select Edge</option>
+                                <template x-for="edge in allEdges" :key="edge.id">
+                                    <option :value="edge.id" x-text="edge.name"></option>
+                                </template>
+                            </select>
+                            <button type="button" @click="removeEdge(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <!-- Show edge description -->
+                        <template x-if="edge_entry.edge_id">
+                            <div class="edge-description" x-text="getEdgeDescription(edge_entry.edge_id)"></div>
                         </template>
                     </div>
-                </div>
+                </template>
 
-                <div class="edge-validation" :class="{ 'valid': isEdgeConfigValid(), 'invalid': !isEdgeConfigValid() }">
-                    <span x-show="isEdgeConfigValid()">✓ Valid configuration</span>
-                    <span x-show="!isEdgeConfigValid()">⚠️ Invalid: Check your Edge/Perk selection</span>
-                </div>
+                <button type="button" @click="addEdge()" class="btn-add">+ Add Edge</button>
+            </section>
+
+            <section class="sheet-section perks-section">
+                <h2>Perks</h2>
+                <p class="edges-note">Perks cost 3 EXP each and must be attached to an Edge.</p>
+
+                <!-- Perk List -->
+                <template x-for="(perk_entry, index) in characterPerks" :key="index">
+                    <div class="perk-entry">
+                        <div class="perk-header">
+                            <select x-model="perk_entry.edge_id" @change="autoSave()" class="perk-edge-select">
+                                <option value="">Select Edge</option>
+                                <template x-for="edge in characterEdges" :key="edge.edge_id">
+                                    <option :value="edge.edge_id" x-text="getEdgeName(edge.edge_id)"></option>
+                                </template>
+                            </select>
+                            <button type="button" @click="removePerk(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <!-- Show available perks for selected edge -->
+                        <template x-if="perk_entry.edge_id">
+                            <select x-model="perk_entry.perk_id" @change="autoSave()" class="perk-select">
+                                <option value="">Select Perk</option>
+                                <template x-for="perk in getPerksForEdge(perk_entry.edge_id)" :key="perk.id">
+                                    <option :value="perk.id" x-text="perk.name"></option>
+                                </template>
+                            </select>
+                        </template>
+                        <!-- Show perk description -->
+                        <template x-if="perk_entry.perk_id">
+                            <div class="perk-description" x-text="getPerkDescription(perk_entry.edge_id, perk_entry.perk_id)"></div>
+                        </template>
+                    </div>
+                </template>
+
+                <button type="button" @click="addPerk()" class="btn-add">+ Add Perk</button>
             </section>
         </div><!-- End edges-perks-column -->
 
