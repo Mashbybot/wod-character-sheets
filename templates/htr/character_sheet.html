@@ -548,11 +548,12 @@
 
         <!-- RIGHT: EDGES & PERKS -->
         <div class="edges-perks-column">
-            <section class="sheet-section edges-section">
-                <h2>Edges</h2>
-                <p class="edges-note">Edges cost 6 EXP each. Starting characters begin with either 2 Edges or 1 Edge + 2 Perks.</p>
+            <section class="sheet-section edges-perks-combined">
+                <h2>Edges & Perks</h2>
+                <p class="edges-note">Edges cost 6 EXP each. Perks cost 3 EXP each and must be attached to an Edge.</p>
 
-                <!-- Edge List -->
+                <!-- Edges List -->
+                <h3 class="subsection-title">Edges</h3>
                 <template x-for="(edge_entry, index) in characterEdges" :key="index">
                     <div class="edge-entry">
                         <div class="edge-header">
@@ -570,15 +571,10 @@
                         </template>
                     </div>
                 </template>
-
                 <button type="button" @click="addEdge()" class="btn-add">+ Add Edge</button>
-            </section>
 
-            <section class="sheet-section perks-section">
-                <h2>Perks</h2>
-                <p class="edges-note">Perks cost 3 EXP each and must be attached to an Edge.</p>
-
-                <!-- Perk List -->
+                <!-- Perks List -->
+                <h3 class="subsection-title">Perks</h3>
                 <template x-for="(perk_entry, index) in characterPerks" :key="index">
                     <div class="perk-entry">
                         <div class="perk-header">
@@ -605,7 +601,6 @@
                         </template>
                     </div>
                 </template>
-
                 <button type="button" @click="addPerk()" class="btn-add">+ Add Perk</button>
             </section>
         </div><!-- End edges-perks-column -->

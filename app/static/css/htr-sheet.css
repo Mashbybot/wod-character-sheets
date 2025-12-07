@@ -972,15 +972,20 @@
     font-style: italic;
 }
 
-/* Separate sections for edges and perks */
-.edges-section,
-.perks-section {
-    margin-bottom: 1rem;
+/* Subsection titles for Edges and Perks within combined section */
+.subsection-title {
+    color: var(--htr-orange);
+    font-size: 1.1rem;
+    margin: 1.5rem 0 1rem 0;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--htr-orange);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
 }
 
-.perks-section {
-    border-top: 2px solid var(--htr-orange);
-    padding-top: 1.5rem;
+.subsection-title:first-of-type {
+    margin-top: 0.5rem;
 }
 
 /* Touchstones, Advantages, Flaws Grid */
