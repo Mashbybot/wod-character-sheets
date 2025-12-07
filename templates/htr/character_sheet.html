@@ -750,27 +750,36 @@
 
     </div>
 
-    <!-- FULL-WIDTH: HISTORY & NOTES -->
+    <!-- FULL-WIDTH: FIRST ENCOUNTER -->
     <section class="sheet-section first-encounter-section">
         <h2>🔶 FIRST ENCOUNTER 🔶</h2>
         <p class="first-encounter-prompt">
             CRITICAL: Your First Encounter defines you as a Hunter. This is the moment you saw the truth and could never look away.
         </p>
-        <textarea x-model="data.first_encounter"
-                  @input.debounce.300ms="autoSave()"
-                  rows="8"
-                  placeholder="Describe: What did you see? What happened? Who was there? How did you survive? What changed in you that night?"></textarea>
+        <div class="form-group">
+            <textarea x-model="data.first_encounter"
+                      @input.debounce.300ms="autoSave()"
+                      rows="8"
+                      placeholder="Describe: What did you see? What happened? Who was there? How did you survive? What changed in you that night?"></textarea>
+        </div>
     </section>
 
-    <section class="sheet-section">
-        <h2>History & Background</h2>
-        <textarea x-model="data.history" @input.debounce.300ms="autoSave()" rows="6" placeholder="Character's history..."></textarea>
-    </section>
+    <!-- 2-COLUMN: History & Notes -->
+    <div class="history-notes-grid">
+        <section class="sheet-section history-section">
+            <h2>History & Background</h2>
+            <div class="form-group">
+                <textarea x-model="data.history" @input.debounce.300ms="autoSave()" rows="10" placeholder="Character's history..."></textarea>
+            </div>
+        </section>
 
-    <section class="sheet-section">
-        <h2>Notes & Mission Log</h2>
-        <textarea x-model="data.notes" @input.debounce.300ms="autoSave()" rows="6" placeholder="Notes..."></textarea>
-    </section>
+        <section class="sheet-section notes-section">
+            <h2>Notes & Mission Log</h2>
+            <div class="form-group">
+                <textarea x-model="data.notes" @input.debounce.300ms="autoSave()" rows="10" placeholder="Notes..."></textarea>
+            </div>
+        </section>
+    </div>
 
     <div class="back-link">
         <a href="/htr">← Back to Character List</a>

@@ -249,6 +249,19 @@
     flex-direction: column;
 }
 
+.history-notes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.history-section,
+.notes-section {
+    display: flex;
+    flex-direction: column;
+}
+
 /* Portrait Grid */
 .portrait-grid-htr {
     display: grid;
@@ -1436,6 +1449,10 @@
     }
 
     .experience-equipment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .history-notes-grid {
         grid-template-columns: 1fr;
     }
 
