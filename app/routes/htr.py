@@ -206,6 +206,22 @@ async def get_character_api(
         for entry in character.xp_log
     ]
 
+    # Add edges and perks (NEW SYSTEM)
+    char_dict['edges'] = [
+        {
+            'edge_id': edge.edge_id
+        }
+        for edge in character.edges
+    ]
+
+    char_dict['perks'] = [
+        {
+            'edge_id': perk.edge_id,
+            'perk_id': perk.perk_id
+        }
+        for perk in character.perks
+    ]
+
     return JSONResponse(content=char_dict)
 
 
@@ -339,6 +355,8 @@ async def update_character(
     touchstones_data = data.pop('touchstones', None)
     advantages_data = data.pop('advantages', None)
     flaws_data = data.pop('flaws', None)
+    edges_data = data.pop('edges', None)
+    perks_data = data.pop('perks', None)
     xp_log_data = data.pop('xp_log', None)
 
     # Parse XP log if it's a string
@@ -426,6 +444,43 @@ async def update_character(
                 reason=entry_data['reason']
             )
             db.add(xp_entry)
+
+    # Update edges if provided
+    if edges_data is not None:
+        from app.models_new import HTREdge
+        # Delete existing edges
+        db.query(HTREdge).filter(
+            HTREdge.character_id == character_id
+        ).delete()
+
+        # Create new edges
+        for i, edge_data in enumerate(edges_data):
+            if edge_data.get('edge_id'):  # Only create if has edge_id
+                edge = HTREdge(
+                    character_id=character.id,
+                    edge_id=edge_data['edge_id'],
+                    display_order=i
+                )
+                db.add(edge)
+
+    # Update perks if provided
+    if perks_data is not None:
+        from app.models_new import HTRPerk
+        # Delete existing perks
+        db.query(HTRPerk).filter(
+            HTRPerk.character_id == character_id
+        ).delete()
+
+        # Create new perks
+        for i, perk_data in enumerate(perks_data):
+            if perk_data.get('perk_id') and perk_data.get('edge_id'):  # Only create if has both IDs
+                perk = HTRPerk(
+                    character_id=character.id,
+                    edge_id=perk_data['edge_id'],
+                    perk_id=perk_data['perk_id'],
+                    display_order=i
+                )
+                db.add(perk)
 
     db.commit()
     db.refresh(character)

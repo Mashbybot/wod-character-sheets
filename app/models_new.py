@@ -405,6 +405,41 @@ class HTRXPLogEntry(Base):
         return f"<HTRXPLogEntry {self.type} {self.amount} XP>"
 
 
+class HTREdge(Base):
+    """Edges - separate table for HTR characters"""
+    __tablename__ = "htr_edges"
+
+    id = Column(Integer, primary_key=True, index=True)
+    character_id = Column(Integer, ForeignKey("htr_characters.id"), nullable=False)
+
+    edge_id = Column(String(100), nullable=False)  # e.g., 'arsenal', 'fleet'
+    display_order = Column(Integer, default=0)
+
+    # Relationship
+    character = relationship("HTRCharacter", back_populates="edges")
+
+    def __repr__(self):
+        return f"<HTREdge {self.edge_id}>"
+
+
+class HTRPerk(Base):
+    """Perks - separate table for HTR characters"""
+    __tablename__ = "htr_perks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    character_id = Column(Integer, ForeignKey("htr_characters.id"), nullable=False)
+
+    edge_id = Column(String(100), nullable=False)  # Which edge this perk belongs to
+    perk_id = Column(String(100), nullable=False)  # e.g., 'team-requisition'
+    display_order = Column(Integer, default=0)
+
+    # Relationship
+    character = relationship("HTRCharacter", back_populates="perks")
+
+    def __repr__(self):
+        return f"<HTRPerk {self.perk_id} (Edge: {self.edge_id})>"
+
+
 class HTRCharacter(Base):
     """Hunter: The Reckoning 5e Character Sheet"""
     __tablename__ = "htr_characters"
@@ -419,6 +454,8 @@ class HTRCharacter(Base):
     touchstones = relationship("HTRTouchstone", back_populates="character", cascade="all, delete-orphan", order_by="HTRTouchstone.display_order")
     advantages = relationship("HTRAdvantage", back_populates="character", cascade="all, delete-orphan", order_by="HTRAdvantage.display_order")
     flaws = relationship("HTRFlaw", back_populates="character", cascade="all, delete-orphan", order_by="HTRFlaw.display_order")
+    edges = relationship("HTREdge", back_populates="character", cascade="all, delete-orphan", order_by="HTREdge.display_order")
+    perks = relationship("HTRPerk", back_populates="character", cascade="all, delete-orphan", order_by="HTRPerk.display_order")
     xp_log = relationship("HTRXPLogEntry", back_populates="character", cascade="all, delete-orphan", order_by="HTRXPLogEntry.created_at.desc()")
 
     # HEADER - Chronicle Information
@@ -513,10 +550,13 @@ class HTRCharacter(Base):
     in_despair = Column(Boolean, default=False)  # Triggers overlay!
 
     # EDGES & PERKS
+    # DEPRECATED: Old edge/perk system - replaced by edges and perks relationships
+    # Kept for backward compatibility during migration
     edge_config = Column(String(10), default='1e2p')  # '1e2p' or '2e1p'
     edge_1_id = Column(String(50))  # e.g., 'arsenal'
     edge_2_id = Column(String(50))  # null if only 1 edge chosen
     selected_perks = Column(Text)  # JSON array: ["well-armed", "ordnance"]
+    # NEW: Use character.edges and character.perks relationships instead
 
     # EQUIPMENT
     equipment_weapon = Column(String(100))

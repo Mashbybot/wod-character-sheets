@@ -454,11 +454,20 @@ async def get_htr_character_api(
         "willpower_aggravated": character.willpower_aggravated,
         "in_despair": character.in_despair,
 
-        # Edges & Perks
-        "edge_config": character.edge_config,
-        "edge_1_id": character.edge_1_id,
-        "edge_2_id": character.edge_2_id,
-        "selected_perks": character.selected_perks,
+        # Edges & Perks (NEW SYSTEM)
+        "edges": [
+            {
+                "edge_id": edge.edge_id
+            }
+            for edge in character.edges
+        ],
+        "perks": [
+            {
+                "edge_id": perk.edge_id,
+                "perk_id": perk.perk_id
+            }
+            for perk in character.perks
+        ],
 
         # Equipment
         "equipment_weapon": character.equipment_weapon,
