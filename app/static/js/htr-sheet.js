@@ -266,7 +266,14 @@ function htrCharacterSheet(characterId) {
         clickDot(field, value, min, max) {
             if (value < min) value = min;
             if (value > max) value = max;
-            this.data[field] = value;
+
+            // If clicking the currently filled box, reduce by 1 (allows going back to 0)
+            if (this.data[field] === value) {
+                this.data[field] = Math.max(min, value - 1);
+            } else {
+                this.data[field] = value;
+            }
+
             this.autoSave();
         },
 
