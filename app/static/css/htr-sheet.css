@@ -471,8 +471,16 @@
     transition: all 0.2s ease;
 }
 
-.health-box.empty,
-.willpower-box.empty,
+.health-box.empty {
+    background: var(--safe-green);
+    border-color: var(--safe-green);
+}
+
+.willpower-box.empty {
+    background: #4A90E2;  /* Blue for willpower */
+    border-color: #4A90E2;
+}
+
 .danger-box.empty,
 .desperation-box.empty {
     background: var(--bg-dark);
