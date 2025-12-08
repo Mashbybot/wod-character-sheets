@@ -440,6 +440,27 @@ class HTRPerk(Base):
         return f"<HTRPerk {self.perk_id} (Edge: {self.edge_id})>"
 
 
+class HTREquipment(Base):
+    """Equipment - separate table for HTR characters"""
+    __tablename__ = "htr_equipment"
+
+    id = Column(Integer, primary_key=True, index=True)
+    character_id = Column(Integer, ForeignKey("htr_characters.id"), nullable=False)
+
+    name = Column(String(200), nullable=False)
+    description = Column(Text)
+    display_order = Column(Integer, default=0)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship
+    character = relationship("HTRCharacter", back_populates="equipment")
+
+    def __repr__(self):
+        return f"<HTREquipment {self.name}>"
+
+
 class HTRCharacter(Base):
     """Hunter: The Reckoning 5e Character Sheet"""
     __tablename__ = "htr_characters"
@@ -456,6 +477,7 @@ class HTRCharacter(Base):
     flaws = relationship("HTRFlaw", back_populates="character", cascade="all, delete-orphan", order_by="HTRFlaw.display_order")
     edges = relationship("HTREdge", back_populates="character", cascade="all, delete-orphan", order_by="HTREdge.display_order")
     perks = relationship("HTRPerk", back_populates="character", cascade="all, delete-orphan", order_by="HTRPerk.display_order")
+    equipment = relationship("HTREquipment", back_populates="character", cascade="all, delete-orphan", order_by="HTREquipment.display_order")
     xp_log = relationship("HTRXPLogEntry", back_populates="character", cascade="all, delete-orphan", order_by="HTRXPLogEntry.created_at.desc()")
 
     # HEADER - Chronicle Information

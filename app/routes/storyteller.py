@@ -357,6 +357,13 @@ async def get_vtm_character_api(
                 "reason": entry.reason
             }
             for entry in character.xp_log
+        ],
+        "equipment": [
+            {
+                "name": item.name,
+                "description": item.description
+            }
+            for item in character.equipment
         ]
     }
 
@@ -529,6 +536,13 @@ async def get_htr_character_api(
                 "reason": entry.reason
             }
             for entry in character.xp_log
+        ],
+        "equipment": [
+            {
+                "name": item.name,
+                "description": item.description
+            }
+            for item in character.equipment
         ]
     }
 

@@ -222,6 +222,14 @@ async def get_character_api(
         for perk in character.perks
     ]
 
+    char_dict['equipment'] = [
+        {
+            'name': item.name,
+            'description': item.description
+        }
+        for item in character.equipment
+    ]
+
     return JSONResponse(content=char_dict)
 
 
@@ -357,6 +365,7 @@ async def update_character(
     flaws_data = data.pop('flaws', None)
     edges_data = data.pop('edges', None)
     perks_data = data.pop('perks', None)
+    equipment_data = data.pop('equipment', None)
     xp_log_data = data.pop('xp_log', None)
 
     # Parse XP log if it's a string
@@ -481,6 +490,25 @@ async def update_character(
                     display_order=i
                 )
                 db.add(perk)
+
+    # Update equipment if provided
+    if equipment_data is not None:
+        from app.models_new import HTREquipment
+        # Delete existing equipment
+        db.query(HTREquipment).filter(
+            HTREquipment.character_id == character_id
+        ).delete()
+
+        # Create new equipment
+        for i, equip_data in enumerate(equipment_data):
+            if equip_data.get('name'):  # Only create if has name
+                equipment = HTREquipment(
+                    character_id=character.id,
+                    name=equip_data['name'],
+                    description=equip_data.get('description', ''),
+                    display_order=i
+                )
+                db.add(equipment)
 
     db.commit()
     db.refresh(character)

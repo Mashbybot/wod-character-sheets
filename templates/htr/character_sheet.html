@@ -729,22 +729,27 @@
         <div class="equipment-column">
             <section class="sheet-section equipment-section">
                 <h2>Equipment</h2>
-                <div class="form-group">
-                    <label>Weapon:</label>
-                    <input type="text" x-model="data.equipment_weapon" @input.debounce.300ms="autoSave()">
-                </div>
-                <div class="form-group">
-                    <label>Damage:</label>
-                    <input type="number" x-model.number="data.equipment_weapon_damage" @input.debounce.300ms="autoSave()">
-                </div>
-                <div class="form-group">
-                    <label>Armor Rating:</label>
-                    <input type="number" x-model.number="data.equipment_armor_rating" @input.debounce.300ms="autoSave()">
-                </div>
-                <div class="form-group">
-                    <label>Notes:</label>
-                    <textarea x-model="data.equipment_notes" @input.debounce.300ms="autoSave()" rows="3"></textarea>
-                </div>
+
+                <!-- Equipment List -->
+                <template x-for="(item, index) in equipment" :key="index">
+                    <div class="equipment-entry">
+                        <div class="equipment-row">
+                            <input type="text"
+                                   x-model="item.name"
+                                   @input.debounce.300ms="autoSave()"
+                                   placeholder="Item name"
+                                   class="equipment-name">
+                            <textarea x-model="item.description"
+                                      @input.debounce.300ms="autoSave()"
+                                      placeholder="Description"
+                                      rows="2"
+                                      class="equipment-description"></textarea>
+                            <button type="button" @click="removeEquipment(index)" class="btn-remove-small">×</button>
+                        </div>
+                    </div>
+                </template>
+
+                <button type="button" @click="addEquipment()" class="btn-add">+ Add Equipment</button>
             </section>
         </div>
 

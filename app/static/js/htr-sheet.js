@@ -180,6 +180,7 @@ function htrCharacterSheet(characterId) {
                 this.flaws = char.flaws || [];
                 this.characterEdges = char.edges || [];
                 this.characterPerks = char.perks || [];
+                this.equipment = char.equipment || [];
                 this.xpLog = char.xp_log || [];
 
                 this.isLoading = false;
@@ -207,6 +208,7 @@ function htrCharacterSheet(characterId) {
                     flaws: this.flaws,
                     edges: this.characterEdges,
                     perks: this.characterPerks,
+                    equipment: this.equipment,
                     xp_log: this.xpLog
                 };
 
@@ -238,6 +240,7 @@ function htrCharacterSheet(characterId) {
                     flaws: this.flaws,
                     edges: this.characterEdges,
                     perks: this.characterPerks,
+                    equipment: this.equipment,
                     xp_log: this.xpLog
                 };
 
@@ -433,6 +436,17 @@ function htrCharacterSheet(characterId) {
 
         removeTouchstone(index) {
             this.touchstones.splice(index, 1);
+            this.autoSave();
+        },
+
+        // Equipment
+        addEquipment() {
+            this.equipment.push({ name: '', description: '' });
+            this.autoSave();
+        },
+
+        removeEquipment(index) {
+            this.equipment.splice(index, 1);
             this.autoSave();
         },
 

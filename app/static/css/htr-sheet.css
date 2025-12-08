@@ -996,6 +996,54 @@
     margin-top: 0.5rem;
 }
 
+/* Equipment Entry Styles */
+.equipment-entry {
+    background: rgba(255, 140, 0, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.equipment-row {
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    gap: 0.75rem;
+    align-items: start;
+}
+
+.equipment-name {
+    background: #0d0d0d;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-white);
+    padding: 0.5rem;
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a;
+}
+
+.equipment-name:focus {
+    outline: none;
+    border-color: var(--htr-orange);
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a, 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+.equipment-description {
+    background: #0d0d0d;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-white);
+    padding: 0.5rem;
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.equipment-description:focus {
+    outline: none;
+    border-color: var(--htr-orange);
+    box-shadow: inset 4px 4px 8px #000, inset -4px -4px 8px #1a1a1a, 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
 /* Touchstones, Advantages, Flaws Grid */
 .advantages-flaws-touchstones-grid {
     align-items: start;
