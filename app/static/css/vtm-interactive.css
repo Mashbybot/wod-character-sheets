@@ -603,8 +603,8 @@
     width: 100px;
     height: 100px;
     object-fit: contain;
-    /* Convert black icons to match dark gray background (#1A1A1A) */
-    filter: brightness(0.10);
+    /* Convert black icons to VTM red */
+    filter: invert(27%) sepia(98%) saturate(3000%) hue-rotate(352deg) brightness(100%);
     transition: transform 0.2s;
 }
 

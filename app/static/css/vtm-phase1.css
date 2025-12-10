@@ -968,8 +968,8 @@
 .discipline-icons-small img {
     width: 60px;
     height: 60px;
-    /* Convert black icons to match dark gray background (#1A1A1A) */
-    filter: brightness(0.10);
+    /* Convert black icons to VTM red */
+    filter: invert(27%) sepia(98%) saturate(3000%) hue-rotate(352deg) brightness(100%);
 }
 
 /* Clan Disciplines Header in Disciplines Section */
@@ -995,8 +995,8 @@
 .discipline-icons-with-labels img {
     width: 60px;
     height: 60px;
-    /* Convert black icons to match dark gray background (#1A1A1A) */
-    filter: brightness(0.10);
+    /* Convert black icons to VTM red */
+    filter: invert(27%) sepia(98%) saturate(3000%) hue-rotate(352deg) brightness(100%);
 }
 
 .discipline-icons-with-labels .discipline-label {
