@@ -519,11 +519,11 @@
                                     <option value="Loresheet">Loresheet:</option>
                                 </select>
                             </div>
-                            <div class="square-tracker">
+                            <div class="background-dots">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="square-dot"
+                                    <span class="dot"
                                           :class="i <= (bg.dots || 0) ? 'filled' : 'empty'"
-                                          @click="bg.dots = i; autoSave()">■</span>
+                                          @click="bg.dots = i; autoSave()">●</span>
                                 </template>
                             </div>
                             <button type="button"
