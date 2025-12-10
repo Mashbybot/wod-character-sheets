@@ -519,12 +519,6 @@
                                     <option value="Loresheet">Loresheet:</option>
                                 </select>
                             </div>
-                            <div class="background-type-input">
-                                <input type="text"
-                                       x-model="bg.type"
-                                       @input.debounce.300ms="autoSave()"
-                                       placeholder="Type">
-                            </div>
                             <div class="square-tracker">
                                 <template x-for="i in 5" :key="i">
                                     <span class="square-dot"
@@ -536,6 +530,12 @@
                                     class="btn-remove-bg"
                                     @click="removeBackground(index); autoSave()"
                                     title="Remove">×</button>
+                        </div>
+                        <div class="background-type-row">
+                            <input type="text"
+                                   x-model="bg.type"
+                                   @input.debounce.300ms="autoSave()"
+                                   placeholder="Type">
                         </div>
                         <div class="form-group">
                             <textarea x-model="bg.description"

@@ -539,12 +539,11 @@
     box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.2);
 }
 
-.background-type-input {
-    flex: 1;
-    min-width: 0; /* Allow flex item to shrink */
+.background-type-row {
+    margin-bottom: 0.5rem;
 }
 
-.background-header input[type="text"] {
+.background-type-row input[type="text"] {
     width: 100%;
     padding: 0.5rem;
     background-color: var(--bg-dark);
@@ -626,6 +625,11 @@
     background-color: rgba(139, 0, 0, 0.1);
     border-color: var(--vtm-red);
     color: var(--vtm-red-light);
+}
+
+/* Add spacing above the Add button in Backgrounds section */
+.sheet-section .btn-add {
+    margin-top: 1rem;
 }
 
 /* ===== HUNGER SECTION (STANDALONE) ===== */
