@@ -304,7 +304,8 @@
 .humanity-box.small {
     width: 14px;
     height: 14px;
-    border: 1.5px solid var(--border-color);
+    border: none;
+    background-color: #333;
     font-size: 0.7rem;
 }
 

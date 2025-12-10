@@ -778,7 +778,8 @@
 .humanity-box {
     width: 18px;
     height: 18px;
-    border: 2px solid var(--border-color);
+    border: none;
+    background-color: #333;
     border-radius: 3px;
     transform: rotate(45deg);
     display: flex;
@@ -800,39 +801,34 @@
 .willpower-box:hover,
 .humanity-box:hover {
     transform: rotate(45deg) scale(1.15);
-    border-color: var(--vtm-red);
 }
 
 .health-box.empty,
 .willpower-box.empty,
 .humanity-box.empty {
-    background-color: var(--bg-dark);
+    background-color: #333;
 }
 
 .health-box.filled,
 .willpower-box.filled,
 .humanity-box.filled {
     background-color: var(--vtm-red);
-    border-color: var(--vtm-red);
 }
 
 .health-box.superficial,
 .willpower-box.superficial {
     background-color: #FFC107;
-    border-color: #FFC107;
     color: black;
 }
 
 .health-box.aggravated,
 .willpower-box.aggravated {
     background-color: black;
-    border-color: black;
     color: var(--vtm-red);
 }
 
 .humanity-box.stained {
     background-color: black;
-    border-color: black;
 }
 
 /* ===== HUNGER TRACKER ===== */
