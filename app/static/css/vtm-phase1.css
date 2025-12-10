@@ -511,6 +511,34 @@
     flex-wrap: nowrap; /* Prevent wrapping */
 }
 
+.background-category-dropdown {
+    flex-shrink: 0;
+    min-width: 110px;
+}
+
+.background-category-dropdown select {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-white);
+    font-size: 0.9rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgb(160,160,160)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1em;
+    padding-right: 2rem;
+}
+
+.background-category-dropdown select:focus {
+    outline: none;
+    border-color: var(--vtm-red);
+    box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.2);
+}
+
 .background-type-input {
     flex: 1;
     min-width: 0; /* Allow flex item to shrink */
@@ -560,8 +588,10 @@
     color: var(--text-white);
     font-family: inherit;
     font-size: 0.9rem;
-    resize: vertical;
-    min-height: 30px; /* Halved from 60px for more compact display */
+    resize: none; /* Disable manual resize, use auto-resize */
+    overflow: hidden; /* Hide scrollbar for auto-resize */
+    transition: height 0.1s ease;
+    box-sizing: border-box;
 }
 
 /* Remove background button */

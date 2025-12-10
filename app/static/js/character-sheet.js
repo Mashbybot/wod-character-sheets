@@ -207,9 +207,11 @@ function characterSheet(characterId) {
                 // Initialize with 3 empty backgrounds
                 for (let i = 0; i < 3; i++) {
                     this.backgrounds.push({
+                        category: 'Background',
                         type: '',
                         description: '',
-                        dots: 0
+                        dots: 0,
+                        description_height: 60
                     });
                 }
 
@@ -286,9 +288,11 @@ function characterSheet(characterId) {
                 // NEW: Load backgrounds from array
                 if (character.backgrounds && Array.isArray(character.backgrounds)) {
                     this.backgrounds = character.backgrounds.map(bg => ({
+                        category: bg.category || 'Background',
                         type: bg.type || '',
                         description: bg.description || '',
-                        dots: bg.dots || 0
+                        dots: bg.dots || 0,
+                        description_height: bg.description_height || 60
                     }));
                 } else {
                     // Fallback: Load from old individual fields (backwards compatibility)
@@ -297,18 +301,20 @@ function characterSheet(characterId) {
                         const type = character[`background_type_${i}`];
                         if (type) {
                             this.backgrounds.push({
+                                category: 'Background',
                                 type: type,
                                 description: character[`background_description_${i}`] || '',
-                                dots: character[`background_dots_${i}`] || 0
+                                dots: character[`background_dots_${i}`] || 0,
+                                description_height: 60
                             });
                         }
                     }
                 }
-                
+
                 // If no backgrounds, add 3 empty ones
                 if (this.backgrounds.length === 0) {
                     for (let i = 0; i < 3; i++) {
-                        this.backgrounds.push({ type: '', description: '', dots: 0 });
+                        this.backgrounds.push({ category: 'Background', type: '', description: '', dots: 0, description_height: 60 });
                     }
                 }
                 
@@ -855,7 +861,42 @@ function characterSheet(characterId) {
                 </div>`
             ).join('');
         },
-        
+
+        // Get selected discipline icons (dynamic based on what's actually chosen)
+        getSelectedDisciplineIcons() {
+            // Collect all selected disciplines from the 5 slots
+            const selectedDisciplines = [];
+            for (let i = 1; i <= 5; i++) {
+                const discName = this.data[`discipline_${i}_name`];
+                if (discName && discName.trim() !== '') {
+                    selectedDisciplines.push(discName);
+                }
+            }
+
+            // If no disciplines selected, fall back to clan disciplines
+            if (selectedDisciplines.length === 0) {
+                return this.getClanDisciplineIcons();
+            }
+
+            // Format discipline name for display (capitalize, replace hyphens with spaces)
+            const formatDisciplineName = (disc) => {
+                return disc.split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            };
+
+            // Return HTML for selected disciplines
+            return selectedDisciplines.map(disc =>
+                `<div class="discipline-icon-item">
+                    <img src="/static/images/disciplines/${disc}.png?v=${window.STATIC_VERSION || ''}"
+                         alt="${formatDisciplineName(disc)}"
+                         title="${formatDisciplineName(disc)}"
+                         class="discipline-icon">
+                    <div class="discipline-label">${formatDisciplineName(disc)}</div>
+                </div>`
+            ).join('');
+        },
+
         // TOUCHSTONE MANAGEMENT
         addTouchstone() {
             if (this.touchstones.length < 3) {
@@ -874,7 +915,7 @@ function characterSheet(characterId) {
         // BACKGROUND MANAGEMENT
         addBackground() {
             if (this.backgrounds.length < 10) {
-                this.backgrounds.push({ type: '', description: '', dots: 0 });
+                this.backgrounds.push({ category: 'Background', type: '', description: '', dots: 0, description_height: 60 });
             }
         },
         
@@ -882,7 +923,27 @@ function characterSheet(characterId) {
             this.backgrounds.splice(index, 1);
             this.autoSave();
         },
-        
+
+        // Auto-resize textarea and save height
+        autoResizeTextarea(event, index) {
+            const textarea = event.target;
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+            this.backgrounds[index].description_height = textarea.scrollHeight;
+            this.autoSave();
+        },
+
+        // Apply saved textarea height
+        applyTextareaHeight(index) {
+            this.$nextTick(() => {
+                const textarea = this.$refs[`bgDesc${index}`];
+                if (textarea && textarea[0]) {
+                    const height = this.backgrounds[index].description_height || 60;
+                    textarea[0].style.height = height + 'px';
+                }
+            });
+        },
+
         // PORTRAIT UPLOAD
         async uploadPortrait(event, boxType = 'face') {
             const file = event.target.files[0];

@@ -119,7 +119,7 @@
     <!-- 3-Column Grid Layout (ABOVE PAGE BREAK) -->
     <div class="sheet-grid-three-column sheet-grid-above">
         
-        <!-- COLUMN 1: Chronicle Info + Attributes + Hunger + Blood Potency -->
+        <!-- COLUMN 1: Chronicle Info + Attributes + Trackers + Blood Potency -->
         <div class="column-one">
             
             <!-- Chronicle Information - Single Box -->
@@ -177,65 +177,7 @@
                     </div>
                 </div>
             </section>
-            
-            <!-- Health/Willpower/Humanity Trackers (moved from Chronicle grid) -->
-            <section class="sheet-section trackers-section">
-                <h2>Trackers</h2>
-                <div class="trackers-compact">
-                    <!-- Hunger (moved from standalone section) -->
-                    <div class="tracker-row-compact">
-                        <label>Hunger</label>
-                        <div class="box-tracker-small hunger-dots-compact">
-                            <template x-for="i in 5" :key="i">
-                                <span class="dot hunger-dot-compact" 
-                                      :class="[i <= (data.hunger || 1) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger || 1) ? 'danger' : '']"
-                                      @click="clickDot('hunger', i, 0, 5)">●</span>
-                            </template>
-                        </div>
-                    </div>
-                    
-                    <div class="tracker-row-compact">
-                        <label>Health</label>
-                        <div class="box-tracker-small">
-                            <template x-for="i in 10" :key="i">
-                                <div class="health-box small"
-                                     :class="getHealthState(i)"
-                                     @click="cycleHealth(i)">
-                                    <span x-show="getHealthState(i) === 'superficial'">/</span>
-                                    <span x-show="getHealthState(i) === 'aggravated'">×</span>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                    
-                    <div class="tracker-row-compact">
-                        <label>Willpower</label>
-                        <div class="box-tracker-small">
-                            <template x-for="i in 10" :key="i">
-                                <div class="willpower-box small"
-                                     :class="getWillpowerState(i)"
-                                     @click="cycleWillpower(i)">
-                                    <span x-show="getWillpowerState(i) === 'superficial'">/</span>
-                                    <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                    
-                    <div class="tracker-row-compact">
-                        <label>Humanity</label>
-                        <div class="box-tracker-small">
-                            <template x-for="i in 10" :key="i">
-                                <div class="humanity-box small"
-                                     :class="getHumanityState(i)"
-                                     @click="cycleHumanity(i)">
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
+
             <!-- Attributes - 3 Columns Side by Side -->
             <section class="sheet-section">
                 <h2 class="attributes-header">Attributes</h2>
@@ -347,7 +289,65 @@
                     </div>
                 </div>
             </section>
-            
+
+            <!-- Health/Willpower/Humanity Trackers -->
+            <section class="sheet-section trackers-section">
+                <h2>Trackers</h2>
+                <div class="trackers-compact">
+                    <!-- Hunger -->
+                    <div class="tracker-row-compact">
+                        <label>Hunger</label>
+                        <div class="box-tracker-small hunger-dots-compact">
+                            <template x-for="i in 5" :key="i">
+                                <span class="dot hunger-dot-compact"
+                                      :class="[i <= (data.hunger || 1) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger || 1) ? 'danger' : '']"
+                                      @click="clickDot('hunger', i, 0, 5)">●</span>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="tracker-row-compact">
+                        <label>Health</label>
+                        <div class="box-tracker-small">
+                            <template x-for="i in 10" :key="i">
+                                <div class="health-box small"
+                                     :class="getHealthState(i)"
+                                     @click="cycleHealth(i)">
+                                    <span x-show="getHealthState(i) === 'superficial'">/</span>
+                                    <span x-show="getHealthState(i) === 'aggravated'">×</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="tracker-row-compact">
+                        <label>Willpower</label>
+                        <div class="box-tracker-small">
+                            <template x-for="i in 10" :key="i">
+                                <div class="willpower-box small"
+                                     :class="getWillpowerState(i)"
+                                     @click="cycleWillpower(i)">
+                                    <span x-show="getWillpowerState(i) === 'superficial'">/</span>
+                                    <span x-show="getWillpowerState(i) === 'aggravated'">×</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="tracker-row-compact">
+                        <label>Humanity</label>
+                        <div class="box-tracker-small">
+                            <template x-for="i in 10" :key="i">
+                                <div class="humanity-box small"
+                                     :class="getHumanityState(i)"
+                                     @click="cycleHumanity(i)">
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Blood Potency -->
             <section class="sheet-section blood-potency-new">
                 <h2>Blood Potency</h2>
@@ -509,31 +509,40 @@
                 </div>
 
                 <template x-for="(bg, index) in backgrounds" :key="index">
-                    <div class="background-entry">
+                    <div class="background-entry" x-init="applyTextareaHeight(index)">
                         <div class="background-header">
+                            <div class="background-category-dropdown">
+                                <select x-model="bg.category" @change="autoSave()">
+                                    <option value="Merit">Merit:</option>
+                                    <option value="Flaw">Flaw:</option>
+                                    <option value="Background">Background:</option>
+                                    <option value="Loresheet">Loresheet:</option>
+                                </select>
+                            </div>
                             <div class="background-type-input">
-                                <input type="text" 
+                                <input type="text"
                                        x-model="bg.type"
                                        @input.debounce.300ms="autoSave()"
                                        placeholder="Type">
                             </div>
                             <div class="square-tracker">
                                 <template x-for="i in 5" :key="i">
-                                    <span class="square-dot" 
+                                    <span class="square-dot"
                                           :class="i <= (bg.dots || 0) ? 'filled' : 'empty'"
                                           @click="bg.dots = i; autoSave()">■</span>
                                 </template>
                             </div>
-                            <button type="button" 
+                            <button type="button"
                                     class="btn-remove-bg"
                                     @click="removeBackground(index); autoSave()"
                                     title="Remove">×</button>
                         </div>
                         <div class="form-group">
                             <textarea x-model="bg.description"
-                                      @input.debounce.300ms="autoSave()"
-                                      rows="2"
-                                      placeholder="Description"></textarea>
+                                      :x-ref="`bgDesc${index}`"
+                                      @input="autoResizeTextarea($event, index)"
+                                      placeholder="Description"
+                                      :style="`height: ${bg.description_height || 60}px; min-height: 40px;`"></textarea>
                         </div>
                     </div>
                 </template>
@@ -929,9 +938,9 @@
             <section class="sheet-section disciplines-section">
                 <h2>Disciplines</h2>
                 
-                <!-- Clan Discipline Icons (moved from Identity) -->
+                <!-- Discipline Icons (dynamic - shows selected disciplines or clan defaults) -->
                 <div class="clan-disciplines-header" x-show="data.clan">
-                    <div class="discipline-icons-with-labels" x-html="getClanDisciplineIcons()"></div>
+                    <div class="discipline-icons-with-labels" x-html="getSelectedDisciplineIcons()"></div>
                 </div>
                 
                 <template x-for="i in 5" :key="i">

@@ -79,14 +79,16 @@ class Touchstone(Base):
 class Background(Base):
     """Background, Merit, or Flaw - separate table for VTM characters"""
     __tablename__ = "backgrounds"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     character_id = Column(Integer, ForeignKey("vtm_characters.id"), nullable=False)
-    
+
+    category = Column(String(20), default="Background")  # "Merit", "Flaw", "Background", "Loresheet"
     type = Column(String(100), nullable=False)  # e.g., "Resources", "Fame", "Haven"
     description = Column(Text)
     dots = Column(Integer, default=0)  # 0-5 rating
-    
+    description_height = Column(Integer, default=60)  # Save textarea height in pixels
+
     # Order for display
     display_order = Column(Integer, default=0)
     

@@ -194,9 +194,11 @@ async def get_character_api(
     
     char_dict['backgrounds'] = [
         {
+            'category': bg.category or 'Background',
             'type': bg.type,
             'description': bg.description,
-            'dots': bg.dots
+            'dots': bg.dots,
+            'description_height': bg.description_height or 60
         }
         for bg in character.backgrounds
     ]
@@ -291,9 +293,11 @@ async def create_character(
         if bg_data.get('type'):  # Only create if has type
             background = Background(
                 character_id=character.id,
+                category=bg_data.get('category', 'Background'),
                 type=bg_data['type'],
                 description=bg_data.get('description', ''),
                 dots=bg_data.get('dots', 0),
+                description_height=bg_data.get('description_height', 60),
                 display_order=i
             )
             db.add(background)
@@ -400,9 +404,11 @@ async def update_character(
             if bg_data.get('type'):  # Only create if has type
                 background = Background(
                     character_id=character.id,
+                    category=bg_data.get('category', 'Background'),
                     type=bg_data['type'],
                     description=bg_data.get('description', ''),
                     dots=bg_data.get('dots', 0),
+                    description_height=bg_data.get('description_height', 60),
                     display_order=i
                 )
                 db.add(background)
