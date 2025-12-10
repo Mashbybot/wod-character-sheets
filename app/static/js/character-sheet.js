@@ -117,29 +117,7 @@ function characterSheet(characterId) {
             willpower_aggravated: 0,
             humanity_current: 7,
             humanity_stained: 0,
-            
-            // Disciplines (5 slots)
-            discipline_1_name: '',
-            discipline_1_level: 0,
-            discipline_1_powers: '',
-            discipline_1_description: '',
-            discipline_2_name: '',
-            discipline_2_level: 0,
-            discipline_2_powers: '',
-            discipline_2_description: '',
-            discipline_3_name: '',
-            discipline_3_level: 0,
-            discipline_3_powers: '',
-            discipline_3_description: '',
-            discipline_4_name: '',
-            discipline_4_level: 0,
-            discipline_4_powers: '',
-            discipline_4_description: '',
-            discipline_5_name: '',
-            discipline_5_level: 0,
-            discipline_5_powers: '',
-            discipline_5_description: '',
-            
+
             // Chronicle Tenets (5 individual fields)
             chronicle_tenet_1: '',
             chronicle_tenet_2: '',
@@ -161,7 +139,10 @@ function characterSheet(characterId) {
         
         // NEW: Backgrounds as array (not individual fields)
         backgrounds: [],
-        
+
+        // NEW: Disciplines as array (not individual fields)
+        disciplines: [],
+
         // XP Log
         xpLog: [],
         
@@ -212,6 +193,16 @@ function characterSheet(characterId) {
                         description: '',
                         dots: 0,
                         description_height: 60
+                    });
+                }
+
+                // Initialize with 3 empty disciplines
+                for (let i = 0; i < 3; i++) {
+                    this.disciplines.push({
+                        name: '',
+                        level: 0,
+                        powers: '',
+                        description: ''
                     });
                 }
 
@@ -317,7 +308,38 @@ function characterSheet(characterId) {
                         this.backgrounds.push({ category: 'Background', type: '', description: '', dots: 0, description_height: 60 });
                     }
                 }
-                
+
+                // NEW: Load disciplines from array
+                if (character.disciplines && Array.isArray(character.disciplines)) {
+                    this.disciplines = character.disciplines.map(disc => ({
+                        name: disc.name || '',
+                        level: disc.level || 0,
+                        powers: disc.powers || '',
+                        description: disc.description || ''
+                    }));
+                } else {
+                    // Fallback: Load from old individual fields (backwards compatibility)
+                    this.disciplines = [];
+                    for (let i = 1; i <= 5; i++) {
+                        const name = character[`discipline_${i}_name`];
+                        if (name) {
+                            this.disciplines.push({
+                                name: name,
+                                level: character[`discipline_${i}_level`] || 0,
+                                powers: character[`discipline_${i}_powers`] || '',
+                                description: character[`discipline_${i}_description`] || ''
+                            });
+                        }
+                    }
+                }
+
+                // If no disciplines, add 3 empty ones
+                if (this.disciplines.length === 0) {
+                    for (let i = 0; i < 3; i++) {
+                        this.disciplines.push({ name: '', level: 0, powers: '', description: '' });
+                    }
+                }
+
                 // Load XP log
                 if (character.xp_log) {
                     try {
@@ -864,14 +886,10 @@ function characterSheet(characterId) {
 
         // Get selected discipline icons (dynamic based on what's actually chosen)
         getSelectedDisciplineIcons() {
-            // Collect all selected disciplines from the 5 slots
-            const selectedDisciplines = [];
-            for (let i = 1; i <= 5; i++) {
-                const discName = this.data[`discipline_${i}_name`];
-                if (discName && discName.trim() !== '') {
-                    selectedDisciplines.push(discName);
-                }
-            }
+            // Collect all selected disciplines from the array
+            const selectedDisciplines = this.disciplines
+                .filter(disc => disc.name && disc.name.trim() !== '')
+                .map(disc => disc.name);
 
             // If no disciplines selected, fall back to clan disciplines
             if (selectedDisciplines.length === 0) {
@@ -942,6 +960,17 @@ function characterSheet(characterId) {
                     textarea[0].style.height = height + 'px';
                 }
             });
+        },
+
+        // DISCIPLINE MANAGEMENT
+        addDiscipline() {
+            this.disciplines.push({ name: '', level: 0, powers: '', description: '' });
+            this.autoSave();
+        },
+
+        removeDiscipline(index) {
+            this.disciplines.splice(index, 1);
+            this.autoSave();
         },
 
         // PORTRAIT UPLOAD

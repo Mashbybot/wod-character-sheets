@@ -103,6 +103,32 @@ class Background(Base):
         return f"<Background {self.type} ({self.dots} dots)>"
 
 
+class Discipline(Base):
+    """Discipline - separate table for VTM characters"""
+    __tablename__ = "disciplines"
+
+    id = Column(Integer, primary_key=True, index=True)
+    character_id = Column(Integer, ForeignKey("vtm_characters.id"), nullable=False)
+
+    name = Column(String(100), nullable=False)  # e.g., "animalism", "auspex", "dominate"
+    level = Column(Integer, default=0)  # 0-5 rating
+    powers = Column(Text)  # List of powers
+    description = Column(Text)  # Notes about the discipline
+
+    # Order for display
+    display_order = Column(Integer, default=0)
+
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationship
+    character = relationship("VTMCharacter", back_populates="disciplines")
+
+    def __repr__(self):
+        return f"<Discipline {self.name} (Level {self.level})>"
+
+
 class XPLogEntry(Base):
     """Experience log entry - separate table for VTM characters"""
     __tablename__ = "xp_log_entries"
@@ -138,6 +164,7 @@ class VTMCharacter(Base):
     user = relationship("User", back_populates="vtm_characters")
     touchstones = relationship("Touchstone", back_populates="character", cascade="all, delete-orphan", order_by="Touchstone.display_order")
     backgrounds = relationship("Background", back_populates="character", cascade="all, delete-orphan", order_by="Background.display_order")
+    disciplines = relationship("Discipline", back_populates="character", cascade="all, delete-orphan", order_by="Discipline.display_order")
     xp_log = relationship("XPLogEntry", back_populates="character", cascade="all, delete-orphan", order_by="XPLogEntry.created_at.desc()")
     
     # TOP LEFT - Chronicle Information

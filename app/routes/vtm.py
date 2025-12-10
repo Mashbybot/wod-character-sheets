@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.template_config import templates
-from app.models_new import VTMCharacter, Touchstone, Background, XPLogEntry, UserPreferences
+from app.models_new import VTMCharacter, Touchstone, Background, Discipline, XPLogEntry, UserPreferences
 from app.schemas import (
     VTMCharacterCreate,
     VTMCharacterUpdate,
@@ -202,7 +202,17 @@ async def get_character_api(
         }
         for bg in character.backgrounds
     ]
-    
+
+    char_dict['disciplines'] = [
+        {
+            'name': disc.name,
+            'level': disc.level,
+            'powers': disc.powers or '',
+            'description': disc.description or ''
+        }
+        for disc in character.disciplines
+    ]
+
     char_dict['xp_log'] = [
         {
             'date': entry.date,
@@ -239,9 +249,10 @@ async def create_character(
         form_data = await request.form()
         data = dict(form_data)
     
-    # Extract touchstones and backgrounds arrays
+    # Extract touchstones, backgrounds, disciplines arrays
     touchstones_data = data.pop('touchstones', [])
     backgrounds_data = data.pop('backgrounds', [])
+    disciplines_data = data.pop('disciplines', [])
     xp_log_data = data.pop('xp_log', '[]')
     
     # Parse XP log if it's a string
@@ -301,7 +312,20 @@ async def create_character(
                 display_order=i
             )
             db.add(background)
-    
+
+    # Create disciplines
+    for i, disc_data in enumerate(disciplines_data):
+        if disc_data.get('name'):  # Only create if has name
+            discipline = Discipline(
+                character_id=character.id,
+                name=disc_data['name'],
+                level=disc_data.get('level', 0),
+                powers=disc_data.get('powers', ''),
+                description=disc_data.get('description', ''),
+                display_order=i
+            )
+            db.add(discipline)
+
     # Create XP log entries
     for entry_data in xp_log_data:
         xp_entry = XPLogEntry(
@@ -347,6 +371,7 @@ async def update_character(
     # Extract arrays
     touchstones_data = data.pop('touchstones', None)
     backgrounds_data = data.pop('backgrounds', None)
+    disciplines_data = data.pop('disciplines', None)
     xp_log_data = data.pop('xp_log', None)
     
     # Parse XP log if it's a string
@@ -412,7 +437,27 @@ async def update_character(
                     display_order=i
                 )
                 db.add(background)
-    
+
+    # Update disciplines if provided
+    if disciplines_data is not None:
+        # Delete existing disciplines
+        db.query(Discipline).filter(
+            Discipline.character_id == character_id
+        ).delete()
+
+        # Create new disciplines
+        for i, disc_data in enumerate(disciplines_data):
+            if disc_data.get('name'):  # Only create if has name
+                discipline = Discipline(
+                    character_id=character.id,
+                    name=disc_data['name'],
+                    level=disc_data.get('level', 0),
+                    powers=disc_data.get('powers', ''),
+                    description=disc_data.get('description', ''),
+                    display_order=i
+                )
+                db.add(discipline)
+
     # Update XP log if provided
     if xp_log_data is not None:
         # Delete existing XP log entries

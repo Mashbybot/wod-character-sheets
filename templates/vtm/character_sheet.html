@@ -942,11 +942,11 @@
                 <div class="clan-disciplines-header" x-show="data.clan">
                     <div class="discipline-icons-with-labels" x-html="getSelectedDisciplineIcons()"></div>
                 </div>
-                
-                <template x-for="i in 5" :key="i">
+
+                <template x-for="(disc, index) in disciplines" :key="index">
                     <div class="discipline-entry">
                         <div class="discipline-header">
-                            <select x-model="data['discipline_' + i + '_name']" 
+                            <select x-model="disc.name"
                                     @change="autoSave()"
                                     class="discipline-select">
                                 <option value="">Select Discipline</option>
@@ -963,33 +963,42 @@
                                 <option value="protean">Protean</option>
                                 <option value="thin-blood-alchemy">Thin-Blood Alchemy</option>
                             </select>
-                            
+
                             <div class="dot-tracker discipline-dots">
                                 <template x-for="d in 5" :key="d">
-                                    <span class="dot" 
-                                          :class="d <= (data['discipline_' + i + '_level'] || 0) ? 'filled' : 'empty'"
-                                          @click="clickDot('discipline_' + i + '_level', d, 0, 5)">●</span>
+                                    <span class="dot"
+                                          :class="d <= (disc.level || 0) ? 'filled' : 'empty'"
+                                          @click="disc.level = d; autoSave()">●</span>
                                 </template>
                             </div>
+
+                            <button type="button"
+                                    class="btn-remove-discipline"
+                                    @click="removeDiscipline(index)"
+                                    title="Remove">×</button>
                         </div>
-                        
-                        <div class="discipline-powers" x-show="data['discipline_' + i + '_name']">
+
+                        <div class="discipline-powers" x-show="disc.name">
                             <label>Powers</label>
-                            <textarea x-model="data['discipline_' + i + '_powers']" 
+                            <textarea x-model="disc.powers"
                                       @input.debounce.300ms="autoSave()"
                                       rows="3"
                                       placeholder="List discipline powers"></textarea>
                         </div>
-                        
-                        <div class="discipline-description" x-show="data['discipline_' + i + '_name']">
+
+                        <div class="discipline-description" x-show="disc.name">
                             <label>Notes</label>
-                            <textarea x-model="data['discipline_' + i + '_description']" 
+                            <textarea x-model="disc.description"
                                       @input.debounce.300ms="autoSave()"
                                       rows="2"
                                       placeholder="Custom notes"></textarea>
                         </div>
                     </div>
                 </template>
+
+                <button type="button"
+                        @click="addDiscipline()"
+                        class="btn-add">+ Add Discipline</button>
             </section>
             
             <!-- Experience Tracker -->
