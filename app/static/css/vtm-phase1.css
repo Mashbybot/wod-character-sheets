@@ -339,9 +339,9 @@
 }
 
 /* Add spacing between 5th and 6th dots to create visual rows of 5 */
-.health-box.small:nth-child(6),
-.willpower-box.small:nth-child(6),
-.humanity-box.small:nth-child(6) {
+.health-box.small:nth-of-type(6),
+.willpower-box.small:nth-of-type(6),
+.humanity-box.small:nth-of-type(6) {
     margin-left: 0.5rem;
 }
 
