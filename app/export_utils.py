@@ -84,6 +84,7 @@ async def export_character_sheet(
                 .upload-btn,
                 .image-upload-overlay,
                 .portrait-upload-controls,
+                .export-buttons-fixed,
                 button[type="submit"]:not(.export-btn),
                 .storyteller-banner
             `);
