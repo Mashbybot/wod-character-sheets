@@ -207,8 +207,7 @@ async def get_character_api(
         {
             'name': disc.name,
             'level': disc.level,
-            'powers': disc.powers or '',
-            'description': disc.description or ''
+            'powers': json.loads(disc.powers) if disc.powers and disc.powers.startswith('[') else (disc.powers.split('\n') if disc.powers else [''])
         }
         for disc in character.disciplines
     ]
@@ -316,12 +315,19 @@ async def create_character(
     # Create disciplines
     for i, disc_data in enumerate(disciplines_data):
         if disc_data.get('name'):  # Only create if has name
+            # Convert powers array to JSON string
+            powers_data = disc_data.get('powers', [''])
+            if isinstance(powers_data, list):
+                powers_str = json.dumps(powers_data)
+            else:
+                powers_str = powers_data
+
             discipline = Discipline(
                 character_id=character.id,
                 name=disc_data['name'],
                 level=disc_data.get('level', 0),
-                powers=disc_data.get('powers', ''),
-                description=disc_data.get('description', ''),
+                powers=powers_str,
+                description='',  # No longer used
                 display_order=i
             )
             db.add(discipline)
@@ -448,12 +454,19 @@ async def update_character(
         # Create new disciplines
         for i, disc_data in enumerate(disciplines_data):
             if disc_data.get('name'):  # Only create if has name
+                # Convert powers array to JSON string
+                powers_data = disc_data.get('powers', [''])
+                if isinstance(powers_data, list):
+                    powers_str = json.dumps(powers_data)
+                else:
+                    powers_str = powers_data
+
                 discipline = Discipline(
                     character_id=character.id,
                     name=disc_data['name'],
                     level=disc_data.get('level', 0),
-                    powers=disc_data.get('powers', ''),
-                    description=disc_data.get('description', ''),
+                    powers=powers_str,
+                    description='',  # No longer used
                     display_order=i
                 )
                 db.add(discipline)
