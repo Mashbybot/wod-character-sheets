@@ -141,7 +141,7 @@
 .sheet-section:has(.attributes-three-column) {  /* Attributes section */
     background: transparent;
     box-shadow: none;
-    padding: 1.5rem 0;  /* Keep vertical padding for spacing, remove horizontal */
+    padding: 0.5rem 0;  /* Reduced vertical padding for tighter spacing */
     border-radius: 0;
 }
 
@@ -154,6 +154,11 @@
                 -18px -18px 21px var(--neuro-shadow-light),
                 0 0 30px var(--neuro-shadow-glow);
     border: none;
+}
+
+/* Reduce heading margin for textarea sections */
+.sheet-section:has(> textarea) h2 {
+    margin-bottom: 0.5rem;
 }
 
 .sheet-section h2 {
