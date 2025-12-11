@@ -644,6 +644,9 @@ async def get_user_preferences(
     return JSONResponse(content={
         "column_widths_above": prefs.column_widths_above,
         "column_widths_below": prefs.column_widths_below,
+        "history_in_life_height": prefs.history_in_life_height,
+        "after_death_height": prefs.after_death_height,
+        "notes_height": prefs.notes_height,
         "theme": prefs.theme
     })
 
@@ -672,6 +675,12 @@ async def update_user_preferences(
         prefs.column_widths_above = data['column_widths_above']
     if 'column_widths_below' in data:
         prefs.column_widths_below = data['column_widths_below']
+    if 'history_in_life_height' in data:
+        prefs.history_in_life_height = data['history_in_life_height']
+    if 'after_death_height' in data:
+        prefs.after_death_height = data['after_death_height']
+    if 'notes_height' in data:
+        prefs.notes_height = data['notes_height']
     if 'theme' in data:
         prefs.theme = data['theme']
     

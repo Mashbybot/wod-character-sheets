@@ -975,26 +975,32 @@
             <!-- History in Life -->
             <section class="sheet-section">
                 <h2>History in Life</h2>
-                <textarea x-model="data.history_in_life" 
-                          @input.debounce.300ms="autoSave()"
+                <textarea x-model="data.history_in_life"
+                          x-ref="historyTextarea"
+                          @input="autoSave(); autoResizeStoryTextarea('history_in_life', $el)"
+                          x-init="applyStoryTextareaHeight('history_in_life', $el)"
                           rows="10"
                           placeholder="Character's mortal history..."></textarea>
             </section>
-            
+
             <!-- After Death -->
             <section class="sheet-section">
                 <h2>After Death</h2>
-                <textarea x-model="data.after_death" 
-                          @input.debounce.300ms="autoSave()"
+                <textarea x-model="data.after_death"
+                          x-ref="afterDeathTextarea"
+                          @input="autoSave(); autoResizeStoryTextarea('after_death', $el)"
+                          x-init="applyStoryTextareaHeight('after_death', $el)"
                           rows="10"
                           placeholder="Character's unlife as a vampire..."></textarea>
             </section>
-            
+
             <!-- Notes -->
             <section class="sheet-section">
                 <h2>Notes</h2>
-                <textarea x-model="data.notes" 
-                          @input.debounce.300ms="autoSave()"
+                <textarea x-model="data.notes"
+                          x-ref="notesTextarea"
+                          @input="autoSave(); autoResizeStoryTextarea('notes', $el)"
+                          x-init="applyStoryTextareaHeight('notes', $el)"
                           rows="6"
                           placeholder="Additional notes..."></textarea>
             </section>
