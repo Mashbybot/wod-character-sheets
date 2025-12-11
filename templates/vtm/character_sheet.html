@@ -60,6 +60,36 @@
     }
 </style>
 {% endif %}
+
+<style>
+    /* Export button styling */
+    .btn-export {
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #d4af37 0%, #aa8a2e 100%);
+        color: #1a1a2e;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-export:hover {
+        background: linear-gradient(135deg, #e5c047 0%, #bb9a3e 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-export:active {
+        transform: translateY(0);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -107,6 +137,23 @@
             <span x-show="saveStatus === 'saved'" class="saved">✓ Saved</span>
             <span x-show="saveStatus === 'error'" class="error">⚠ Save Failed</span>
         </div>
+
+        <!-- Export Buttons -->
+        {% if not view_mode %}
+        <div class="export-buttons" style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem;">
+            <a :href="`/vtm/character/{{ character.id if character else '' }}/export/pdf`"
+               class="btn-export btn-export-pdf"
+               title="Export as PDF">
+                📄 PDF
+            </a>
+            <a :href="`/vtm/character/{{ character.id if character else '' }}/export/png`"
+               class="btn-export btn-export-png"
+               title="Export as PNG image">
+                🖼️ PNG
+            </a>
+        </div>
+        {% endif %}
+
         <!-- Clan Symbol in Header -->
         <div class="clan-symbol-header" x-show="data.clan">
             <img :src="`/static/images/clans/${data.clan}.png?v=${window.STATIC_VERSION}`"

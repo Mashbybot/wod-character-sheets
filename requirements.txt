@@ -18,6 +18,9 @@ python-dotenv==1.0.0
 # Image processing
 Pillow==10.4.0
 
+# PDF and image export (HTML to PDF/PNG)
+playwright==1.40.0
+
 # HTTP requests (for Discord OAuth)
 httpx==0.25.1
 
