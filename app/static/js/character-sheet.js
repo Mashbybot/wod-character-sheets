@@ -506,16 +506,11 @@ function characterSheet(characterId) {
                                 saveData[field] = this.data[field];
                             }
                         });
-                        // Always include arrays if they might have changed
-                        if (this.changedFields.has('touchstones')) {
-                            saveData.touchstones = this.touchstones;
-                        }
-                        if (this.changedFields.has('backgrounds')) {
-                            saveData.backgrounds = this.backgrounds;
-                        }
-                        if (this.changedFields.has('xp_log')) {
-                            saveData.xp_log = JSON.stringify(this.xpLog);
-                        }
+                        // Always include arrays (they're modified directly, not tracked individually)
+                        saveData.touchstones = this.touchstones;
+                        saveData.backgrounds = this.backgrounds;
+                        saveData.disciplines = this.disciplines;
+                        saveData.xp_log = JSON.stringify(this.xpLog);
                         console.log('Delta save:', Array.from(this.changedFields));
                     } else {
                         // Full save - for initial saves or many changes
@@ -523,6 +518,7 @@ function characterSheet(characterId) {
                             ...this.data,
                             touchstones: this.touchstones,
                             backgrounds: this.backgrounds,
+                            disciplines: this.disciplines,
                             xp_log: JSON.stringify(this.xpLog)
                         };
                         console.log('Full save');
