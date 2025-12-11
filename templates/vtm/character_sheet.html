@@ -737,17 +737,17 @@
                                 <div>
                                     <span class="skill-name" x-text="capitalize(skill)"></span>
                                     <div class="skill-right">
+                                        <button type="button"
+                                                class="btn-add-specialty"
+                                                x-show="data[skill] > 0"
+                                                @click="addSpecialty(skill)">+</button>
                                         <div class="dot-tracker">
                                             <template x-for="i in 5" :key="i">
-                                                <span class="dot" 
+                                                <span class="dot"
                                                       :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
                                                       @click="clickDot(skill, i, 0, 5)">●</span>
                                             </template>
                                         </div>
-                                        <button type="button" 
-                                                class="btn-add-specialty" 
-                                                x-show="data[skill] > 0"
-                                                @click="addSpecialty(skill)">+</button>
                                     </div>
                                 </div>
                                 <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
@@ -769,17 +769,17 @@
                                 <div>
                                     <span class="skill-name" x-text="capitalize(skill)"></span>
                                     <div class="skill-right">
+                                        <button type="button"
+                                                class="btn-add-specialty"
+                                                x-show="data[skill] > 0"
+                                                @click="addSpecialty(skill)">+</button>
                                         <div class="dot-tracker">
                                             <template x-for="i in 5" :key="i">
-                                                <span class="dot" 
+                                                <span class="dot"
                                                       :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
                                                       @click="clickDot(skill, i, 0, 5)">●</span>
                                             </template>
                                         </div>
-                                        <button type="button" 
-                                                class="btn-add-specialty" 
-                                                x-show="data[skill] > 0"
-                                                @click="addSpecialty(skill)">+</button>
                                     </div>
                                 </div>
                                 <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
@@ -801,17 +801,17 @@
                                 <div>
                                     <span class="skill-name" x-text="capitalize(skill)"></span>
                                     <div class="skill-right">
+                                        <button type="button"
+                                                class="btn-add-specialty"
+                                                x-show="data[skill] > 0"
+                                                @click="addSpecialty(skill)">+</button>
                                         <div class="dot-tracker">
                                             <template x-for="i in 5" :key="i">
-                                                <span class="dot" 
+                                                <span class="dot"
                                                       :class="i <= (data[skill] || 0) ? 'filled' : 'empty'"
                                                       @click="clickDot(skill, i, 0, 5)">●</span>
                                             </template>
                                         </div>
-                                        <button type="button" 
-                                                class="btn-add-specialty" 
-                                                x-show="data[skill] > 0"
-                                                @click="addSpecialty(skill)">+</button>
                                     </div>
                                 </div>
                                 <div class="specialties-list" x-show="getSpecialties(skill).length > 0">
