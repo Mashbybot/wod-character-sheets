@@ -876,18 +876,24 @@
 
                         <div class="discipline-powers" x-show="disc.name">
                             <label>Powers</label>
-                            <textarea x-model="disc.powers"
-                                      @input.debounce.300ms="autoSave()"
-                                      rows="3"
-                                      placeholder="List discipline powers"></textarea>
-                        </div>
-
-                        <div class="discipline-description" x-show="disc.name">
-                            <label>Notes</label>
-                            <textarea x-model="disc.description"
-                                      @input.debounce.300ms="autoSave()"
-                                      rows="2"
-                                      placeholder="Custom notes"></textarea>
+                            <template x-for="(power, powerIndex) in disc.powers" :key="powerIndex">
+                                <div class="power-entry">
+                                    <span class="power-bullet">•</span>
+                                    <input type="text"
+                                           x-model="disc.powers[powerIndex]"
+                                           @input.debounce.300ms="autoSave()"
+                                           placeholder="Enter power name"
+                                           class="power-input">
+                                    <button type="button"
+                                            class="btn-remove-power"
+                                            @click="removePower(index, powerIndex)"
+                                            x-show="disc.powers.length > 1"
+                                            title="Remove power">×</button>
+                                </div>
+                            </template>
+                            <button type="button"
+                                    @click="addPower(index)"
+                                    class="btn-add-power">+ Add Power</button>
                         </div>
                     </div>
                 </template>

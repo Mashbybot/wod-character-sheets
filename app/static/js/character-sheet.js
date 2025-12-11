@@ -201,8 +201,7 @@ function characterSheet(characterId) {
                     this.disciplines.push({
                         name: '',
                         level: 0,
-                        powers: '',
-                        description: ''
+                        powers: ['']  // Array of power strings
                     });
                 }
 
@@ -311,23 +310,37 @@ function characterSheet(characterId) {
 
                 // NEW: Load disciplines from array
                 if (character.disciplines && Array.isArray(character.disciplines)) {
-                    this.disciplines = character.disciplines.map(disc => ({
-                        name: disc.name || '',
-                        level: disc.level || 0,
-                        powers: disc.powers || '',
-                        description: disc.description || ''
-                    }));
+                    this.disciplines = character.disciplines.map(disc => {
+                        // Convert powers to array if it's a string (backward compatibility)
+                        let powersArray;
+                        if (typeof disc.powers === 'string') {
+                            // Split by newlines or bullets, filter out empty
+                            powersArray = disc.powers.split('\n').map(p => p.trim()).filter(p => p);
+                            if (powersArray.length === 0) powersArray = [''];
+                        } else if (Array.isArray(disc.powers)) {
+                            powersArray = disc.powers.length > 0 ? disc.powers : [''];
+                        } else {
+                            powersArray = [''];
+                        }
+
+                        return {
+                            name: disc.name || '',
+                            level: disc.level || 0,
+                            powers: powersArray
+                        };
+                    });
                 } else {
                     // Fallback: Load from old individual fields (backwards compatibility)
                     this.disciplines = [];
                     for (let i = 1; i <= 5; i++) {
                         const name = character[`discipline_${i}_name`];
                         if (name) {
+                            const powersStr = character[`discipline_${i}_powers`] || '';
+                            const powersArray = powersStr.split('\n').map(p => p.trim()).filter(p => p);
                             this.disciplines.push({
                                 name: name,
                                 level: character[`discipline_${i}_level`] || 0,
-                                powers: character[`discipline_${i}_powers`] || '',
-                                description: character[`discipline_${i}_description`] || ''
+                                powers: powersArray.length > 0 ? powersArray : ['']
                             });
                         }
                     }
@@ -336,7 +349,7 @@ function characterSheet(characterId) {
                 // If no disciplines, add 3 empty ones
                 if (this.disciplines.length === 0) {
                     for (let i = 0; i < 3; i++) {
-                        this.disciplines.push({ name: '', level: 0, powers: '', description: '' });
+                        this.disciplines.push({ name: '', level: 0, powers: [''] });
                     }
                 }
 
@@ -964,12 +977,30 @@ function characterSheet(characterId) {
 
         // DISCIPLINE MANAGEMENT
         addDiscipline() {
-            this.disciplines.push({ name: '', level: 0, powers: '', description: '' });
+            this.disciplines.push({ name: '', level: 0, powers: [''] });
             this.autoSave();
         },
 
         removeDiscipline(index) {
             this.disciplines.splice(index, 1);
+            this.autoSave();
+        },
+
+        // Power management within disciplines
+        addPower(disciplineIndex) {
+            if (!this.disciplines[disciplineIndex].powers) {
+                this.disciplines[disciplineIndex].powers = [];
+            }
+            this.disciplines[disciplineIndex].powers.push('');
+            this.autoSave();
+        },
+
+        removePower(disciplineIndex, powerIndex) {
+            this.disciplines[disciplineIndex].powers.splice(powerIndex, 1);
+            // Ensure at least one power entry remains
+            if (this.disciplines[disciplineIndex].powers.length === 0) {
+                this.disciplines[disciplineIndex].powers = [''];
+            }
             this.autoSave();
         },
 
