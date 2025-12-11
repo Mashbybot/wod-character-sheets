@@ -201,7 +201,7 @@ function characterSheet(characterId) {
                     this.disciplines.push({
                         name: '',
                         level: 0,
-                        powers: ['']  // Array of power strings
+                        powers: []  // Start with empty array
                     });
                 }
 
@@ -316,16 +316,21 @@ function characterSheet(characterId) {
                         if (typeof disc.powers === 'string') {
                             // Split by newlines or bullets, filter out empty
                             powersArray = disc.powers.split('\n').map(p => p.trim()).filter(p => p);
-                            if (powersArray.length === 0) powersArray = [''];
                         } else if (Array.isArray(disc.powers)) {
-                            powersArray = disc.powers.length > 0 ? disc.powers : [''];
+                            powersArray = disc.powers;
                         } else {
-                            powersArray = [''];
+                            powersArray = [];
+                        }
+
+                        const level = disc.level || 0;
+                        // Ensure we have at least 'level' number of power slots
+                        while (powersArray.length < level) {
+                            powersArray.push('');
                         }
 
                         return {
                             name: disc.name || '',
-                            level: disc.level || 0,
+                            level: level,
                             powers: powersArray
                         };
                     });
@@ -337,10 +342,17 @@ function characterSheet(characterId) {
                         if (name) {
                             const powersStr = character[`discipline_${i}_powers`] || '';
                             const powersArray = powersStr.split('\n').map(p => p.trim()).filter(p => p);
+                            const level = character[`discipline_${i}_level`] || 0;
+
+                            // Ensure we have at least 'level' number of power slots
+                            while (powersArray.length < level) {
+                                powersArray.push('');
+                            }
+
                             this.disciplines.push({
                                 name: name,
-                                level: character[`discipline_${i}_level`] || 0,
-                                powers: powersArray.length > 0 ? powersArray : ['']
+                                level: level,
+                                powers: powersArray
                             });
                         }
                     }
@@ -349,7 +361,7 @@ function characterSheet(characterId) {
                 // If no disciplines, add 3 empty ones
                 if (this.disciplines.length === 0) {
                     for (let i = 0; i < 3; i++) {
-                        this.disciplines.push({ name: '', level: 0, powers: [''] });
+                        this.disciplines.push({ name: '', level: 0, powers: [] });
                     }
                 }
 
@@ -977,7 +989,7 @@ function characterSheet(characterId) {
 
         // DISCIPLINE MANAGEMENT
         addDiscipline() {
-            this.disciplines.push({ name: '', level: 0, powers: [''] });
+            this.disciplines.push({ name: '', level: 0, powers: [] });
             this.autoSave();
         },
 
@@ -997,10 +1009,6 @@ function characterSheet(characterId) {
 
         removePower(disciplineIndex, powerIndex) {
             this.disciplines[disciplineIndex].powers.splice(powerIndex, 1);
-            // Ensure at least one power entry remains
-            if (this.disciplines[disciplineIndex].powers.length === 0) {
-                this.disciplines[disciplineIndex].powers = [''];
-            }
             this.autoSave();
         },
 
