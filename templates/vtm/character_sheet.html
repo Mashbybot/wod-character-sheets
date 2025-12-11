@@ -395,9 +395,47 @@
                     </div>
                 </div>
             </section>
-            
+
+            <!-- Touchstones -->
+            <section class="sheet-section">
+                <h2>Touchstones</h2>
+
+                <!-- Empty State -->
+                <div x-show="touchstones.length === 0" class="empty-state">
+                    <span class="empty-state-icon">👤</span>
+                    <div class="empty-state-text">No touchstones yet</div>
+                    <div class="empty-state-hint">Add touchstones to maintain your Humanity</div>
+                </div>
+
+                <template x-for="(touchstone, index) in touchstones" :key="index">
+                    <div class="touchstone-entry">
+                        <div class="touchstone-header">
+                            <strong>Touchstone <span x-text="index + 1"></span></strong>
+                            <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Conviction</label>
+                            <textarea x-model="touchstone.conviction" @input.debounce.300ms="autoSave()" rows="1"></textarea>
+                        </div>
+                    </div>
+                </template>
+
+                <button type="button"
+                        @click="addTouchstone()"
+                        x-show="touchstones.length < 3"
+                        class="btn-add">+ Add Touchstone</button>
+            </section>
+
         </div>
-        
+
         <!-- DRAGGABLE DIVIDER 1 -->
         <div class="column-divider" @mousedown="startResizing('above', 0, $event)">
             <div class="divider-handle"></div>
@@ -792,58 +830,87 @@
 
             </div>
 
+            <!-- Disciplines -->
+            <section class="sheet-section disciplines-section">
+                <h2>Disciplines</h2>
+
+                <!-- Discipline Icons (dynamic - shows selected disciplines or clan defaults) -->
+                <div class="clan-disciplines-header" x-show="data.clan">
+                    <div class="discipline-icons-with-labels" x-html="getSelectedDisciplineIcons()"></div>
+                </div>
+
+                <template x-for="(disc, index) in disciplines" :key="index">
+                    <div class="discipline-entry">
+                        <div class="discipline-header">
+                            <select x-model="disc.name"
+                                    @change="autoSave()"
+                                    class="discipline-select">
+                                <option value="">Select Discipline</option>
+                                <option value="animalism">Animalism</option>
+                                <option value="auspex">Auspex</option>
+                                <option value="blood-sorcery">Blood Sorcery</option>
+                                <option value="celerity">Celerity</option>
+                                <option value="dominate">Dominate</option>
+                                <option value="fortitude">Fortitude</option>
+                                <option value="obfuscate">Obfuscate</option>
+                                <option value="oblivion">Oblivion</option>
+                                <option value="potence">Potence</option>
+                                <option value="presence">Presence</option>
+                                <option value="protean">Protean</option>
+                                <option value="thin-blood-alchemy">Thin-Blood Alchemy</option>
+                            </select>
+
+                            <div class="dot-tracker discipline-dots">
+                                <template x-for="d in 5" :key="d">
+                                    <span class="dot"
+                                          :class="d <= (disc.level || 0) ? 'filled' : 'empty'"
+                                          @click="disc.level = d; autoSave()">●</span>
+                                </template>
+                            </div>
+
+                            <button type="button"
+                                    class="btn-remove-discipline"
+                                    @click="removeDiscipline(index)"
+                                    title="Remove">×</button>
+                        </div>
+
+                        <div class="discipline-powers" x-show="disc.name">
+                            <label>Powers</label>
+                            <textarea x-model="disc.powers"
+                                      @input.debounce.300ms="autoSave()"
+                                      rows="3"
+                                      placeholder="List discipline powers"></textarea>
+                        </div>
+
+                        <div class="discipline-description" x-show="disc.name">
+                            <label>Notes</label>
+                            <textarea x-model="disc.description"
+                                      @input.debounce.300ms="autoSave()"
+                                      rows="2"
+                                      placeholder="Custom notes"></textarea>
+                        </div>
+                    </div>
+                </template>
+
+                <button type="button"
+                        @click="addDiscipline()"
+                        class="btn-add">+ Add Discipline</button>
+            </section>
+
         </div>
-        
+
     </div>
-    
+
     <!-- VISUAL PAGE BREAK -->
     <div class="page-break-divider"></div>
     
     <!-- 3-Column Grid Layout (BELOW PAGE BREAK) -->
     <div class="sheet-grid-three-column sheet-grid-below">
         
-        <!-- COLUMN 1: Touchstones + Backgrounds -->
+        <!-- COLUMN 1: Chronicle Tenets -->
         <div class="column-one">
-            
-            <!-- Touchstones -->
-            <section class="sheet-section">
-                <h2>Touchstones</h2>
 
-                <!-- Empty State -->
-                <div x-show="touchstones.length === 0" class="empty-state">
-                    <span class="empty-state-icon">👤</span>
-                    <div class="empty-state-text">No touchstones yet</div>
-                    <div class="empty-state-hint">Add touchstones to maintain your Humanity</div>
-                </div>
-
-                <template x-for="(touchstone, index) in touchstones" :key="index">
-                    <div class="touchstone-entry">
-                        <div class="touchstone-header">
-                            <strong>Touchstone <span x-text="index + 1"></span></strong>
-                            <button type="button" @click="removeTouchstone(index)" class="btn-remove-small">×</button>
-                        </div>
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" x-model="touchstone.name" @input.debounce.300ms="autoSave()">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea x-model="touchstone.description" @input.debounce.300ms="autoSave()" rows="2"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Conviction</label>
-                            <textarea x-model="touchstone.conviction" @input.debounce.300ms="autoSave()" rows="1"></textarea>
-                        </div>
-                    </div>
-                </template>
-                
-                <button type="button" 
-                        @click="addTouchstone()" 
-                        x-show="touchstones.length < 3"
-                        class="btn-add">+ Add Touchstone</button>
-            </section>
-            
-            <!-- Chronicle Tenets (moved from column 3) -->
+            <!-- Chronicle Tenets -->
             <section class="sheet-section chronicle-tenets-numbered">
                 <h2>Chronicle Tenets</h2>
 
@@ -931,76 +998,9 @@
             <div class="divider-handle"></div>
         </div>
         
-        <!-- COLUMN 3: Disciplines + Chronicle Tenets + XP -->
+        <!-- COLUMN 3: Experience -->
         <div class="column-three">
-            
-            <!-- Disciplines -->
-            <section class="sheet-section disciplines-section">
-                <h2>Disciplines</h2>
-                
-                <!-- Discipline Icons (dynamic - shows selected disciplines or clan defaults) -->
-                <div class="clan-disciplines-header" x-show="data.clan">
-                    <div class="discipline-icons-with-labels" x-html="getSelectedDisciplineIcons()"></div>
-                </div>
 
-                <template x-for="(disc, index) in disciplines" :key="index">
-                    <div class="discipline-entry">
-                        <div class="discipline-header">
-                            <select x-model="disc.name"
-                                    @change="autoSave()"
-                                    class="discipline-select">
-                                <option value="">Select Discipline</option>
-                                <option value="animalism">Animalism</option>
-                                <option value="auspex">Auspex</option>
-                                <option value="blood-sorcery">Blood Sorcery</option>
-                                <option value="celerity">Celerity</option>
-                                <option value="dominate">Dominate</option>
-                                <option value="fortitude">Fortitude</option>
-                                <option value="obfuscate">Obfuscate</option>
-                                <option value="oblivion">Oblivion</option>
-                                <option value="potence">Potence</option>
-                                <option value="presence">Presence</option>
-                                <option value="protean">Protean</option>
-                                <option value="thin-blood-alchemy">Thin-Blood Alchemy</option>
-                            </select>
-
-                            <div class="dot-tracker discipline-dots">
-                                <template x-for="d in 5" :key="d">
-                                    <span class="dot"
-                                          :class="d <= (disc.level || 0) ? 'filled' : 'empty'"
-                                          @click="disc.level = d; autoSave()">●</span>
-                                </template>
-                            </div>
-
-                            <button type="button"
-                                    class="btn-remove-discipline"
-                                    @click="removeDiscipline(index)"
-                                    title="Remove">×</button>
-                        </div>
-
-                        <div class="discipline-powers" x-show="disc.name">
-                            <label>Powers</label>
-                            <textarea x-model="disc.powers"
-                                      @input.debounce.300ms="autoSave()"
-                                      rows="3"
-                                      placeholder="List discipline powers"></textarea>
-                        </div>
-
-                        <div class="discipline-description" x-show="disc.name">
-                            <label>Notes</label>
-                            <textarea x-model="disc.description"
-                                      @input.debounce.300ms="autoSave()"
-                                      rows="2"
-                                      placeholder="Custom notes"></textarea>
-                        </div>
-                    </div>
-                </template>
-
-                <button type="button"
-                        @click="addDiscipline()"
-                        class="btn-add">+ Add Discipline</button>
-            </section>
-            
             <!-- Experience Tracker -->
             <section class="sheet-section xp-section">
                 <h2>Experience</h2>
