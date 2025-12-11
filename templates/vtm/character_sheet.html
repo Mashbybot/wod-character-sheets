@@ -893,6 +893,7 @@
                             </template>
                             <button type="button"
                                     @click="addPower(index)"
+                                    x-show="disc.powers.length < disc.level"
                                     class="btn-add-power">+ Add Power</button>
                         </div>
                     </div>
