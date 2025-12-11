@@ -149,7 +149,10 @@ function characterSheet(characterId) {
         // NEW: User preferences (separate from character data)
         preferences: {
             column_widths_above: '40,30,30',
-            column_widths_below: '33,33,34'
+            column_widths_below: '33,33,34',
+            history_in_life_height: null,
+            after_death_height: null,
+            notes_height: null
         },
         
         // Blood Potency calculated values
@@ -168,6 +171,7 @@ function characterSheet(characterId) {
         // Save queue for batching
         saveQueue: null,
         saveTimeout: null,
+        prefSaveTimeout: null,
         // Track if we're currently saving
         isSaving: false,
 
@@ -981,6 +985,49 @@ function characterSheet(characterId) {
                     textarea[0].style.height = height + 'px';
                 }
             });
+        },
+
+        // STORY TEXTAREA HEIGHT PERSISTENCE (History, After Death, Notes)
+        autoResizeStoryTextarea(field, element) {
+            if (!element) return;
+
+            // Reset height to auto to get accurate scrollHeight
+            element.style.height = 'auto';
+            element.style.height = element.scrollHeight + 'px';
+
+            // Save to preferences
+            const heightField = `${field}_height`;
+            this.preferences[heightField] = element.scrollHeight;
+
+            // Debounced save to backend
+            this.savePreferencesDebounced();
+        },
+
+        applyStoryTextareaHeight(field, element) {
+            this.$nextTick(() => {
+                if (!element) return;
+
+                const heightField = `${field}_height`;
+                const savedHeight = this.preferences[heightField];
+
+                if (savedHeight) {
+                    element.style.height = savedHeight + 'px';
+                } else {
+                    // Auto-size to content
+                    element.style.height = 'auto';
+                    element.style.height = element.scrollHeight + 'px';
+                }
+            });
+        },
+
+        // Debounced preferences save
+        savePreferencesDebounced() {
+            if (this.prefSaveTimeout) {
+                clearTimeout(this.prefSaveTimeout);
+            }
+            this.prefSaveTimeout = setTimeout(() => {
+                this.savePreferences();
+            }, 1000);
         },
 
         // DISCIPLINE MANAGEMENT

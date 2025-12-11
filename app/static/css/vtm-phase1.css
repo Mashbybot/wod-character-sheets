@@ -305,8 +305,37 @@
     width: 14px;
     height: 14px;
     border: none;
-    background-color: #333;
     font-size: 0.7rem;
+}
+
+/* Default empty state for small boxes */
+.health-box.small.empty,
+.willpower-box.small.empty,
+.humanity-box.small.empty {
+    background-color: #333;
+}
+
+/* Filled states for small boxes - must come after to override */
+.health-box.small.filled,
+.willpower-box.small.filled,
+.humanity-box.small.filled {
+    background-color: var(--vtm-red);
+}
+
+.health-box.small.superficial,
+.willpower-box.small.superficial {
+    background-color: #FFC107;
+    color: black;
+}
+
+.health-box.small.aggravated,
+.willpower-box.small.aggravated {
+    background-color: black;
+    color: var(--vtm-red);
+}
+
+.humanity-box.small.stained {
+    background-color: black;
 }
 
 /* Add spacing between 5th and 6th dots to create visual rows of 5 */

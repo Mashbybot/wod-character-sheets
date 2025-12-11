@@ -36,7 +36,12 @@ class UserPreferences(Base):
     # Column layout preferences
     column_widths_above = Column(String(50), default="30,35,35")
     column_widths_below = Column(String(50), default="33,33,34")
-    
+
+    # Textarea height preferences
+    history_in_life_height = Column(Integer, nullable=True)
+    after_death_height = Column(Integer, nullable=True)
+    notes_height = Column(Integer, nullable=True)
+
     # Theme preferences
     theme = Column(String(20), default="dark")
     
