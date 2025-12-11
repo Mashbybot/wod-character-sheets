@@ -943,12 +943,18 @@
     margin-top: 0.75rem;
 }
 
-.discipline-powers label {
-    display: block;
+.powers-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 0.5rem;
+}
+
+.discipline-powers label {
     color: var(--text-gray);
     font-size: 0.85rem;
     font-weight: bold;
+    margin: 0;
 }
 
 .power-entry {
@@ -998,21 +1004,21 @@
     color: #999;
 }
 
-.btn-add-power {
-    width: 100%;
-    padding: 0.5rem;
-    background-color: rgba(139, 0, 0, 0.1);
-    border: 1px dashed var(--border-color);
-    border-radius: 4px;
+.btn-add-power-inline {
+    background-color: rgba(139, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
     color: var(--text-gray);
     cursor: pointer;
     transition: all 0.2s;
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    line-height: 1;
+    flex-shrink: 0;
 }
 
-.btn-add-power:hover {
-    background-color: rgba(139, 0, 0, 0.2);
+.btn-add-power-inline:hover {
+    background-color: rgba(139, 0, 0, 0.3);
     border-color: var(--vtm-red);
     color: var(--vtm-red-light);
 }

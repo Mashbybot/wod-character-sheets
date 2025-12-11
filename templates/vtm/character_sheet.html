@@ -875,7 +875,13 @@
                         </div>
 
                         <div class="discipline-powers" x-show="disc.name">
-                            <label>Powers</label>
+                            <div class="powers-header">
+                                <label>Powers</label>
+                                <button type="button"
+                                        @click="addPower(index)"
+                                        class="btn-add-power-inline"
+                                        title="Add power">+</button>
+                            </div>
                             <template x-for="(power, powerIndex) in disc.powers" :key="powerIndex">
                                 <div class="power-entry">
                                     <span class="power-bullet">•</span>
@@ -887,14 +893,9 @@
                                     <button type="button"
                                             class="btn-remove-power"
                                             @click="removePower(index, powerIndex)"
-                                            x-show="disc.powers.length > 1"
                                             title="Remove power">×</button>
                                 </div>
                             </template>
-                            <button type="button"
-                                    @click="addPower(index)"
-                                    x-show="disc.powers.length < disc.level"
-                                    class="btn-add-power">+ Add Power</button>
                         </div>
                     </div>
                 </template>
