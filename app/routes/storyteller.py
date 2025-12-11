@@ -25,7 +25,8 @@ from app.database import get_db
 from app.template_config import templates
 from app.models_new import VTMCharacter, HTRCharacter, User
 from app.auth import require_auth
-from app.utils import is_storyteller, group_characters_by_chronicle
+from app.utils import is_storyteller, group_characters_by_chronicle, delete_portrait
+from app.exceptions import CharacterNotFound
 
 router = APIRouter(prefix="/storyteller", tags=["storyteller"])
 
@@ -585,3 +586,79 @@ async def view_htr_character(
             "preferences": prefs
         }
     )
+
+
+@router.post("/vtm/character/{character_id}/delete")
+async def delete_vtm_character(
+    request: Request,
+    character_id: int,
+    db: Session = Depends(get_db)
+):
+    """Delete a VTM character - Storyteller only"""
+    user = require_storyteller(request)
+
+    # Get character (no ownership check - storyteller can delete any character)
+    character = db.query(VTMCharacter).filter(
+        VTMCharacter.id == character_id
+    ).first()
+
+    if not character:
+        raise CharacterNotFound(character_id)
+
+    # Delete character portraits if they exist
+    portraits = [
+        character.portrait_face,
+        character.portrait_body,
+        character.portrait_hobby_1,
+        character.portrait_hobby_2,
+        character.portrait_hobby_3,
+        character.portrait_hobby_4
+    ]
+
+    for portrait_url in portraits:
+        if portrait_url:
+            delete_portrait(portrait_url)
+
+    # Delete character (cascade will handle touchstones, backgrounds, disciplines, xp_log)
+    db.delete(character)
+    db.commit()
+
+    return RedirectResponse(url="/storyteller/dashboard", status_code=303)
+
+
+@router.post("/htr/character/{character_id}/delete")
+async def delete_htr_character(
+    request: Request,
+    character_id: int,
+    db: Session = Depends(get_db)
+):
+    """Delete an HTR character - Storyteller only"""
+    user = require_storyteller(request)
+
+    # Get character (no ownership check - storyteller can delete any character)
+    character = db.query(HTRCharacter).filter(
+        HTRCharacter.id == character_id
+    ).first()
+
+    if not character:
+        raise CharacterNotFound(character_id)
+
+    # Delete character portraits if they exist
+    portraits = [
+        character.portrait_face,
+        character.portrait_body,
+        character.portrait_hobby_1,
+        character.portrait_hobby_2,
+        character.portrait_hobby_3,
+        character.portrait_hobby_4
+    ]
+
+    for portrait_url in portraits:
+        if portrait_url:
+            delete_portrait(portrait_url)
+
+    # Delete character (cascade will handle touchstones, advantages, flaws, edges, perks, xp_log)
+    db.delete(character)
+    db.commit()
+
+    return RedirectResponse(url="/storyteller/dashboard", status_code=303)

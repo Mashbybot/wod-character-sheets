@@ -163,6 +163,30 @@
         margin-top: 0.5rem;
     }
 
+    .character-card .actions {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #3a3a4e;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .character-card .btn-delete {
+        padding: 0.5rem 1rem;
+        background: #8b0000;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+
+    .character-card .btn-delete:hover {
+        background: #a00000;
+        transform: scale(1.05);
+    }
+
     .flat-list {
         background: #1a1a2e;
         padding: 1.5rem;
@@ -191,7 +215,6 @@
 
     .flat-list tr:hover {
         background: #2a2a3e;
-        cursor: pointer;
     }
 
     .flat-list .game-badge {
@@ -200,6 +223,26 @@
         font-size: 0.75rem;
         font-weight: bold;
         display: inline-block;
+    }
+
+    .flat-list .btn-delete-small {
+        padding: 0.4rem 0.8rem;
+        background: #8b0000;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all 0.2s;
+    }
+
+    .flat-list .btn-delete-small:hover {
+        background: #a00000;
+        transform: scale(1.05);
+    }
+
+    .flat-list .clickable-row {
+        cursor: pointer;
     }
 
     .no-characters {
@@ -256,22 +299,30 @@
                 </div>
                 <div class="character-grid">
                     {% for char in characters %}
-                    <div class="character-card" onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
-                        <span class="game-badge {{ char.game_type|lower }}">{{ char.game_type }}</span>
-                        <h3>{{ char.name or "Unnamed Character" }}</h3>
-                        <div class="player-info">
-                            👤 Player: {{ char.player_name }}
+                    <div class="character-card">
+                        <div onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')" style="cursor: pointer;">
+                            <span class="game-badge {{ char.game_type|lower }}">{{ char.game_type }}</span>
+                            <h3>{{ char.name or "Unnamed Character" }}</h3>
+                            <div class="player-info">
+                                👤 Player: {{ char.player_name }}
+                            </div>
+                            {% if char.chronicle %}
+                            <div class="chronicle-name">
+                                📖 {{ char.chronicle }}
+                            </div>
+                            {% endif %}
+                            {% if char.updated_at %}
+                            <div class="updated">
+                                Last updated: {{ char.updated_at.strftime('%Y-%m-%d %H:%M') if char.updated_at else 'Never' }}
+                            </div>
+                            {% endif %}
                         </div>
-                        {% if char.chronicle %}
-                        <div class="chronicle-name">
-                            📖 {{ char.chronicle }}
+                        <div class="actions">
+                            <form method="POST" action="/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}/delete"
+                                  onsubmit="return confirm('Are you sure you want to delete {{ char.name or \'this character\' }}? This action cannot be undone.');">
+                                <button type="submit" class="btn-delete">🗑️ Delete</button>
+                            </form>
                         </div>
-                        {% endif %}
-                        {% if char.updated_at %}
-                        <div class="updated">
-                            Last updated: {{ char.updated_at.strftime('%Y-%m-%d %H:%M') if char.updated_at else 'Never' }}
-                        </div>
-                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -290,18 +341,33 @@
                             <th>Chronicle</th>
                             <th>Player</th>
                             <th>Last Updated</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for char in all_characters|sort(attribute='name') %}
-                        <tr onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
-                            <td><strong>{{ char.name or "Unnamed Character" }}</strong></td>
-                            <td>
+                        <tr>
+                            <td class="clickable-row" onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
+                                <strong>{{ char.name or "Unnamed Character" }}</strong>
+                            </td>
+                            <td class="clickable-row" onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
                                 <span class="game-badge {{ char.game_type|lower }}">{{ char.game_type }}</span>
                             </td>
-                            <td>{{ char.chronicle or "Uncategorized" }}</td>
-                            <td>{{ char.player_name }}</td>
-                            <td>{{ char.updated_at.strftime('%Y-%m-%d %H:%M') if char.updated_at else 'Never' }}</td>
+                            <td class="clickable-row" onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
+                                {{ char.chronicle or "Uncategorized" }}
+                            </td>
+                            <td class="clickable-row" onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
+                                {{ char.player_name }}
+                            </td>
+                            <td class="clickable-row" onclick="window.open('/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}', '_blank')">
+                                {{ char.updated_at.strftime('%Y-%m-%d %H:%M') if char.updated_at else 'Never' }}
+                            </td>
+                            <td>
+                                <form method="POST" action="/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}/delete"
+                                      onsubmit="return confirm('Are you sure you want to delete {{ char.name or \'this character\' }}? This action cannot be undone.');" style="display: inline;">
+                                    <button type="submit" class="btn-delete-small">🗑️ Delete</button>
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
