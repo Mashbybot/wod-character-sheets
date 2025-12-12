@@ -714,12 +714,23 @@ async def export_character_pdf(
     base_url = str(request.base_url).rstrip('/')
     character_url = f"{base_url}/vtm/character/{character_id}"
 
+    # Extract cookies from request to pass to Playwright for authentication
+    cookies = []
+    for cookie_name, cookie_value in request.cookies.items():
+        cookies.append({
+            'name': cookie_name,
+            'value': cookie_value,
+            'domain': request.url.hostname or 'localhost',
+            'path': '/'
+        })
+
     try:
         # Export to PDF using Playwright
         pdf_bytes = await export_character_sheet(
             url=character_url,
             format='pdf',
-            character_name=character.name or "Unnamed Character"
+            character_name=character.name or "Unnamed Character",
+            cookies=cookies
         )
 
         # Generate filename
@@ -765,12 +776,23 @@ async def export_character_png(
     base_url = str(request.base_url).rstrip('/')
     character_url = f"{base_url}/vtm/character/{character_id}"
 
+    # Extract cookies from request to pass to Playwright for authentication
+    cookies = []
+    for cookie_name, cookie_value in request.cookies.items():
+        cookies.append({
+            'name': cookie_name,
+            'value': cookie_value,
+            'domain': request.url.hostname or 'localhost',
+            'path': '/'
+        })
+
     try:
         # Export to PNG using Playwright
         png_bytes = await export_character_sheet(
             url=character_url,
             format='png',
-            character_name=character.name or "Unnamed Character"
+            character_name=character.name or "Unnamed Character",
+            cookies=cookies
         )
 
         # Generate filename

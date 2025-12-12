@@ -35,6 +35,7 @@ async def export_character_sheet(
     url: str,
     format: Literal['pdf', 'png'],
     character_name: str,
+    cookies: Optional[list] = None,
     wait_for_selector: str = ".character-sheet",
     viewport_width: int = 1920,
     viewport_height: int = 1080
@@ -46,6 +47,7 @@ async def export_character_sheet(
         url: The full URL of the character sheet to export
         format: Output format ('pdf' or 'png')
         character_name: Name of the character (for filename)
+        cookies: Optional list of cookie dicts to set in the browser context
         wait_for_selector: CSS selector to wait for before capturing
         viewport_width: Browser viewport width
         viewport_height: Browser viewport height
@@ -61,6 +63,10 @@ async def export_character_sheet(
         viewport={'width': viewport_width, 'height': viewport_height},
         device_scale_factor=2  # Higher quality output
     )
+
+    # Set cookies if provided (for authentication)
+    if cookies:
+        await context.add_cookies(cookies)
 
     try:
         page = await context.new_page()
@@ -141,6 +147,7 @@ async def export_character_sheet_element(
     url: str,
     format: Literal['pdf', 'png'],
     character_name: str,
+    cookies: Optional[list] = None,
     selector: str = ".character-sheet",
     viewport_width: int = 1920,
     viewport_height: int = 1080
@@ -154,6 +161,7 @@ async def export_character_sheet_element(
         url: The full URL of the character sheet to export
         format: Output format ('pdf' or 'png')
         character_name: Name of the character (for filename)
+        cookies: Optional list of cookie dicts to set in the browser context
         selector: CSS selector of the element to capture
         viewport_width: Browser viewport width
         viewport_height: Browser viewport height
@@ -166,6 +174,10 @@ async def export_character_sheet_element(
         viewport={'width': viewport_width, 'height': viewport_height},
         device_scale_factor=2
     )
+
+    # Set cookies if provided (for authentication)
+    if cookies:
+        await context.add_cookies(cookies)
 
     try:
         page = await context.new_page()
