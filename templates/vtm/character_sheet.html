@@ -218,11 +218,17 @@
                     </div>
                     <div class="form-group-compact">
                         <label>Ambition</label>
-                        <textarea x-model="data.ambition" @input.debounce.300ms="autoSave()" rows="2"></textarea>
+                        <textarea x-model="data.ambition"
+                                  @input="autoSave(); autoResizeStoryTextarea('ambition', $el)"
+                                  x-init="applyStoryTextareaHeight('ambition', $el)"
+                                  rows="2"></textarea>
                     </div>
                     <div class="form-group-compact">
                         <label>Desire</label>
-                        <textarea x-model="data.desire" @input.debounce.300ms="autoSave()" rows="2"></textarea>
+                        <textarea x-model="data.desire"
+                                  @input="autoSave(); autoResizeStoryTextarea('desire', $el)"
+                                  x-init="applyStoryTextareaHeight('desire', $el)"
+                                  rows="2"></textarea>
                     </div>
                 </div>
             </section>

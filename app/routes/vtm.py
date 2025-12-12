@@ -650,6 +650,8 @@ async def get_user_preferences(
         "history_in_life_height": prefs.history_in_life_height,
         "after_death_height": prefs.after_death_height,
         "notes_height": prefs.notes_height,
+        "ambition_height": prefs.ambition_height,
+        "desire_height": prefs.desire_height,
         "theme": prefs.theme
     })
 
@@ -684,6 +686,10 @@ async def update_user_preferences(
         prefs.after_death_height = data['after_death_height']
     if 'notes_height' in data:
         prefs.notes_height = data['notes_height']
+    if 'ambition_height' in data:
+        prefs.ambition_height = data['ambition_height']
+    if 'desire_height' in data:
+        prefs.desire_height = data['desire_height']
     if 'theme' in data:
         prefs.theme = data['theme']
     

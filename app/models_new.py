@@ -41,6 +41,8 @@ class UserPreferences(Base):
     history_in_life_height = Column(Integer, nullable=True)
     after_death_height = Column(Integer, nullable=True)
     notes_height = Column(Integer, nullable=True)
+    ambition_height = Column(Integer, nullable=True)
+    desire_height = Column(Integer, nullable=True)
 
     # Theme preferences
     theme = Column(String(20), default="dark")
