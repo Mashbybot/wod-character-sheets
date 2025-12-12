@@ -49,9 +49,9 @@ def main():
     if tables_exist and not alembic_version:
         # Database has tables but Alembic doesn't know about them
         print("⚠️  Database has tables but Alembic tracking is missing!")
-        print("   Stamping database with current migration head...")
-        if run_command("python3 -m alembic stamp head"):
-            print("✅ Successfully stamped database")
+        print("   Stamping database to migration 001 (where tables were created)...")
+        if run_command("python3 -m alembic stamp 001_refactor_schema"):
+            print("✅ Successfully stamped database to 001_refactor_schema")
         else:
             print("❌ Failed to stamp database")
             return 1
