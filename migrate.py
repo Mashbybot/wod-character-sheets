@@ -6,7 +6,7 @@ Specifically handles the case where tables exist but Alembic tracking is missing
 import sys
 import subprocess
 from sqlalchemy import create_engine, inspect, text
-from app.database import SQLALCHEMY_DATABASE_URL
+from app.database import DATABASE_URL
 
 def check_table_exists(engine, table_name):
     """Check if a table exists in the database"""
@@ -37,7 +37,7 @@ def main():
     print("🔍 Checking database migration state...")
 
     # Create engine to check database state
-    engine = create_engine(SQLALCHEMY_DATABASE_URL)
+    engine = create_engine(DATABASE_URL)
 
     # Check if tables exist
     tables_exist = check_table_exists(engine, 'user_preferences')
