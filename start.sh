@@ -14,7 +14,7 @@ python3 --version
 
 echo ""
 echo "🎭 Installing Playwright Chromium browser..."
-python3 -m playwright install chromium
+python3 -m playwright install --with-deps chromium
 
 echo ""
 echo "🗄️  Running database migrations..."
