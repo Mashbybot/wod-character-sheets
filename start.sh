@@ -18,7 +18,7 @@ python3 -m playwright install chromium
 
 echo ""
 echo "🗄️  Running database migrations..."
-python3 -m alembic upgrade head
+python3 migrate.py
 
 echo ""
 echo "🚀 Starting web server..."
