@@ -34,6 +34,9 @@
                     {% if is_storyteller(user) %}
                     <a href="/storyteller" style="color: #d4af37; font-weight: bold;">📖 Storyteller</a>
                     {% endif %}
+                    {% if export_url %}
+                    <a href="{{ export_url }}" class="btn-export-nav" title="Export character sheet as PNG">📥 Export</a>
+                    {% endif %}
                     <div class="user-menu">
                         <span>{{ user.username }}</span>
                         <a href="/auth/logout" class="btn-logout">Logout</a>

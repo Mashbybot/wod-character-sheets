@@ -839,22 +839,6 @@
         <a href="/htr">← Back to Character List</a>
     </div>
 
-    <!-- Export Buttons - Fixed to lower right -->
-    {% if not view_mode %}
-    <div class="export-buttons-fixed">
-        <a :href="`/htr/character/{{ character.id if character else '' }}/export/pdf`"
-           class="btn-export btn-export-pdf"
-           title="Export as PDF">
-            📄 PDF
-        </a>
-        <a :href="`/htr/character/{{ character.id if character else '' }}/export/png`"
-           class="btn-export btn-export-png"
-           title="Export as PNG image">
-            🖼️ PNG
-        </a>
-    </div>
-    {% endif %}
-
     </div><!-- End main content wrapper -->
 
 </div>

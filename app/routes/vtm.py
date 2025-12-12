@@ -123,7 +123,8 @@ async def view_character(
             "request": request,
             "user": user,
             "character": character,
-            "edit_mode": False
+            "edit_mode": False,
+            "export_url": f"/vtm/character/{character_id}/export/png"
         }
     )
 
@@ -152,7 +153,8 @@ async def edit_character_form(
             "request": request,
             "user": user,
             "character": character,
-            "edit_mode": True
+            "edit_mode": True,
+            "export_url": f"/vtm/character/{character_id}/export/png"
         }
     )
 
