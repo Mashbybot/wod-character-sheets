@@ -127,6 +127,7 @@ function htrCharacterSheet(characterId) {
         touchstones: [],
         advantages: [],
         flaws: [],
+        equipment: [],
         xpLog: [],
 
         // Skill lists
@@ -394,7 +395,7 @@ function htrCharacterSheet(characterId) {
         // Edges & Perks (NEW SYSTEM)
         addEdge() {
             this.characterEdges.push({ edge_id: '' });
-            this.autoSave();
+            // Don't autoSave here - let the @change event handle it when user selects an edge
         },
 
         removeEdge(index) {
@@ -404,7 +405,7 @@ function htrCharacterSheet(characterId) {
 
         addPerk() {
             this.characterPerks.push({ edge_id: '', perk_id: '' });
-            this.autoSave();
+            // Don't autoSave here - let the @change event handle it when user selects a perk
         },
 
         removePerk(index) {
@@ -564,49 +565,44 @@ function htrCharacterSheet(characterId) {
 
         // Auto-resize textareas
         setupTextareaAutoResize() {
-            // Get all textareas that should auto-resize
-            const textareas = document.querySelectorAll('textarea[x-model="data.desire"], textarea[x-model="data.ambition"], textarea[x-model="data.first_encounter"], textarea[x-model="data.history"], textarea[x-model="data.notes"]');
+            // Create auto-resize function
+            const autoResize = (textarea) => {
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            };
 
-            textareas.forEach(textarea => {
-                // Auto-resize function
-                const autoResize = () => {
-                    textarea.style.height = 'auto';
-                    textarea.style.height = textarea.scrollHeight + 'px';
-                };
+            // Get all textareas in the document
+            const resizeAllTextareas = () => {
+                const textareas = document.querySelectorAll('textarea');
+                textareas.forEach(textarea => {
+                    // Skip textareas that shouldn't auto-resize (if any)
+                    // For now, resize all textareas
 
-                // Initial resize
-                autoResize();
+                    // Remove old listener if it exists to avoid duplicates
+                    textarea.removeEventListener('input', textarea._autoResizeHandler);
 
-                // Resize on input
-                textarea.addEventListener('input', autoResize);
+                    // Create bound handler
+                    textarea._autoResizeHandler = () => autoResize(textarea);
 
-                // Also resize when Alpine updates the model
-                this.$watch('data.desire', () => {
-                    if (textarea.getAttribute('x-model') === 'data.desire') {
-                        setTimeout(autoResize, 0);
-                    }
+                    // Initial resize
+                    autoResize(textarea);
+
+                    // Add input listener
+                    textarea.addEventListener('input', textarea._autoResizeHandler);
                 });
-                this.$watch('data.ambition', () => {
-                    if (textarea.getAttribute('x-model') === 'data.ambition') {
-                        setTimeout(autoResize, 0);
-                    }
-                });
-                this.$watch('data.first_encounter', () => {
-                    if (textarea.getAttribute('x-model') === 'data.first_encounter') {
-                        setTimeout(autoResize, 0);
-                    }
-                });
-                this.$watch('data.history', () => {
-                    if (textarea.getAttribute('x-model') === 'data.history') {
-                        setTimeout(autoResize, 0);
-                    }
-                });
-                this.$watch('data.notes', () => {
-                    if (textarea.getAttribute('x-model') === 'data.notes') {
-                        setTimeout(autoResize, 0);
-                    }
-                });
-            });
+            };
+
+            // Initial resize
+            resizeAllTextareas();
+
+            // Watch for changes in arrays that might add/remove textareas
+            this.$watch('advantages', () => setTimeout(resizeAllTextareas, 50), { deep: true });
+            this.$watch('flaws', () => setTimeout(resizeAllTextareas, 50), { deep: true });
+            this.$watch('touchstones', () => setTimeout(resizeAllTextareas, 50), { deep: true });
+            this.$watch('equipment', () => setTimeout(resizeAllTextareas, 50), { deep: true });
+
+            // Watch for data changes that update textarea content
+            this.$watch('data', () => setTimeout(resizeAllTextareas, 50), { deep: true });
         }
     };
 }
