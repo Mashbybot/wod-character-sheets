@@ -524,6 +524,8 @@ class HTRCharacter(Base):
     # IDENTITY
     creed = Column(String(50))  # faithful, inquisitive, martial, entrepreneurial, underground
     drive = Column(String(50))  # atonement, justice, legacy, pride, revenge
+    desire = Column(Text)  # Short-term goal or momentary want
+    ambition = Column(Text)  # Long-term goal
 
     # Personal Info
     age = Column(String(50))

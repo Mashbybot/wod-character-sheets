@@ -27,6 +27,8 @@ function htrCharacterSheet(characterId) {
             chronicle: '',
             creed: '',
             drive: '',
+            desire: '',
+            ambition: '',
 
             // Identity
             age: '',
@@ -142,6 +144,9 @@ function htrCharacterSheet(characterId) {
             } else {
                 this.isLoading = false;
             }
+
+            // Setup auto-resize for textareas after a short delay to ensure DOM is ready
+            setTimeout(() => this.setupTextareaAutoResize(), 100);
         },
 
         async loadEdgesData() {
@@ -389,6 +394,7 @@ function htrCharacterSheet(characterId) {
         // Edges & Perks (NEW SYSTEM)
         addEdge() {
             this.characterEdges.push({ edge_id: '' });
+            this.autoSave();
         },
 
         removeEdge(index) {
@@ -398,6 +404,7 @@ function htrCharacterSheet(characterId) {
 
         addPerk() {
             this.characterPerks.push({ edge_id: '', perk_id: '' });
+            this.autoSave();
         },
 
         removePerk(index) {
@@ -553,6 +560,53 @@ function htrCharacterSheet(characterId) {
             return str.split('_').map(word =>
                 word.charAt(0).toUpperCase() + word.slice(1)
             ).join(' ');
+        },
+
+        // Auto-resize textareas
+        setupTextareaAutoResize() {
+            // Get all textareas that should auto-resize
+            const textareas = document.querySelectorAll('textarea[x-model="data.desire"], textarea[x-model="data.ambition"], textarea[x-model="data.first_encounter"], textarea[x-model="data.history"], textarea[x-model="data.notes"]');
+
+            textareas.forEach(textarea => {
+                // Auto-resize function
+                const autoResize = () => {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = textarea.scrollHeight + 'px';
+                };
+
+                // Initial resize
+                autoResize();
+
+                // Resize on input
+                textarea.addEventListener('input', autoResize);
+
+                // Also resize when Alpine updates the model
+                this.$watch('data.desire', () => {
+                    if (textarea.getAttribute('x-model') === 'data.desire') {
+                        setTimeout(autoResize, 0);
+                    }
+                });
+                this.$watch('data.ambition', () => {
+                    if (textarea.getAttribute('x-model') === 'data.ambition') {
+                        setTimeout(autoResize, 0);
+                    }
+                });
+                this.$watch('data.first_encounter', () => {
+                    if (textarea.getAttribute('x-model') === 'data.first_encounter') {
+                        setTimeout(autoResize, 0);
+                    }
+                });
+                this.$watch('data.history', () => {
+                    if (textarea.getAttribute('x-model') === 'data.history') {
+                        setTimeout(autoResize, 0);
+                    }
+                });
+                this.$watch('data.notes', () => {
+                    if (textarea.getAttribute('x-model') === 'data.notes') {
+                        setTimeout(autoResize, 0);
+                    }
+                });
+            });
         }
     };
 }
