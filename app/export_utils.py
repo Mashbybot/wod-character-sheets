@@ -107,11 +107,28 @@ async def export_character_sheet(
                         img.addEventListener('error', resolve);
                     });
                 }));
+
+                // Auto-resize all textareas to fit their content
+                const textareas = document.querySelectorAll('textarea');
+                textareas.forEach(textarea => {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = textarea.scrollHeight + 'px';
+                });
+
+                // Also resize all input fields to fit their content
+                const inputs = document.querySelectorAll('input[type="text"]');
+                inputs.forEach(input => {
+                    // Ensure inputs show their full value
+                    if (input.value && input.scrollWidth > input.clientWidth) {
+                        input.style.width = 'auto';
+                        input.style.minWidth = input.scrollWidth + 'px';
+                    }
+                });
             })()
         """)
 
-        # Additional wait for any lazy-loaded content
-        await asyncio.sleep(0.5)
+        # Additional wait for layout recalculation after resizing
+        await asyncio.sleep(1)
 
         if format == 'pdf':
             # Export as PDF
