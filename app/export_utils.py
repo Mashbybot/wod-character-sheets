@@ -83,28 +83,30 @@ async def export_character_sheet(
 
         # Hide elements that shouldn't appear in exports
         await page.evaluate("""
-            // Hide save indicators, edit buttons, and other UI chrome
-            const elementsToHide = document.querySelectorAll(`
-                .save-indicator,
-                .btn-delete,
-                .upload-btn,
-                .image-upload-overlay,
-                .portrait-upload-controls,
-                .export-buttons-fixed,
-                button[type="submit"]:not(.export-btn),
-                .storyteller-banner
-            `);
-            elementsToHide.forEach(el => el.style.display = 'none');
+            (async () => {
+                // Hide save indicators, edit buttons, and other UI chrome
+                const elementsToHide = document.querySelectorAll(`
+                    .save-indicator,
+                    .btn-delete,
+                    .upload-btn,
+                    .image-upload-overlay,
+                    .portrait-upload-controls,
+                    .export-buttons-fixed,
+                    button[type="submit"]:not(.export-btn),
+                    .storyteller-banner
+                `);
+                elementsToHide.forEach(el => el.style.display = 'none');
 
-            // Ensure all images are loaded
-            const images = document.querySelectorAll('img');
-            await Promise.all(Array.from(images).map(img => {
-                if (img.complete) return Promise.resolve();
-                return new Promise(resolve => {
-                    img.addEventListener('load', resolve);
-                    img.addEventListener('error', resolve);
-                });
-            }));
+                // Ensure all images are loaded
+                const images = document.querySelectorAll('img');
+                await Promise.all(Array.from(images).map(img => {
+                    if (img.complete) return Promise.resolve();
+                    return new Promise(resolve => {
+                        img.addEventListener('load', resolve);
+                        img.addEventListener('error', resolve);
+                    });
+                }));
+            })()
         """)
 
         # Additional wait for any lazy-loaded content
