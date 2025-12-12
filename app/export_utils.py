@@ -67,10 +67,10 @@ async def export_character_sheet(
 
         # Navigate to the character sheet
         logger.info(f"Navigating to {url} for export")
-        await page.goto(url, wait_until='networkidle', timeout=30000)
+        await page.goto(url, wait_until='networkidle', timeout=60000)
 
         # Wait for the character sheet to load
-        await page.wait_for_selector(wait_for_selector, timeout=10000)
+        await page.wait_for_selector(wait_for_selector, timeout=60000)
 
         # Give Alpine.js time to fully hydrate and render
         await asyncio.sleep(1)
@@ -171,8 +171,8 @@ async def export_character_sheet_element(
         page = await context.new_page()
 
         logger.info(f"Navigating to {url} for element export")
-        await page.goto(url, wait_until='networkidle', timeout=30000)
-        await page.wait_for_selector(selector, timeout=10000)
+        await page.goto(url, wait_until='networkidle', timeout=60000)
+        await page.wait_for_selector(selector, timeout=60000)
         await asyncio.sleep(1)
 
         # Hide unwanted elements
