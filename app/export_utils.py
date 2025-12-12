@@ -86,6 +86,7 @@ async def export_character_sheet(
             (async () => {
                 // Hide save indicators, edit buttons, and other UI chrome
                 const elementsToHide = document.querySelectorAll(`
+                    .navbar,
                     .save-indicator,
                     .btn-delete,
                     .upload-btn,

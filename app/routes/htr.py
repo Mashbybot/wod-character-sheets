@@ -634,68 +634,6 @@ async def upload_portrait(
         )
 
 
-@router.get("/character/{character_id}/export/pdf")
-async def export_character_pdf(
-    character_id: int,
-    request: Request,
-    db: Session = Depends(get_db)
-):
-    """Export HTR character sheet as PDF"""
-    from fastapi.responses import Response
-
-    user = require_auth(request)
-
-    # Get character and verify ownership
-    character = db.query(HTRCharacter).filter(
-        HTRCharacter.id == character_id,
-        HTRCharacter.user_id == user['id']
-    ).first()
-
-    if not character:
-        raise CharacterNotFound(character_id)
-
-    # Build the full URL to the character sheet
-    base_url = str(request.base_url).rstrip('/')
-    character_url = f"{base_url}/htr/character/{character_id}"
-
-    # Extract cookies from request to pass to Playwright for authentication
-    cookies = []
-    for cookie_name, cookie_value in request.cookies.items():
-        cookies.append({
-            'name': cookie_name,
-            'value': cookie_value,
-            'domain': request.url.hostname or 'localhost',
-            'path': '/'
-        })
-
-    try:
-        # Export to PDF using Playwright
-        pdf_bytes = await export_character_sheet(
-            url=character_url,
-            format='pdf',
-            character_name=character.name or "Unnamed Character",
-            cookies=cookies
-        )
-
-        # Generate filename
-        safe_name = sanitize_filename(character.name or "character")
-        filename = f"{safe_name}_htr_sheet.pdf"
-
-        # Return PDF as downloadable file
-        return Response(
-            content=pdf_bytes,
-            media_type="application/pdf",
-            headers={
-                "Content-Disposition": f'attachment; filename="{filename}"'
-            }
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to export PDF: {str(e)}"
-        )
-
-
 @router.get("/character/{character_id}/export/png")
 async def export_character_png(
     character_id: int,
