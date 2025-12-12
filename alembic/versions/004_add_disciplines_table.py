@@ -1,7 +1,7 @@
 """Add disciplines table
 
 Revision ID: 004_add_disciplines_table
-Revises: 003_add_background_category_and_height
+Revises: 003_add_background_fields
 Create Date: 2025-12-10
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '004_add_disciplines_table'
-down_revision = '003_add_background_category_and_height'
+down_revision = '003_add_background_fields'
 branch_labels = None
 depends_on = None
 

@@ -1,6 +1,6 @@
 """Add textarea height columns to user_preferences
 
-Revision ID: 005_add_textarea_heights_to_preferences
+Revision ID: 005_add_textarea_heights
 Revises: 004_add_disciplines_table
 Create Date: 2025-12-11
 
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '005_add_textarea_heights_to_preferences'
+revision = '005_add_textarea_heights'
 down_revision = '004_add_disciplines_table'
 branch_labels = None
 depends_on = None

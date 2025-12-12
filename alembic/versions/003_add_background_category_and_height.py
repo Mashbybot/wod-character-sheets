@@ -1,6 +1,6 @@
 """Add category and description_height to backgrounds
 
-Revision ID: 003_add_background_category_and_height
+Revision ID: 003_add_background_fields
 Revises: 002_add_htr_tables
 Create Date: 2025-12-10
 
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '003_add_background_category_and_height'
+revision = '003_add_background_fields'
 down_revision = '002_add_htr_tables'
 branch_labels = None
 depends_on = None
