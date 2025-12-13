@@ -129,6 +129,7 @@ function htrCharacterSheet(characterId) {
         flaws: [],
         equipment: [],
         xpLog: [],
+        // characterEdges now contains: [{ edge_id: 'arsenal', perks: [{ perk_id: 'well-armed' }] }]
 
         // Skill lists
         physicalSkills: ['athletics', 'brawl', 'craft', 'drive_skill', 'firearms', 'larceny', 'melee', 'stealth', 'survival'],
@@ -148,6 +149,13 @@ function htrCharacterSheet(characterId) {
 
             // Setup auto-resize for textareas after a short delay to ensure DOM is ready
             setTimeout(() => this.setupTextareaAutoResize(), 100);
+
+            // Watch for changes in edges/perks and auto-save
+            this.$watch('characterEdges', () => {
+                if (!this.isLoading) {
+                    this.autoSave();
+                }
+            }, { deep: true });
         },
 
         async loadEdgesData() {
@@ -184,10 +192,19 @@ function htrCharacterSheet(characterId) {
                 this.touchstones = char.touchstones || [];
                 this.advantages = char.advantages || [];
                 this.flaws = char.flaws || [];
-                this.characterEdges = char.edges || [];
-                this.characterPerks = char.perks || [];
                 this.equipment = char.equipment || [];
                 this.xpLog = char.xp_log || [];
+
+                // Load edges and nest perks under them
+                const edges = char.edges || [];
+                const perks = char.perks || [];
+
+                // Transform: nest perks under their parent edges
+                this.characterEdges = edges.map(edge => ({
+                    edge_id: edge.edge_id,
+                    perks: perks.filter(perk => perk.edge_id === edge.edge_id)
+                                .map(perk => ({ perk_id: perk.perk_id }))
+                }));
 
                 this.isLoading = false;
             } catch (error) {
@@ -207,13 +224,25 @@ function htrCharacterSheet(characterId) {
             this.saveStatus = 'saving';
 
             try {
+                // Flatten edges and perks for backend
+                const edges = this.characterEdges
+                    .filter(e => e.edge_id)  // Only include edges with an ID
+                    .map(e => ({ edge_id: e.edge_id }));
+
+                const perks = this.characterEdges
+                    .filter(e => e.edge_id && e.perks && e.perks.length > 0)  // Only edges with perks
+                    .flatMap(e => e.perks
+                        .filter(p => p.perk_id)  // Only perks with an ID
+                        .map(p => ({ edge_id: e.edge_id, perk_id: p.perk_id }))
+                    );
+
                 const payload = {
                     ...this.data,
                     touchstones: this.touchstones,
                     advantages: this.advantages,
                     flaws: this.flaws,
-                    edges: this.characterEdges,
-                    perks: this.characterPerks,
+                    edges: edges,
+                    perks: perks,
                     equipment: this.equipment,
                     xp_log: this.xpLog
                 };
@@ -239,13 +268,25 @@ function htrCharacterSheet(characterId) {
 
         async createCharacter() {
             try {
+                // Flatten edges and perks for backend
+                const edges = this.characterEdges
+                    .filter(e => e.edge_id)
+                    .map(e => ({ edge_id: e.edge_id }));
+
+                const perks = this.characterEdges
+                    .filter(e => e.edge_id && e.perks && e.perks.length > 0)
+                    .flatMap(e => e.perks
+                        .filter(p => p.perk_id)
+                        .map(p => ({ edge_id: e.edge_id, perk_id: p.perk_id }))
+                    );
+
                 const payload = {
                     ...this.data,
                     touchstones: this.touchstones,
                     advantages: this.advantages,
                     flaws: this.flaws,
-                    edges: this.characterEdges,
-                    perks: this.characterPerks,
+                    edges: edges,
+                    perks: perks,
                     equipment: this.equipment,
                     xp_log: this.xpLog
                 };
@@ -392,25 +433,24 @@ function htrCharacterSheet(characterId) {
             }
         },
 
-        // Edges & Perks (NEW SYSTEM)
+        // Edges & Perks (NESTED SYSTEM)
         addEdge() {
-            this.characterEdges.push({ edge_id: '' });
-            // Don't autoSave here - let the @change event handle it when user selects an edge
+            this.characterEdges.push({ edge_id: '', perks: [] });
         },
 
         removeEdge(index) {
             this.characterEdges.splice(index, 1);
-            this.autoSave();
         },
 
-        addPerk() {
-            this.characterPerks.push({ edge_id: '', perk_id: '' });
-            // Don't autoSave here - let the @change event handle it when user selects a perk
+        addPerkToEdge(edgeIndex) {
+            if (!this.characterEdges[edgeIndex].perks) {
+                this.characterEdges[edgeIndex].perks = [];
+            }
+            this.characterEdges[edgeIndex].perks.push({ perk_id: '' });
         },
 
-        removePerk(index) {
-            this.characterPerks.splice(index, 1);
-            this.autoSave();
+        removePerkFromEdge(edgeIndex, perkIndex) {
+            this.characterEdges[edgeIndex].perks.splice(perkIndex, 1);
         },
 
         getEdgeName(edgeId) {
