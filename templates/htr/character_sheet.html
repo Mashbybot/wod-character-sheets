@@ -601,8 +601,11 @@
                 <h2>Edges & Perks</h2>
                 <p class="edges-note">Edges cost 6 EXP each. Perks cost 3 EXP each and must be attached to an Edge.</p>
 
+                <!-- Only render if allEdges is loaded -->
+                <template x-if="allEdges && allEdges.length > 0">
+                <div>
                 <!-- Edges with nested Perks -->
-                <template x-for="(edge_entry, edgeIndex) in characterEdges" :key="edgeIndex">
+                <template x-for="(edge_entry, edgeIndex) in characterEdges" :key="`edge-${edgeIndex}-${edge_entry.edge_id}`">
                     <div class="edge-with-perks-entry">
                         <!-- Edge Selection -->
                         <div class="edge-header">
@@ -653,6 +656,14 @@
                 </template>
 
                 <button type="button" @click="addEdge()" class="btn-add">+ Add Edge</button>
+                </div>
+                </template><!-- End allEdges check -->
+
+                <template x-if="!allEdges || allEdges.length === 0">
+                <div class="loading-message">
+                    Loading edges...
+                </div>
+                </template>
             </section>
         </div><!-- End edges-perks-column -->
 
