@@ -169,6 +169,8 @@ function htrCharacterSheet(characterId) {
                 const response = await fetch('/static/data/htr_edges.json');
                 const data = await response.json();
                 this.allEdges = data.edges || [];
+                console.log('Loaded allEdges from JSON:', this.allEdges.length, 'edges');
+                console.log('Sample edge IDs:', this.allEdges.slice(0, 3).map(e => e.id));
             } catch (error) {
                 console.error('Failed to load edges data:', error);
                 this.allEdges = [];
@@ -209,13 +211,22 @@ function htrCharacterSheet(characterId) {
                 console.log('Loading perks from backend:', perks);
 
                 // Transform: nest perks under their parent edges
-                this.characterEdges = edges.map(edge => ({
-                    edge_id: edge.edge_id,
-                    perks: perks.filter(perk => perk.edge_id === edge.edge_id)
-                                .map(perk => ({ perk_id: perk.perk_id }))
-                }));
+                this.characterEdges = edges.map(edge => {
+                    console.log(`Processing edge: ${edge.edge_id}`);
+                    const edgePerks = perks.filter(perk => perk.edge_id === edge.edge_id)
+                                          .map(perk => ({ perk_id: perk.perk_id }));
+                    console.log(`  Found ${edgePerks.length} perks for this edge`);
+                    return {
+                        edge_id: edge.edge_id,
+                        perks: edgePerks
+                    };
+                });
 
                 console.log('Transformed to nested structure:', JSON.parse(JSON.stringify(this.characterEdges)));
+                console.log('allEdges available for dropdowns:', this.allEdges.length, 'edges');
+
+                // Force Alpine to re-render by waiting a tick
+                await this.$nextTick();
 
                 this.isLoading = false;
             } catch (error) {
