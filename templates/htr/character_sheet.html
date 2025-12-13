@@ -605,7 +605,7 @@
                 <template x-if="allEdges && allEdges.length > 0">
                 <div>
                 <!-- Edges with nested Perks -->
-                <template x-for="(edge_entry, edgeIndex) in characterEdges" :key="`edge-${edgeIndex}-${edge_entry.edge_id}`">
+                <template x-for="(edge_entry, edgeIndex) in characterEdges" :key="edgeIndex">
                     <div class="edge-with-perks-entry">
                         <!-- Edge Selection -->
                         <div class="edge-header">
