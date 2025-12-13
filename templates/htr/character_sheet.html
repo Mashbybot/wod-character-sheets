@@ -612,7 +612,7 @@
                             <select x-model="edge_entry.edge_id" class="edge-select">
                                 <option value="">Select Edge</option>
                                 <template x-for="edge in allEdges" :key="edge.id">
-                                    <option :value="edge.id" x-text="edge.name"></option>
+                                    <option :value="edge.id" x-text="edge.name" :selected="edge.id === edge_entry.edge_id"></option>
                                 </template>
                             </select>
                             <button type="button" @click="removeEdge(edgeIndex)" class="btn-remove-small">×</button>
@@ -636,7 +636,7 @@
                                         <select x-model="perk.perk_id" class="perk-select">
                                             <option value="">Select Perk</option>
                                             <template x-for="availablePerk in getPerksForEdge(edge_entry.edge_id)" :key="availablePerk.id">
-                                                <option :value="availablePerk.id" x-text="availablePerk.name"></option>
+                                                <option :value="availablePerk.id" x-text="availablePerk.name" :selected="availablePerk.id === perk.perk_id"></option>
                                             </template>
                                         </select>
                                         <button type="button" @click="removePerkFromEdge(edgeIndex, perkIndex)" class="btn-remove-small">×</button>
