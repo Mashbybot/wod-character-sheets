@@ -150,10 +150,16 @@ function htrCharacterSheet(characterId) {
             // Setup auto-resize for textareas after a short delay to ensure DOM is ready
             setTimeout(() => this.setupTextareaAutoResize(), 100);
 
-            // Watch for changes in edges/perks and auto-save
+            // Watch for changes in edges/perks and auto-save with debounce
+            let edgesSaveTimeout;
             this.$watch('characterEdges', () => {
                 if (!this.isLoading) {
-                    this.autoSave();
+                    console.log('Edges/Perks changed, scheduling save...', JSON.parse(JSON.stringify(this.characterEdges)));
+                    clearTimeout(edgesSaveTimeout);
+                    edgesSaveTimeout = setTimeout(() => {
+                        console.log('Executing debounced save for edges/perks...');
+                        this.autoSave();
+                    }, 500);
                 }
             }, { deep: true });
         },
@@ -199,12 +205,17 @@ function htrCharacterSheet(characterId) {
                 const edges = char.edges || [];
                 const perks = char.perks || [];
 
+                console.log('Loading edges from backend:', edges);
+                console.log('Loading perks from backend:', perks);
+
                 // Transform: nest perks under their parent edges
                 this.characterEdges = edges.map(edge => ({
                     edge_id: edge.edge_id,
                     perks: perks.filter(perk => perk.edge_id === edge.edge_id)
                                 .map(perk => ({ perk_id: perk.perk_id }))
                 }));
+
+                console.log('Transformed to nested structure:', JSON.parse(JSON.stringify(this.characterEdges)));
 
                 this.isLoading = false;
             } catch (error) {
@@ -235,6 +246,9 @@ function htrCharacterSheet(characterId) {
                         .filter(p => p.perk_id)  // Only perks with an ID
                         .map(p => ({ edge_id: e.edge_id, perk_id: p.perk_id }))
                     );
+
+                console.log('Saving edges:', edges);
+                console.log('Saving perks:', perks);
 
                 const payload = {
                     ...this.data,
