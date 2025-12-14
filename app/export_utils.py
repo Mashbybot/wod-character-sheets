@@ -78,26 +78,35 @@ async def export_character_sheet(
         # Wait for the character sheet to load
         await page.wait_for_selector(wait_for_selector, timeout=60000)
 
-        # Wait for Alpine.js to be ready and finish all reactive rendering
+        # Wait for Alpine.js to load character data and finish all rendering
         await page.evaluate("""
             () => {
                 return new Promise((resolve) => {
-                    // Wait for Alpine.js to be available
-                    const checkAlpine = setInterval(() => {
-                        if (window.Alpine) {
-                            clearInterval(checkAlpine);
-                            // Use Alpine's $nextTick to ensure all rendering is complete
-                            setTimeout(() => {
-                                resolve();
-                            }, 1000);
-                        }
-                    }, 100);
+                    let attempts = 0;
+                    const maxAttempts = 100; // 10 seconds max
 
-                    // Timeout after 10 seconds
-                    setTimeout(() => {
-                        clearInterval(checkAlpine);
-                        resolve();
-                    }, 10000);
+                    const checkReady = () => {
+                        attempts++;
+
+                        // Check if Alpine exists and character data is loaded
+                        const alpineData = window.Alpine?.$data(document.querySelector('[x-data]'));
+
+                        if (alpineData && !alpineData.isLoading) {
+                            // Character data is loaded, wait a bit more for rendering
+                            setTimeout(resolve, 500);
+                            return;
+                        }
+
+                        // Keep checking or timeout
+                        if (attempts < maxAttempts) {
+                            setTimeout(checkReady, 100);
+                        } else {
+                            console.log('Timeout waiting for Alpine data, proceeding anyway');
+                            resolve();
+                        }
+                    };
+
+                    checkReady();
                 });
             }
         """)
