@@ -507,7 +507,10 @@
                 <template x-for="skill in physicalSkills" :key="skill">
                     <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
                         <div class="skill-main">
-                            <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                            <span class="skill-name">
+                                <span x-show="isDriveBoosted(skill)" class="skill-diamond"></span>
+                                <span x-text="capitalize(skill)"></span>
+                            </span>
                             <div class="skill-right">
                                 <div class="dot-tracker">
                                     <template x-for="i in 5" :key="i">
@@ -537,7 +540,10 @@
                 <template x-for="skill in socialSkills" :key="skill">
                     <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
                         <div class="skill-main">
-                            <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                            <span class="skill-name">
+                                <span x-show="isDriveBoosted(skill)" class="skill-diamond"></span>
+                                <span x-text="capitalize(skill)"></span>
+                            </span>
                             <div class="skill-right">
                                 <div class="dot-tracker">
                                     <template x-for="i in 5" :key="i">
@@ -567,7 +573,10 @@
                 <template x-for="skill in mentalSkills" :key="skill">
                     <div class="skill-row" :class="{ 'drive-boosted': isDriveBoosted(skill) }">
                         <div class="skill-main">
-                            <span class="skill-name" x-text="(isDriveBoosted(skill) ? '🔶 ' : '') + capitalize(skill)"></span>
+                            <span class="skill-name">
+                                <span x-show="isDriveBoosted(skill)" class="skill-diamond"></span>
+                                <span x-text="capitalize(skill)"></span>
+                            </span>
                             <div class="skill-right">
                                 <div class="dot-tracker">
                                     <template x-for="i in 5" :key="i">

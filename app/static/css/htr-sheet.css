@@ -751,6 +751,19 @@
 .skill-name {
     color: var(--text-white);
     font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* CSS Diamond for Drive-Boosted Skills */
+.skill-diamond {
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    background: var(--htr-orange);
+    transform: rotate(45deg);
+    box-shadow: 0 0 8px rgba(255, 140, 0, 0.6);
 }
 
 .skill-right {
