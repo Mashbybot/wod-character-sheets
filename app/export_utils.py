@@ -78,7 +78,31 @@ async def export_character_sheet(
         # Wait for the character sheet to load
         await page.wait_for_selector(wait_for_selector, timeout=60000)
 
-        # Give Alpine.js time to fully hydrate and render
+        # Wait for Alpine.js to be ready and finish all reactive rendering
+        await page.evaluate("""
+            () => {
+                return new Promise((resolve) => {
+                    // Wait for Alpine.js to be available
+                    const checkAlpine = setInterval(() => {
+                        if (window.Alpine) {
+                            clearInterval(checkAlpine);
+                            // Use Alpine's $nextTick to ensure all rendering is complete
+                            setTimeout(() => {
+                                resolve();
+                            }, 1000);
+                        }
+                    }, 100);
+
+                    // Timeout after 10 seconds
+                    setTimeout(() => {
+                        clearInterval(checkAlpine);
+                        resolve();
+                    }, 10000);
+                });
+            }
+        """)
+
+        # Additional sleep to ensure all dynamic content (emojis, etc.) is rendered
         await asyncio.sleep(1)
 
         # Hide elements that shouldn't appear in exports
