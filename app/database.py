@@ -8,8 +8,15 @@ from sqlalchemy.orm import sessionmaker
 # Get database URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+# Validate DATABASE_URL is set
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable is required. "
+        "Set it to your PostgreSQL connection string (e.g., postgresql://user:pass@host:port/dbname)"
+    )
+
 # Railway PostgreSQL URLs start with postgres:// but SQLAlchemy needs postgresql://
-if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 # Create engine with production-ready connection pool settings

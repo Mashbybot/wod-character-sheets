@@ -2,13 +2,14 @@
 
 import os
 import logging
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Request, Depends
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
+from sqlalchemy.orm import Session
 
 from app.logging_config import setup_logging, get_logger
-from app.database import init_db
+from app.database import init_db, get_db
 from app.routes import auth, vtm, htr, storyteller
 from app.auth import get_current_user
 from app.template_config import templates
@@ -150,9 +151,26 @@ async def home(request: Request):
 
 
 @app.get("/health")
-async def health_check():
-    """Health check endpoint for Railway"""
-    return {"status": "healthy"}
+async def health_check(db: Session = Depends(get_db)):
+    """Health check endpoint with database connectivity test"""
+    try:
+        # Test database connectivity with a simple query
+        from sqlalchemy import text
+        db.execute(text("SELECT 1"))
+        return {
+            "status": "healthy",
+            "database": "connected"
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "unhealthy",
+                "database": "disconnected",
+                "error": str(e)
+            }
+        )
 
 
 @app.get("/csrf-token")

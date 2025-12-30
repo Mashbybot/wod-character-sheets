@@ -11,10 +11,21 @@ from app.logging_config import get_logger
 logger = get_logger(__name__)
 
 # OAuth configuration
+DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID", "")
+DISCORD_CLIENT_SECRET = os.getenv("DISCORD_CLIENT_SECRET", "")
+DISCORD_REDIRECT_URI = os.getenv("DISCORD_REDIRECT_URI", "")
+
+# Validate all OAuth credentials are set
+if not all([DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URI]):
+    raise ValueError(
+        "Discord OAuth configuration incomplete. Required environment variables: "
+        "DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URI"
+    )
+
 config = Config(environ={
-    "DISCORD_CLIENT_ID": os.getenv("DISCORD_CLIENT_ID", ""),
-    "DISCORD_CLIENT_SECRET": os.getenv("DISCORD_CLIENT_SECRET", ""),
-    "DISCORD_REDIRECT_URI": os.getenv("DISCORD_REDIRECT_URI", ""),
+    "DISCORD_CLIENT_ID": DISCORD_CLIENT_ID,
+    "DISCORD_CLIENT_SECRET": DISCORD_CLIENT_SECRET,
+    "DISCORD_REDIRECT_URI": DISCORD_REDIRECT_URI,
 })
 
 oauth = OAuth(config)
