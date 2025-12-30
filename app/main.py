@@ -11,6 +11,7 @@ from app.routes import auth, vtm, htr, storyteller
 from app.auth import get_current_user
 from app.template_config import templates
 from app.csrf import init_csrf, get_csrf_token
+from app.export_utils import cleanup_browser
 from app.exceptions import (
     wod_exception_handler,
     validation_exception_handler,
@@ -100,6 +101,13 @@ async def startup_event():
     init_db()
     print("[STARTUP] Database initialized")
     print("[STARTUP] Models loaded: User, UserPreferences, VTMCharacter, HTRCharacter, Touchstone, Background, XPLogEntry")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Clean up resources on shutdown"""
+    await cleanup_browser()
+    print("[SHUTDOWN] Browser resources cleaned up")
 
 
 @app.get("/", response_class=HTMLResponse)

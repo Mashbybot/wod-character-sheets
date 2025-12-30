@@ -15,20 +15,66 @@ logger = logging.getLogger(__name__)
 
 # Browser instance cache (reuse for performance)
 _browser_instance: Optional[Browser] = None
+_playwright_instance = None
+_last_used_timestamp: Optional[float] = None
+
+# Browser TTL in seconds (restart browser after 30 minutes of inactivity)
+BROWSER_TTL = 1800
 
 
 async def get_browser() -> Browser:
     """Get or create a shared browser instance for better performance"""
-    global _browser_instance
+    global _browser_instance, _playwright_instance, _last_used_timestamp
 
-    if _browser_instance is None or not _browser_instance.is_connected():
-        playwright = await async_playwright().start()
-        _browser_instance = await playwright.chromium.launch(
+    import time
+    current_time = time.time()
+
+    # Check if browser needs to be restarted (not connected or TTL expired)
+    needs_restart = (
+        _browser_instance is None or
+        not _browser_instance.is_connected() or
+        (_last_used_timestamp and current_time - _last_used_timestamp > BROWSER_TTL)
+    )
+
+    if needs_restart:
+        # Clean up old browser instance if it exists
+        await cleanup_browser()
+
+        # Start new Playwright and browser instance
+        _playwright_instance = await async_playwright().start()
+        _browser_instance = await _playwright_instance.chromium.launch(
             headless=True,
             args=['--no-sandbox', '--disable-setuid-sandbox']  # Required for Railway/containers
         )
+        logger.info("Playwright browser instance created")
 
+    _last_used_timestamp = current_time
     return _browser_instance
+
+
+async def cleanup_browser():
+    """Clean up browser and playwright instances"""
+    global _browser_instance, _playwright_instance, _last_used_timestamp
+
+    if _browser_instance:
+        try:
+            await _browser_instance.close()
+            logger.info("Playwright browser instance closed")
+        except Exception as e:
+            logger.warning(f"Error closing browser: {e}")
+        finally:
+            _browser_instance = None
+
+    if _playwright_instance:
+        try:
+            await _playwright_instance.stop()
+            logger.info("Playwright instance stopped")
+        except Exception as e:
+            logger.warning(f"Error stopping playwright: {e}")
+        finally:
+            _playwright_instance = None
+
+    _last_used_timestamp = None
 
 
 async def export_character_sheet(
