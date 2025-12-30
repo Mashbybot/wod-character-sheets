@@ -4,6 +4,7 @@ import os
 import uuid
 from typing import Dict, Any, Optional, Tuple
 from PIL import Image
+import PIL.Image
 from datetime import datetime
 
 from app.logging_config import get_logger
@@ -108,27 +109,61 @@ def process_and_save_portrait(
             raise ImageUploadError("Invalid file path detected")
 
         # Ensure directory exists
-        os.makedirs(CHARACTER_IMAGE_DIR, exist_ok=True)
-        
+        try:
+            os.makedirs(CHARACTER_IMAGE_DIR, exist_ok=True)
+        except OSError as e:
+            logger.error(f"Failed to create image directory: {e}")
+            raise ImageUploadError("Unable to create upload directory. Please contact administrator.")
+
         # Open and process image
-        image = Image.open(image_file)
-        
+        try:
+            image = Image.open(image_file)
+        except PIL.UnidentifiedImageError:
+            raise ImageUploadError("File is not a valid image or is corrupted")
+        except PIL.Image.DecompressionBombError:
+            raise ImageUploadError("Image is too large to process safely")
+        except OSError as e:
+            logger.error(f"Failed to open image file: {e}")
+            raise ImageUploadError("Unable to read image file")
+
         # Convert RGBA to RGB if necessary (for JPEG)
-        if image.mode == 'RGBA' and file_extension in ['jpg', 'jpeg']:
-            background = Image.new('RGB', image.size, (255, 255, 255))
-            background.paste(image, mask=image.split()[3])
-            image = background
-        
+        try:
+            if image.mode == 'RGBA' and file_extension in ['jpg', 'jpeg']:
+                background = Image.new('RGB', image.size, (255, 255, 255))
+                background.paste(image, mask=image.split()[3])
+                image = background
+        except Exception as e:
+            logger.error(f"Failed to convert image mode: {e}")
+            raise ImageUploadError("Unable to process image format")
+
         # Resize image maintaining aspect ratio
-        image.thumbnail(target_size, Image.Resampling.LANCZOS)
-        
+        try:
+            image.thumbnail(target_size, Image.Resampling.LANCZOS)
+        except Exception as e:
+            logger.error(f"Failed to resize image: {e}")
+            raise ImageUploadError("Unable to resize image")
+
         # Save optimized image
-        image.save(file_path, optimize=True, quality=85)
+        try:
+            image.save(file_path, optimize=True, quality=85)
+        except OSError as e:
+            logger.error(f"Failed to save image: {e}")
+            raise ImageUploadError("Unable to save image. Disk may be full.")
+        except Exception as e:
+            logger.error(f"Unexpected error saving image: {e}")
+            raise ImageUploadError("Failed to save image")
 
         # Return URL path (mounted at /portraits in main.py)
         return f"/portraits/{unique_filename}"
-        
+
+    except ImageUploadError:
+        # Re-raise our custom errors
+        raise
+    except MemoryError:
+        logger.error("Out of memory while processing image")
+        raise ImageUploadError("Image is too large to process")
     except Exception as e:
+        logger.error(f"Unexpected error processing image: {e}", exc_info=True)
         raise ImageUploadError(f"Failed to process image: {str(e)}")
 
 
@@ -196,10 +231,18 @@ def delete_portrait(portrait_url: Optional[str], db=None, character_id: Optional
             return
 
         if os.path.exists(file_path):
-            os.remove(file_path)
+            try:
+                os.remove(file_path)
+                logger.debug(f"Successfully deleted portrait: {portrait_url}")
+            except PermissionError:
+                logger.error(f"Permission denied deleting portrait {portrait_url}")
+            except OSError as e:
+                logger.error(f"OS error deleting portrait {portrait_url}: {e}")
+        else:
+            logger.debug(f"Portrait file not found (already deleted?): {portrait_url}")
     except Exception as e:
         # Log but don't raise - file cleanup is not critical
-        logger.warning(f"Failed to delete portrait {portrait_url}: {e}")
+        logger.warning(f"Unexpected error deleting portrait {portrait_url}: {e}", exc_info=True)
 
 
 # ===== SKILL SPECIALTY UTILITIES =====
