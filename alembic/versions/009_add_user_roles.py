@@ -1,7 +1,7 @@
 """add user roles
 
-Revision ID: 009
-Revises: 008
+Revision ID: 009_add_user_roles
+Revises: 008_add_desire_ambition_to_htr
 Create Date: 2024-12-30
 
 """
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '009'
-down_revision = '008'
+revision = '009_add_user_roles'
+down_revision = '008_add_desire_ambition_to_htr'
 branch_labels = None
 depends_on = None
 
