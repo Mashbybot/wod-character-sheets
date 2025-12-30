@@ -334,13 +334,13 @@ def validate_xp_spend(available: int, amount: int) -> bool:
 # ===== DATE/TIME UTILITIES =====
 
 def get_current_date_string() -> str:
-    """Get current date as ISO format string"""
-    return datetime.now().strftime('%Y-%m-%d')
+    """Get current date as ISO format string (UTC)"""
+    return datetime.utcnow().strftime('%Y-%m-%d')
 
 
 def get_current_datetime_string() -> str:
-    """Get current datetime as ISO format string"""
-    return datetime.now().isoformat()
+    """Get current datetime as ISO format string (UTC)"""
+    return datetime.utcnow().isoformat()
 
 
 # ===== VALIDATION UTILITIES =====
