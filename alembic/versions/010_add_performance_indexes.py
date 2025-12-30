@@ -44,7 +44,7 @@ def upgrade() -> None:
     op.create_index('ix_htr_perks_edge_id', 'htr_perks', ['edge_id'])
 
     # XP Log indexes
-    op.create_index('ix_xp_log_character_id', 'xp_log', ['character_id'])
+    op.create_index('ix_vtm_xp_log_character_id', 'vtm_xp_log', ['character_id'])
     op.create_index('ix_htr_xp_log_character_id', 'htr_xp_log', ['character_id'])
 
     # Equipment indexes
@@ -56,7 +56,7 @@ def downgrade() -> None:
     op.drop_index('ix_htr_equipment_character_id', table_name='htr_equipment')
 
     op.drop_index('ix_htr_xp_log_character_id', table_name='htr_xp_log')
-    op.drop_index('ix_xp_log_character_id', table_name='xp_log')
+    op.drop_index('ix_vtm_xp_log_character_id', table_name='vtm_xp_log')
 
     op.drop_index('ix_htr_perks_edge_id', table_name='htr_perks')
     op.drop_index('ix_htr_edges_character_id', table_name='htr_edges')
