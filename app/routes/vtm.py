@@ -23,6 +23,7 @@ from app.schemas import (
     XPLogEntryCreate,
     ErrorResponse
 )
+from pydantic import ValidationError
 from app.auth import require_auth
 from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS
 from app.exceptions import (
@@ -282,14 +283,16 @@ async def create_character(
         # Use defaults if name not provided
         if 'name' not in data or not data['name']:
             data['name'] = 'Unnamed'
-        
+
         char_create = VTMCharacterCreate(**data)
-    except Exception as e:
+    except ValidationError as e:
+        # Return properly formatted validation errors
+        logger.warning(f"Character validation failed: {e.errors()}")
         return JSONResponse(
             status_code=422,
             content={
-                "error": "Validation error",
-                "details": str(e)
+                "error": "Validation failed",
+                "details": e.errors()
             }
         )
     
@@ -410,16 +413,18 @@ async def update_character(
     try:
         char_update = VTMCharacterUpdate(**data)
         update_data = char_update.model_dump(exclude_none=True)
-        
+
         for key, value in update_data.items():
             if hasattr(character, key):
                 setattr(character, key, value)
-    except Exception as e:
+    except ValidationError as e:
+        # Return properly formatted validation errors
+        logger.warning(f"Character update validation failed: {e.errors()}")
         return JSONResponse(
             status_code=422,
             content={
-                "error": "Validation error",
-                "details": str(e)
+                "error": "Validation failed",
+                "details": e.errors()
             }
         )
     
