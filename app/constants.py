@@ -9,6 +9,9 @@ MAX_BACKGROUNDS = 10
 MAX_DISCIPLINES = 5
 MAX_CHRONICLE_TENETS = 5
 
+# ===== QUERY PAGINATION =====
+STORYTELLER_DASHBOARD_LIMIT = 500  # Max characters to load in storyteller dashboard
+
 # ===== GAME MECHANICS =====
 MIN_ATTRIBUTE = 1
 MAX_ATTRIBUTE = 5

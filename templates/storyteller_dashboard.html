@@ -275,6 +275,14 @@
         </div>
     </div>
 
+    <!-- Truncation Warning -->
+    {% if truncated %}
+    <div style="background: #8b4513; color: #fff; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #d4af37;">
+        <strong>⚠️ Notice:</strong> Displaying {{ total_count }} of {{ total_characters }} total characters (limit: {{ limit }}).
+        Some characters may not be shown. Consider filtering by chronicle or contact your system administrator to increase the limit.
+    </div>
+    {% endif %}
+
     <!-- View Toggle -->
     <div class="view-toggle">
         <button @click="viewMode = 'grouped'" :class="{ 'active': viewMode === 'grouped' }">

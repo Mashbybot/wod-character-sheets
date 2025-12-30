@@ -27,6 +27,7 @@ from app.models_new import VTMCharacter, HTRCharacter, User
 from app.auth import require_auth
 from app.utils import is_storyteller, group_characters_by_chronicle, delete_portrait
 from app.exceptions import CharacterNotFound
+from app.constants import STORYTELLER_DASHBOARD_LIMIT
 
 router = APIRouter(prefix="/storyteller", tags=["storyteller"])
 
@@ -50,21 +51,28 @@ async def storyteller_dashboard(request: Request, db: Session = Depends(get_db))
     """Display all characters across all game types for storyteller"""
     user = require_storyteller(request)
 
-    # Get all VTM characters with user info (eager load to prevent N+1 queries)
+    # Get total counts before pagination
+    vtm_total = db.query(VTMCharacter).count()
+    htr_total = db.query(HTRCharacter).count()
+    total_characters = vtm_total + htr_total
+
+    # Get VTM characters with pagination limit (eager load to prevent N+1 queries)
     vtm_characters = db.query(VTMCharacter).options(
         joinedload(VTMCharacter.user)
     ).order_by(
         VTMCharacter.chronicle,
         VTMCharacter.name
-    ).all()
+    ).limit(STORYTELLER_DASHBOARD_LIMIT).all()
 
-    # Get all HTR characters with user info (eager load to prevent N+1 queries)
+    # Get HTR characters with pagination limit (eager load to prevent N+1 queries)
+    # Calculate remaining limit for HTR after VTM
+    remaining_limit = max(0, STORYTELLER_DASHBOARD_LIMIT - len(vtm_characters))
     htr_characters = db.query(HTRCharacter).options(
         joinedload(HTRCharacter.user)
     ).order_by(
         HTRCharacter.chronicle,
         HTRCharacter.name
-    ).all()
+    ).limit(remaining_limit).all() if remaining_limit > 0 else []
 
     # Combine all characters for grouping
     all_characters = []
@@ -129,6 +137,9 @@ async def storyteller_dashboard(request: Request, db: Session = Depends(get_db))
         else:
             chronicle_display_names[chronicle_key] = chronicle_key.title()
 
+    # Check if results were truncated
+    truncated = total_characters > STORYTELLER_DASHBOARD_LIMIT
+
     return templates.TemplateResponse(
         "storyteller_dashboard.html",
         {
@@ -139,7 +150,12 @@ async def storyteller_dashboard(request: Request, db: Session = Depends(get_db))
             "chronicle_display_names": chronicle_display_names,
             "vtm_count": len(vtm_characters),
             "htr_count": len(htr_characters),
-            "total_count": len(all_characters)
+            "total_count": len(all_characters),
+            "vtm_total": vtm_total,
+            "htr_total": htr_total,
+            "total_characters": total_characters,
+            "truncated": truncated,
+            "limit": STORYTELLER_DASHBOARD_LIMIT
         }
     )
 
