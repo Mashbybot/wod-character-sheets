@@ -9,6 +9,7 @@ from app.logging_config import get_logger
 from app.auth import oauth, get_discord_user
 from app.database import get_db
 from app.models_new import User
+from app.audit import log_login, get_client_ip
 
 logger = get_logger(__name__)
 
@@ -85,6 +86,15 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
             'role': user.role
         }
         request.session['user'] = session_data
+
+        # Log successful login
+        log_login(
+            db=db,
+            user_id=user.id,
+            username=username,
+            success=True,
+            ip_address=get_client_ip(request)
+        )
 
         # Redirect to main page
         logger.info("Authentication successful, redirecting to home page")

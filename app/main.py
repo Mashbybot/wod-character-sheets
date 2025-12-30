@@ -33,6 +33,7 @@ logger = get_logger(__name__)
 from app.models_new import (
     User,
     UserPreferences,
+    AuditLog,
     VTMCharacter,
     HTRCharacter,
     Touchstone,
@@ -107,7 +108,7 @@ async def startup_event():
     """Initialize database on startup"""
     init_db()
     logger.info("Database initialized")
-    logger.info("Models loaded: User, UserPreferences, VTMCharacter, HTRCharacter, Touchstone, Background, XPLogEntry")
+    logger.info("Models loaded: User, UserPreferences, AuditLog, VTMCharacter, HTRCharacter, Touchstone, Background, XPLogEntry")
 
 
 @app.on_event("shutdown")

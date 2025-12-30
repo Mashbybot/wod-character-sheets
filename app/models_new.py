@@ -1,6 +1,6 @@
 """Database models for World of Darkness character sheets - REFACTORED"""
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Text, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Text, Boolean, DateTime, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
@@ -57,6 +57,26 @@ class UserPreferences(Base):
     
     def __repr__(self):
         return f"<UserPreferences user_id={self.user_id}>"
+
+
+class AuditLog(Base):
+    """Audit log for security-relevant events"""
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_type = Column(String(50), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    target_id = Column(Integer, nullable=True)
+    target_type = Column(String(50), nullable=True)
+    details = Column(JSON, nullable=True)
+    ip_address = Column(String(45), nullable=True)  # IPv6 max length
+    timestamp = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+    # Relationship
+    user = relationship("User")
+
+    def __repr__(self):
+        return f"<AuditLog {self.event_type} user_id={self.user_id} at {self.timestamp}>"
 
 
 class Touchstone(Base):
