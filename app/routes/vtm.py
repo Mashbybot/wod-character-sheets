@@ -7,9 +7,12 @@ from fastapi import APIRouter, Request, Depends, HTTPException, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from sqlalchemy.orm import Session, joinedload
 
+from app.logging_config import get_logger
 from app.database import get_db
 from app.template_config import templates
 from app.sanitize import sanitize_character_data
+
+logger = get_logger(__name__)
 from app.models_new import VTMCharacter, Touchstone, Background, Discipline, XPLogEntry, UserPreferences
 from app.schemas import (
     VTMCharacterCreate,
@@ -54,7 +57,7 @@ async def vtm_character_list(request: Request, db: Session = Depends(get_db)):
 
     # DEBUG: Log portrait data
     for char in characters:
-        print(f"[DEBUG CHARACTER LIST] Character {char.id} ({char.name}): portrait_face={char.portrait_face}, portrait_body={char.portrait_body}")
+        logger.debug(f"Character {char.id} ({char.name}): portrait_face={char.portrait_face}, portrait_body={char.portrait_body}")
 
     # Calculate available slots
     available_slots = CHARACTER_LIMIT_PER_USER - len(characters)
@@ -612,7 +615,7 @@ async def upload_portrait(
         db.commit()
 
         # DEBUG: Log what was saved
-        print(f"[DEBUG UPLOAD] Character {character.id}: Set portrait_{box_type} = {portrait_url}")
+        logger.debug(f"Character {character.id}: Set portrait_{box_type} = {portrait_url}")
 
         return JSONResponse(content={
             "success": True,

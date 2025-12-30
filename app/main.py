@@ -1,11 +1,13 @@
 """Main FastAPI application"""
 
 import os
+import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
+from app.logging_config import setup_logging, get_logger
 from app.database import init_db
 from app.routes import auth, vtm, htr, storyteller
 from app.auth import get_current_user
@@ -20,6 +22,11 @@ from app.exceptions import (
 )
 from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
+
+# Initialize logging
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+setup_logging(LOG_LEVEL)
+logger = get_logger(__name__)
 
 # ✅ CRITICAL: Import new models so SQLAlchemy knows about them
 # This ensures init_db() creates all tables properly
@@ -99,29 +106,29 @@ app.include_router(storyteller.router)
 async def startup_event():
     """Initialize database on startup"""
     init_db()
-    print("[STARTUP] Database initialized")
-    print("[STARTUP] Models loaded: User, UserPreferences, VTMCharacter, HTRCharacter, Touchstone, Background, XPLogEntry")
+    logger.info("Database initialized")
+    logger.info("Models loaded: User, UserPreferences, VTMCharacter, HTRCharacter, Touchstone, Background, XPLogEntry")
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """Clean up resources on shutdown"""
     await cleanup_browser()
-    print("[SHUTDOWN] Browser resources cleaned up")
+    logger.info("Browser resources cleaned up")
 
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """Home page - landing or dashboard based on auth status"""
     # Debug session contents
-    print(f"[HOME] Session contents: {dict(request.session)}")
-    
+    logger.debug(f"Session contents: {dict(request.session)}")
+
     user = get_current_user(request)
-    print(f"[HOME] Current user: {user}")
-    
+    logger.debug(f"Current user: {user}")
+
     if user:
         # Logged in - show dashboard
-        print(f"[HOME] Authenticated user {user.get('username')} - showing dashboard")
+        logger.debug(f"Authenticated user {user.get('username')} - showing dashboard")
         return templates.TemplateResponse(
             "dashboard.html",
             {
@@ -130,8 +137,8 @@ async def home(request: Request):
             }
         )
     else:
-        # Not logged in - show landing page
-        print("[HOME] No authenticated user - showing landing page")
+        # Not logged in - showing landing page
+        logger.debug("No authenticated user - showing landing page")
         return templates.TemplateResponse(
             "index.html",
             {

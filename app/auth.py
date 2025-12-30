@@ -6,6 +6,10 @@ from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.requests import Request
 
+from app.logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # OAuth configuration
 config = Config(environ={
     "DISCORD_CLIENT_ID": os.getenv("DISCORD_CLIENT_ID", ""),
@@ -44,7 +48,7 @@ async def get_discord_user(token: dict) -> Optional[dict]:
             if response.status_code == 200:
                 return response.json()
     except Exception as e:
-        print(f"Error fetching Discord user: {e}")
+        logger.error(f"Error fetching Discord user: {e}")
     return None
 
 

@@ -6,6 +6,7 @@ from typing import Dict, Any, Optional, Tuple
 from PIL import Image
 from datetime import datetime
 
+from app.logging_config import get_logger
 from app.constants import (
     BLOOD_POTENCY_VALUES,
     CLAN_DISCIPLINES,
@@ -15,6 +16,8 @@ from app.constants import (
     ALLOWED_IMAGE_EXTENSIONS
 )
 from app.exceptions import ImageUploadError, validate_file_extension, validate_file_size
+
+logger = get_logger(__name__)
 
 
 # ===== BLOOD POTENCY CALCULATIONS =====
@@ -175,7 +178,7 @@ def delete_portrait(portrait_url: Optional[str], db=None, character_id: Optional
 
         # If ownership verification was requested but failed, don't delete
         if not portrait_found:
-            print(f"Warning: Portrait ownership verification failed for {portrait_url}, character {character_id}")
+            logger.warning(f"Portrait ownership verification failed for {portrait_url}, character {character_id}")
             return
 
     try:
@@ -189,14 +192,14 @@ def delete_portrait(portrait_url: Optional[str], db=None, character_id: Optional
         real_image_dir = os.path.realpath(CHARACTER_IMAGE_DIR)
 
         if not real_file_path.startswith(real_image_dir):
-            print(f"Security: Attempted path traversal detected in portrait deletion: {portrait_url}")
+            logger.warning(f"Security: Attempted path traversal detected in portrait deletion: {portrait_url}")
             return
 
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
         # Log but don't raise - file cleanup is not critical
-        print(f"Warning: Failed to delete portrait {portrait_url}: {e}")
+        logger.warning(f"Failed to delete portrait {portrait_url}: {e}")
 
 
 # ===== SKILL SPECIALTY UTILITIES =====
