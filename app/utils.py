@@ -4,8 +4,7 @@ import os
 import uuid
 from typing import Dict, Any, Optional, Tuple
 from PIL import Image
-import PIL.Image
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.logging_config import get_logger
 from app.constants import (
@@ -335,12 +334,12 @@ def validate_xp_spend(available: int, amount: int) -> bool:
 
 def get_current_date_string() -> str:
     """Get current date as ISO format string (UTC)"""
-    return datetime.utcnow().strftime('%Y-%m-%d')
+    return datetime.now(timezone.utc).strftime('%Y-%m-%d')
 
 
 def get_current_datetime_string() -> str:
     """Get current datetime as ISO format string (UTC)"""
-    return datetime.utcnow().isoformat()
+    return datetime.now(timezone.utc).isoformat()
 
 
 # ===== VALIDATION UTILITIES =====

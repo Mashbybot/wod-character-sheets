@@ -9,11 +9,11 @@ import os
 from pathlib import Path
 from typing import Literal, Optional
 from playwright.async_api import async_playwright, Browser, Page
-import logging
 
 from app.constants import EXPORT_NAVIGATION_TIMEOUT, EXPORT_SELECTOR_TIMEOUT
+from app.logging_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 # Browser instance cache (reuse for performance)
 _browser_instance: Optional[Browser] = None

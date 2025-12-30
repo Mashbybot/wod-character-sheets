@@ -3,7 +3,7 @@
 Tracks important user actions and security events for compliance and investigation.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Dict, Any
 from sqlalchemy.orm import Session
 
@@ -65,7 +65,7 @@ def log_audit_event(
             target_type=target_type,
             details=details or {},
             ip_address=ip_address,
-            timestamp=datetime.utcnow()
+            timestamp=datetime.now(timezone.utc)
         )
         db.add(audit_entry)
         db.commit()

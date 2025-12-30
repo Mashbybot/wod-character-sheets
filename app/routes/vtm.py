@@ -26,7 +26,7 @@ from app.schemas import (
 )
 from pydantic import ValidationError
 from app.auth import require_auth
-from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS
+from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS, VALID_PORTRAIT_BOXES
 from app.exceptions import (
     CharacterLimitReached,
     CharacterNotFound,
@@ -259,7 +259,8 @@ async def create_character(
     # Get data from request
     try:
         data = await request.json()
-    except:
+    except Exception:
+        # Fallback to form data if JSON parsing fails
         form_data = await request.form()
         data = dict(form_data)
 
@@ -276,7 +277,7 @@ async def create_character(
     if isinstance(xp_log_data, str):
         try:
             xp_log_data = json.loads(xp_log_data)
-        except:
+        except (json.JSONDecodeError, ValueError):
             xp_log_data = []
     
     # Validate character data with Pydantic
@@ -390,7 +391,8 @@ async def update_character(
     # Get data
     try:
         data = await request.json()
-    except:
+    except Exception:
+        # Fallback to form data if JSON parsing fails
         form_data = await request.form()
         data = dict(form_data)
 
@@ -407,7 +409,7 @@ async def update_character(
     if isinstance(xp_log_data, str):
         try:
             xp_log_data = json.loads(xp_log_data)
-        except:
+        except (json.JSONDecodeError, ValueError):
             xp_log_data = None
     
     # Update character fields with Pydantic validation
@@ -602,8 +604,7 @@ async def upload_portrait(
         raise CharacterNotFound(character_id)
     
     # Validate box_type
-    valid_boxes = ['face', 'body', 'hobby_1', 'hobby_2', 'hobby_3', 'hobby_4']
-    if box_type not in valid_boxes:
+    if box_type not in VALID_PORTRAIT_BOXES:
         return JSONResponse(
             status_code=400,
             content={"error": "Invalid box type"}

@@ -102,7 +102,8 @@ async def validate_csrf(request: Request, exempt: bool = False) -> None:
         try:
             form_data = await request.form()
             request_token = form_data.get("csrf_token")
-        except:
+        except Exception:
+            # Not form data, continue to next method
             pass
 
     # If still not found, try JSON body (for API requests)
@@ -116,9 +117,11 @@ async def validate_csrf(request: Request, exempt: bool = False) -> None:
                 try:
                     json_data = json.loads(body)
                     request_token = json_data.get("csrf_token")
-                except:
+                except (json.JSONDecodeError, ValueError):
+                    # Invalid JSON, ignore
                     pass
-        except:
+        except Exception:
+            # Error reading body, continue
             pass
 
     if not request_token:

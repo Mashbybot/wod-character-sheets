@@ -6,11 +6,11 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 import traceback
-import logging
 
 from app.schemas import ErrorResponse, ErrorDetail
+from app.logging_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 # ===== CUSTOM EXCEPTIONS =====

@@ -2,12 +2,13 @@
 
 import os
 import time
-import logging
 from sqlalchemy import create_engine, event, exc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-logger = logging.getLogger(__name__)
+from app.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 # Get database URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")

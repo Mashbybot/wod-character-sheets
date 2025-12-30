@@ -179,6 +179,9 @@ PORTRAIT_SIZES = {
     'hobby': (150, 150)      # Small square
 }
 
+# Valid portrait box types
+VALID_PORTRAIT_BOXES = ['face', 'body', 'hobby_1', 'hobby_2', 'hobby_3', 'hobby_4']
+
 # ===== UI CONSTANTS =====
 DEFAULT_COLUMN_WIDTHS_ABOVE = "30,35,35"
 DEFAULT_COLUMN_WIDTHS_BELOW = "33,33,34"

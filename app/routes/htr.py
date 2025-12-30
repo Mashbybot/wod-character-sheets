@@ -13,7 +13,8 @@ from app.sanitize import sanitize_character_data
 from app.audit import log_audit_event, AuditEvent, get_client_ip
 from app.models_new import HTRCharacter, HTRTouchstone, HTRAdvantage, HTRFlaw, HTRXPLogEntry, UserPreferences
 from app.auth import require_auth
-from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS
+from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS, VALID_PORTRAIT_BOXES
+from app.logging_config import get_logger
 from app.exceptions import (
     CharacterLimitReached,
     CharacterNotFound,
@@ -32,6 +33,7 @@ from app.utils import (
 from app.export_utils import export_character_sheet, sanitize_filename
 
 router = APIRouter(prefix="/htr", tags=["htr"])
+logger = get_logger(__name__)
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -266,7 +268,8 @@ async def create_character(
     # Get data from request
     try:
         data = await request.json()
-    except:
+    except Exception:
+        # Fallback to form data if JSON parsing fails
         form_data = await request.form()
         data = dict(form_data)
 
@@ -283,7 +286,7 @@ async def create_character(
     if isinstance(xp_log_data, str):
         try:
             xp_log_data = json.loads(xp_log_data)
-        except:
+        except (json.JSONDecodeError, ValueError):
             xp_log_data = []
 
     # Use defaults if name not provided
@@ -372,7 +375,8 @@ async def update_character(
     # Get data
     try:
         data = await request.json()
-    except:
+    except Exception:
+        # Fallback to form data if JSON parsing fails
         form_data = await request.form()
         data = dict(form_data)
 
@@ -392,7 +396,7 @@ async def update_character(
     if isinstance(xp_log_data, str):
         try:
             xp_log_data = json.loads(xp_log_data)
-        except:
+        except (json.JSONDecodeError, ValueError):
             xp_log_data = None
 
     # Perform all database updates in an explicit transaction
@@ -618,8 +622,7 @@ async def upload_portrait(
         raise CharacterNotFound(character_id)
 
     # Validate box_type
-    valid_boxes = ['face', 'body', 'hobby_1', 'hobby_2', 'hobby_3', 'hobby_4']
-    if box_type not in valid_boxes:
+    if box_type not in VALID_PORTRAIT_BOXES:
         return JSONResponse(
             status_code=400,
             content={"error": "Invalid box type"}
