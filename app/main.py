@@ -10,6 +10,7 @@ from app.database import init_db
 from app.routes import auth, vtm, htr, storyteller
 from app.auth import get_current_user
 from app.template_config import templates
+from app.csrf import init_csrf, get_csrf_token
 from app.exceptions import (
     wod_exception_handler,
     validation_exception_handler,
@@ -44,17 +45,34 @@ app.add_exception_handler(ValidationError, validation_exception_handler)
 app.add_exception_handler(SQLAlchemyError, database_exception_handler)
 
 # Add session middleware for OAuth
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production")
-print(f"[STARTUP] Using SECRET_KEY: {SECRET_KEY[:10]}... (length: {len(SECRET_KEY)})")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError(
+        "SECRET_KEY environment variable is required. "
+        "Generate one with: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+    )
+
+# Validate SECRET_KEY strength
+if len(SECRET_KEY) < 32:
+    raise ValueError(
+        "SECRET_KEY must be at least 32 characters long for security. "
+        "Generate a strong key with: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+    )
+
+# Initialize CSRF protection
+init_csrf(SECRET_KEY)
+
+# Determine if we're in development mode
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "false").lower() == "true"
 
 # Add session middleware with explicit cookie settings
 app.add_middleware(
-    SessionMiddleware, 
+    SessionMiddleware,
     secret_key=SECRET_KEY,
     session_cookie="wod_session",  # Explicit cookie name
     max_age=14 * 24 * 60 * 60,     # 14 days
     same_site="lax",                # Allow OAuth redirects
-    https_only=False                # Set to True in production with HTTPS
+    https_only=not DEVELOPMENT_MODE  # Secure in production, HTTP allowed in dev
 )
 
 # Mount static files
@@ -121,14 +139,11 @@ async def health_check():
     return {"status": "healthy"}
 
 
-@app.get("/debug-session")
-async def debug_session(request: Request):
-    """Debug endpoint to check session contents"""
-    return {
-        "session": dict(request.session),
-        "user": get_current_user(request),
-        "cookies": dict(request.cookies)
-    }
+@app.get("/csrf-token")
+async def csrf_token_endpoint(request: Request):
+    """Get CSRF token for the current session"""
+    token = await get_csrf_token(request)
+    return {"csrf_token": token}
 
 
 # Error handlers

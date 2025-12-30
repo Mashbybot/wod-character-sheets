@@ -73,17 +73,15 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
             user.discord_avatar = discord_user.get('avatar')
             db.commit()
         
-        # Store user in session
+        # Store user in session (including role for authorization)
         session_data = {
             'id': user.id,
             'discord_id': user.discord_id,
             'username': user.discord_username,
-            'avatar': user.discord_avatar
+            'avatar': user.discord_avatar,
+            'role': user.role
         }
         request.session['user'] = session_data
-        
-        print(f"[AUTH] Session set: {session_data}")
-        print(f"[AUTH] Session contents: {dict(request.session)}")
         
         # Redirect to main page
         print("[AUTH] Redirecting to home page")

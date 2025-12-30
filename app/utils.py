@@ -121,16 +121,69 @@ def process_and_save_portrait(
         raise ImageUploadError(f"Failed to process image: {str(e)}")
 
 
-def delete_portrait(portrait_url: Optional[str]) -> None:
-    """Delete a portrait image file if it exists"""
+def delete_portrait(portrait_url: Optional[str], db=None, character_id: Optional[int] = None) -> None:
+    """
+    Delete a portrait image file if it exists
+
+    Args:
+        portrait_url: URL of the portrait to delete
+        db: Database session (optional, for ownership verification)
+        character_id: Character ID that should own this portrait (optional, for ownership verification)
+
+    Note:
+        If db and character_id are provided, ownership verification is performed.
+        This provides defense-in-depth against unauthorized deletions.
+    """
     if not portrait_url:
         return
-    
+
+    # Optional ownership verification (defense-in-depth)
+    if db is not None and character_id is not None:
+        from app.models_new import VTMCharacter, HTRCharacter
+
+        # Check if this portrait belongs to the specified character
+        portrait_found = False
+
+        # Check VTM characters
+        vtm_char = db.query(VTMCharacter).filter(VTMCharacter.id == character_id).first()
+        if vtm_char:
+            portrait_fields = ['portrait_face', 'portrait_body', 'portrait_hobby_1',
+                             'portrait_hobby_2', 'portrait_hobby_3', 'portrait_hobby_4']
+            for field in portrait_fields:
+                if getattr(vtm_char, field, None) == portrait_url:
+                    portrait_found = True
+                    break
+
+        # Check HTR characters if not found
+        if not portrait_found:
+            htr_char = db.query(HTRCharacter).filter(HTRCharacter.id == character_id).first()
+            if htr_char:
+                portrait_fields = ['portrait_face', 'portrait_body', 'portrait_hobby_1',
+                                 'portrait_hobby_2', 'portrait_hobby_3', 'portrait_hobby_4']
+                for field in portrait_fields:
+                    if getattr(htr_char, field, None) == portrait_url:
+                        portrait_found = True
+                        break
+
+        # If ownership verification was requested but failed, don't delete
+        if not portrait_found:
+            print(f"Warning: Portrait ownership verification failed for {portrait_url}, character {character_id}")
+            return
+
     try:
         # Extract filename from URL
         filename = portrait_url.split('/')[-1]
         file_path = os.path.join(CHARACTER_IMAGE_DIR, filename)
-        
+
+        # Additional security: ensure the path is within CHARACTER_IMAGE_DIR
+        # Prevent path traversal attacks
+        real_file_path = os.path.realpath(file_path)
+        real_image_dir = os.path.realpath(CHARACTER_IMAGE_DIR)
+
+        if not real_file_path.startswith(real_image_dir):
+            print(f"Security: Attempted path traversal detected in portrait deletion: {portrait_url}")
+            return
+
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
@@ -310,20 +363,27 @@ def is_storyteller(user: Optional[Dict[str, Any]]) -> bool:
     Check if the current user is a storyteller
 
     Args:
-        user: User dict from session (contains discord_id)
+        user: User dict from session (contains discord_id and role)
 
     Returns:
-        True if user is a storyteller, False otherwise
+        True if user is a storyteller or admin, False otherwise
     """
     if not user:
         return False
 
-    storyteller_id = os.getenv("STORYTELLER_DISCORD_ID", "")
-    if not storyteller_id:
-        return False
+    # Check database role (preferred method)
+    user_role = user.get("role", "player")
+    if user_role in ["storyteller", "admin"]:
+        return True
 
-    user_discord_id = str(user.get("discord_id", ""))
-    return user_discord_id == storyteller_id
+    # Fallback: Check environment variable for backward compatibility
+    # This allows migration period where roles aren't set yet
+    storyteller_id = os.getenv("STORYTELLER_DISCORD_ID", "")
+    if storyteller_id:
+        user_discord_id = str(user.get("discord_id", ""))
+        return user_discord_id == storyteller_id
+
+    return False
 
 
 def normalize_chronicle_name(chronicle: Optional[str]) -> str:

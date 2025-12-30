@@ -9,11 +9,12 @@ from app.database import Base
 class User(Base):
     """User model - Discord OAuth authentication"""
     __tablename__ = "users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     discord_id = Column(String, unique=True, index=True, nullable=False)
     discord_username = Column(String, nullable=False)
     discord_avatar = Column(String)
+    role = Column(String(20), default="player", nullable=False, index=True)  # player, storyteller, admin
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     last_login = Column(DateTime(timezone=True), onupdate=func.now())
     

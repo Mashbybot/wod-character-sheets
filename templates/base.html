@@ -55,7 +55,34 @@
     <footer>
         <p>World of Darkness © Paradox Interactive. This is a fan project.</p>
     </footer>
-    
+
+    <!-- CSRF Token Setup -->
+    <script>
+        // Global CSRF token management
+        window.csrfToken = null;
+
+        // Fetch CSRF token on page load
+        async function fetchCsrfToken() {
+            try {
+                const response = await fetch('/csrf-token');
+                const data = await response.json();
+                window.csrfToken = data.csrf_token;
+            } catch (error) {
+                console.error('Failed to fetch CSRF token:', error);
+            }
+        }
+
+        // Fetch token immediately
+        fetchCsrfToken();
+
+        // Helper function to get CSRF token for fetch requests
+        function getCsrfHeaders() {
+            return {
+                'X-CSRF-Token': window.csrfToken || ''
+            };
+        }
+    </script>
+
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
