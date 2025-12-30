@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.template_config import templates
+from app.sanitize import sanitize_character_data
 from app.models_new import VTMCharacter, Touchstone, Background, Discipline, XPLogEntry, UserPreferences
 from app.schemas import (
     VTMCharacterCreate,
@@ -250,7 +251,10 @@ async def create_character(
     except:
         form_data = await request.form()
         data = dict(form_data)
-    
+
+    # Sanitize all user input to prevent XSS attacks
+    data = sanitize_character_data(data, game_type='vtm')
+
     # Extract touchstones, backgrounds, disciplines arrays
     touchstones_data = data.pop('touchstones', [])
     backgrounds_data = data.pop('backgrounds', [])
@@ -376,7 +380,10 @@ async def update_character(
     except:
         form_data = await request.form()
         data = dict(form_data)
-    
+
+    # Sanitize all user input to prevent XSS attacks
+    data = sanitize_character_data(data, game_type='vtm')
+
     # Extract arrays
     touchstones_data = data.pop('touchstones', None)
     backgrounds_data = data.pop('backgrounds', None)

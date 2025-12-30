@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.template_config import templates
+from app.sanitize import sanitize_character_data
 from app.models_new import HTRCharacter, HTRTouchstone, HTRAdvantage, HTRFlaw, HTRXPLogEntry, UserPreferences
 from app.auth import require_auth
 from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS
@@ -259,6 +260,9 @@ async def create_character(
         form_data = await request.form()
         data = dict(form_data)
 
+    # Sanitize all user input to prevent XSS attacks
+    data = sanitize_character_data(data, game_type='htr')
+
     # Extract arrays
     touchstones_data = data.pop('touchstones', [])
     advantages_data = data.pop('advantages', [])
@@ -361,6 +365,9 @@ async def update_character(
     except:
         form_data = await request.form()
         data = dict(form_data)
+
+    # Sanitize all user input to prevent XSS attacks
+    data = sanitize_character_data(data, game_type='htr')
 
     # Extract arrays
     touchstones_data = data.pop('touchstones', None)

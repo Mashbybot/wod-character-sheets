@@ -95,7 +95,15 @@ def process_and_save_portrait(
         file_extension = filename.rsplit('.', 1)[1].lower()
         unique_filename = f"{uuid.uuid4()}.{file_extension}"
         file_path = os.path.join(CHARACTER_IMAGE_DIR, unique_filename)
-        
+
+        # Security: Verify path is within allowed directory (prevent path traversal)
+        from pathlib import Path
+        real_file_path = Path(file_path).resolve()
+        real_image_dir = Path(CHARACTER_IMAGE_DIR).resolve()
+
+        if not str(real_file_path).startswith(str(real_image_dir)):
+            raise ImageUploadError("Invalid file path detected")
+
         # Ensure directory exists
         os.makedirs(CHARACTER_IMAGE_DIR, exist_ok=True)
         
