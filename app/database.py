@@ -56,12 +56,6 @@ def receive_checkout(dbapi_conn, connection_record, connection_proxy):
         )
 
 
-@event.listens_for(engine, "connect_failed")
-def receive_connect_failed(dbapi_conn, connection_record):
-    """Log connection failures for debugging"""
-    logger.error(f"Database connection failed")
-
-
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
