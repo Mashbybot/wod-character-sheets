@@ -5,7 +5,7 @@ import json
 from typing import Optional, List
 from fastapi import APIRouter, Request, Depends, HTTPException, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.template_config import templates
@@ -156,7 +156,16 @@ async def get_character_api(
     """Get character data as JSON for Alpine.js"""
     user = require_auth(request)
 
-    character = db.query(HTRCharacter).filter(
+    # Eager load relationships to prevent N+1 queries
+    character = db.query(HTRCharacter).options(
+        joinedload(HTRCharacter.touchstones),
+        joinedload(HTRCharacter.advantages),
+        joinedload(HTRCharacter.flaws),
+        joinedload(HTRCharacter.xp_log),
+        joinedload(HTRCharacter.edges),
+        joinedload(HTRCharacter.perks),
+        joinedload(HTRCharacter.equipment)
+    ).filter(
         HTRCharacter.id == character_id,
         HTRCharacter.user_id == user['id']
     ).first()

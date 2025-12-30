@@ -19,7 +19,7 @@ To add support for future game types (e.g., WTA - Werewolf: The Apocalypse):
 from typing import List, Dict, Any
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.template_config import templates
@@ -50,14 +50,18 @@ async def storyteller_dashboard(request: Request, db: Session = Depends(get_db))
     """Display all characters across all game types for storyteller"""
     user = require_storyteller(request)
 
-    # Get all VTM characters with user info
-    vtm_characters = db.query(VTMCharacter).join(User).order_by(
+    # Get all VTM characters with user info (eager load to prevent N+1 queries)
+    vtm_characters = db.query(VTMCharacter).options(
+        joinedload(VTMCharacter.user)
+    ).order_by(
         VTMCharacter.chronicle,
         VTMCharacter.name
     ).all()
 
-    # Get all HTR characters with user info
-    htr_characters = db.query(HTRCharacter).join(User).order_by(
+    # Get all HTR characters with user info (eager load to prevent N+1 queries)
+    htr_characters = db.query(HTRCharacter).options(
+        joinedload(HTRCharacter.user)
+    ).order_by(
         HTRCharacter.chronicle,
         HTRCharacter.name
     ).all()
@@ -187,8 +191,13 @@ async def get_vtm_character_api(
     """API endpoint to get VTM character data - storyteller access"""
     user = require_storyteller(request)
 
-    # Get character with all related data
-    character = db.query(VTMCharacter).filter(
+    # Get character with all related data (eager load to prevent N+1 queries)
+    character = db.query(VTMCharacter).options(
+        joinedload(VTMCharacter.touchstones),
+        joinedload(VTMCharacter.backgrounds),
+        joinedload(VTMCharacter.xp_log),
+        joinedload(VTMCharacter.equipment)
+    ).filter(
         VTMCharacter.id == character_id
     ).first()
 
@@ -380,8 +389,16 @@ async def get_htr_character_api(
     """API endpoint to get HTR character data - storyteller access"""
     user = require_storyteller(request)
 
-    # Get character with all related data
-    character = db.query(HTRCharacter).filter(
+    # Get character with all related data (eager load to prevent N+1 queries)
+    character = db.query(HTRCharacter).options(
+        joinedload(HTRCharacter.touchstones),
+        joinedload(HTRCharacter.advantages),
+        joinedload(HTRCharacter.flaws),
+        joinedload(HTRCharacter.edges),
+        joinedload(HTRCharacter.perks),
+        joinedload(HTRCharacter.xp_log),
+        joinedload(HTRCharacter.equipment)
+    ).filter(
         HTRCharacter.id == character_id
     ).first()
 
