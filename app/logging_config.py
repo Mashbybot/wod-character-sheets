@@ -9,7 +9,13 @@ from pathlib import Path
 
 # Create logs directory if it doesn't exist
 LOG_DIR = Path("logs")
-LOG_DIR.mkdir(exist_ok=True)
+try:
+    LOG_DIR.mkdir(exist_ok=True)
+except OSError as e:
+    # Fallback to console-only logging if directory creation fails
+    print(f"WARNING: Unable to create log directory at {LOG_DIR}: {e}", file=sys.stderr)
+    print("Falling back to console-only logging", file=sys.stderr)
+    LOG_DIR = None
 
 # Define log format
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -34,16 +40,6 @@ def setup_logging(level: str = "INFO") -> None:
     console_handler.setLevel(numeric_level)
     console_handler.setFormatter(formatter)
 
-    # File handler for general logs
-    file_handler = logging.FileHandler(LOG_DIR / "app.log")
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(formatter)
-
-    # File handler for errors
-    error_handler = logging.FileHandler(LOG_DIR / "error.log")
-    error_handler.setLevel(logging.ERROR)
-    error_handler.setFormatter(formatter)
-
     # Configure root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(numeric_level)
@@ -51,10 +47,28 @@ def setup_logging(level: str = "INFO") -> None:
     # Remove existing handlers to avoid duplicates
     root_logger.handlers.clear()
 
-    # Add handlers
+    # Always add console handler
     root_logger.addHandler(console_handler)
-    root_logger.addHandler(file_handler)
-    root_logger.addHandler(error_handler)
+
+    # Add file handlers only if LOG_DIR is available
+    if LOG_DIR is not None:
+        try:
+            # File handler for general logs
+            file_handler = logging.FileHandler(LOG_DIR / "app.log")
+            file_handler.setLevel(logging.INFO)
+            file_handler.setFormatter(formatter)
+            root_logger.addHandler(file_handler)
+
+            # File handler for errors
+            error_handler = logging.FileHandler(LOG_DIR / "error.log")
+            error_handler.setLevel(logging.ERROR)
+            error_handler.setFormatter(formatter)
+            root_logger.addHandler(error_handler)
+        except (OSError, PermissionError) as e:
+            # Log to console if file handlers fail
+            console_handler.stream.write(
+                f"WARNING: Unable to create file log handlers: {e}\n"
+            )
 
     # Reduce verbosity of third-party loggers
     logging.getLogger("urllib3").setLevel(logging.WARNING)
