@@ -1023,17 +1023,24 @@
     padding: 0.75rem;
     margin-bottom: 0.5rem;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 0.5rem;
+    align-items: flex-start;
 }
 
 .perk-nested-entry .perk-select {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
 }
 
 .perk-nested-entry button {
-    align-self: flex-end;
-    margin-top: -2rem;
+    flex: 0 0 auto;
+    align-self: flex-start;
+}
+
+.perk-nested-entry .perk-description {
+    width: 100%;
+    flex-basis: 100%;
 }
 
 .btn-add-small {
