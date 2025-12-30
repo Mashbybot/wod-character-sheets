@@ -395,143 +395,154 @@ async def update_character(
         except:
             xp_log_data = None
 
-    # Update character fields
-    for key, value in data.items():
-        if hasattr(character, key):
-            setattr(character, key, value)
+    # Perform all database updates in an explicit transaction
+    try:
+        # Update character fields
+        for key, value in data.items():
+            if hasattr(character, key):
+                setattr(character, key, value)
 
-    # Update touchstones if provided
-    if touchstones_data is not None:
-        # Delete existing touchstones
-        db.query(HTRTouchstone).filter(
-            HTRTouchstone.character_id == character_id
-        ).delete()
+        # Update touchstones if provided
+        if touchstones_data is not None:
+            # Delete existing touchstones
+            db.query(HTRTouchstone).filter(
+                HTRTouchstone.character_id == character_id
+            ).delete()
 
-        # Create new touchstones
-        for i, ts_data in enumerate(touchstones_data):
-            if ts_data.get('name'):  # Only create if has name
-                touchstone = HTRTouchstone(
+            # Create new touchstones
+            for i, ts_data in enumerate(touchstones_data):
+                if ts_data.get('name'):  # Only create if has name
+                    touchstone = HTRTouchstone(
+                        character_id=character.id,
+                        name=ts_data['name'],
+                        description=ts_data.get('description', ''),
+                        display_order=i
+                    )
+                    db.add(touchstone)
+
+        # Update advantages if provided
+        if advantages_data is not None:
+            # Delete existing advantages
+            db.query(HTRAdvantage).filter(
+                HTRAdvantage.character_id == character_id
+            ).delete()
+
+            # Create new advantages
+            for i, adv_data in enumerate(advantages_data):
+                if adv_data.get('type'):  # Only create if has type
+                    advantage = HTRAdvantage(
+                        character_id=character.id,
+                        type=adv_data['type'],
+                        description=adv_data.get('description', ''),
+                        dots=adv_data.get('dots', 1),
+                        display_order=i
+                    )
+                    db.add(advantage)
+
+        # Update flaws if provided
+        if flaws_data is not None:
+            # Delete existing flaws
+            db.query(HTRFlaw).filter(
+                HTRFlaw.character_id == character_id
+            ).delete()
+
+            # Create new flaws
+            for i, flaw_data in enumerate(flaws_data):
+                if flaw_data.get('type'):  # Only create if has type
+                    flaw = HTRFlaw(
+                        character_id=character.id,
+                        type=flaw_data['type'],
+                        description=flaw_data.get('description', ''),
+                        dots=flaw_data.get('dots', 1),
+                        display_order=i
+                    )
+                    db.add(flaw)
+
+        # Update XP log if provided
+        if xp_log_data is not None:
+            # Delete existing XP log entries
+            db.query(HTRXPLogEntry).filter(
+                HTRXPLogEntry.character_id == character_id
+            ).delete()
+
+            # Create new XP log entries
+            for entry_data in xp_log_data:
+                xp_entry = HTRXPLogEntry(
                     character_id=character.id,
-                    name=ts_data['name'],
-                    description=ts_data.get('description', ''),
-                    display_order=i
+                    date=entry_data['date'],
+                    type=entry_data['type'],
+                    amount=entry_data['amount'],
+                    reason=entry_data['reason']
                 )
-                db.add(touchstone)
+                db.add(xp_entry)
 
-    # Update advantages if provided
-    if advantages_data is not None:
-        # Delete existing advantages
-        db.query(HTRAdvantage).filter(
-            HTRAdvantage.character_id == character_id
-        ).delete()
+        # Update edges if provided
+        if edges_data is not None:
+            from app.models_new import HTREdge
+            # Delete existing edges
+            db.query(HTREdge).filter(
+                HTREdge.character_id == character_id
+            ).delete()
 
-        # Create new advantages
-        for i, adv_data in enumerate(advantages_data):
-            if adv_data.get('type'):  # Only create if has type
-                advantage = HTRAdvantage(
-                    character_id=character.id,
-                    type=adv_data['type'],
-                    description=adv_data.get('description', ''),
-                    dots=adv_data.get('dots', 1),
-                    display_order=i
-                )
-                db.add(advantage)
+            # Create new edges
+            for i, edge_data in enumerate(edges_data):
+                if edge_data.get('edge_id'):  # Only create if has edge_id
+                    edge = HTREdge(
+                        character_id=character.id,
+                        edge_id=edge_data['edge_id'],
+                        display_order=i
+                    )
+                    db.add(edge)
 
-    # Update flaws if provided
-    if flaws_data is not None:
-        # Delete existing flaws
-        db.query(HTRFlaw).filter(
-            HTRFlaw.character_id == character_id
-        ).delete()
+        # Update perks if provided
+        if perks_data is not None:
+            from app.models_new import HTRPerk
+            # Delete existing perks
+            db.query(HTRPerk).filter(
+                HTRPerk.character_id == character_id
+            ).delete()
 
-        # Create new flaws
-        for i, flaw_data in enumerate(flaws_data):
-            if flaw_data.get('type'):  # Only create if has type
-                flaw = HTRFlaw(
-                    character_id=character.id,
-                    type=flaw_data['type'],
-                    description=flaw_data.get('description', ''),
-                    dots=flaw_data.get('dots', 1),
-                    display_order=i
-                )
-                db.add(flaw)
+            # Create new perks
+            for i, perk_data in enumerate(perks_data):
+                if perk_data.get('perk_id') and perk_data.get('edge_id'):  # Only create if has both IDs
+                    perk = HTRPerk(
+                        character_id=character.id,
+                        edge_id=perk_data['edge_id'],
+                        perk_id=perk_data['perk_id'],
+                        display_order=i
+                    )
+                    db.add(perk)
 
-    # Update XP log if provided
-    if xp_log_data is not None:
-        # Delete existing XP log entries
-        db.query(HTRXPLogEntry).filter(
-            HTRXPLogEntry.character_id == character_id
-        ).delete()
+        # Update equipment if provided
+        if equipment_data is not None:
+            from app.models_new import HTREquipment
+            # Delete existing equipment
+            db.query(HTREquipment).filter(
+                HTREquipment.character_id == character_id
+            ).delete()
 
-        # Create new XP log entries
-        for entry_data in xp_log_data:
-            xp_entry = HTRXPLogEntry(
-                character_id=character.id,
-                date=entry_data['date'],
-                type=entry_data['type'],
-                amount=entry_data['amount'],
-                reason=entry_data['reason']
-            )
-            db.add(xp_entry)
+            # Create new equipment
+            for i, equip_data in enumerate(equipment_data):
+                if equip_data.get('name'):  # Only create if has name
+                    equipment = HTREquipment(
+                        character_id=character.id,
+                        name=equip_data['name'],
+                        description=equip_data.get('description', ''),
+                        display_order=i
+                    )
+                    db.add(equipment)
 
-    # Update edges if provided
-    if edges_data is not None:
-        from app.models_new import HTREdge
-        # Delete existing edges
-        db.query(HTREdge).filter(
-            HTREdge.character_id == character_id
-        ).delete()
-
-        # Create new edges
-        for i, edge_data in enumerate(edges_data):
-            if edge_data.get('edge_id'):  # Only create if has edge_id
-                edge = HTREdge(
-                    character_id=character.id,
-                    edge_id=edge_data['edge_id'],
-                    display_order=i
-                )
-                db.add(edge)
-
-    # Update perks if provided
-    if perks_data is not None:
-        from app.models_new import HTRPerk
-        # Delete existing perks
-        db.query(HTRPerk).filter(
-            HTRPerk.character_id == character_id
-        ).delete()
-
-        # Create new perks
-        for i, perk_data in enumerate(perks_data):
-            if perk_data.get('perk_id') and perk_data.get('edge_id'):  # Only create if has both IDs
-                perk = HTRPerk(
-                    character_id=character.id,
-                    edge_id=perk_data['edge_id'],
-                    perk_id=perk_data['perk_id'],
-                    display_order=i
-                )
-                db.add(perk)
-
-    # Update equipment if provided
-    if equipment_data is not None:
-        from app.models_new import HTREquipment
-        # Delete existing equipment
-        db.query(HTREquipment).filter(
-            HTREquipment.character_id == character_id
-        ).delete()
-
-        # Create new equipment
-        for i, equip_data in enumerate(equipment_data):
-            if equip_data.get('name'):  # Only create if has name
-                equipment = HTREquipment(
-                    character_id=character.id,
-                    name=equip_data['name'],
-                    description=equip_data.get('description', ''),
-                    display_order=i
-                )
-                db.add(equipment)
-
-    db.commit()
-    db.refresh(character)
+        # Commit all changes atomically
+        db.commit()
+        db.refresh(character)
+    except Exception as e:
+        # Rollback on any error to maintain data consistency
+        db.rollback()
+        logger.error(f"Error updating character {character_id}: {e}", exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Failed to update character", "details": str(e)}
+        )
 
     # Log character update for audit trail
     log_audit_event(

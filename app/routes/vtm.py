@@ -429,93 +429,104 @@ async def update_character(
             }
         )
     
-    # Update touchstones if provided
-    if touchstones_data is not None:
-        # Delete existing touchstones
-        db.query(Touchstone).filter(
-            Touchstone.character_id == character_id
-        ).delete()
-        
-        # Create new touchstones
-        for i, ts_data in enumerate(touchstones_data):
-            if ts_data.get('name'):  # Only create if has name
-                touchstone = Touchstone(
+    # Perform all database updates in an explicit transaction
+    try:
+        # Update touchstones if provided
+        if touchstones_data is not None:
+            # Delete existing touchstones
+            db.query(Touchstone).filter(
+                Touchstone.character_id == character_id
+            ).delete()
+
+            # Create new touchstones
+            for i, ts_data in enumerate(touchstones_data):
+                if ts_data.get('name'):  # Only create if has name
+                    touchstone = Touchstone(
+                        character_id=character.id,
+                        name=ts_data['name'],
+                        description=ts_data.get('description', ''),
+                        conviction=ts_data.get('conviction', ''),
+                        display_order=i
+                    )
+                    db.add(touchstone)
+
+        # Update backgrounds if provided
+        if backgrounds_data is not None:
+            # Delete existing backgrounds
+            db.query(Background).filter(
+                Background.character_id == character_id
+            ).delete()
+
+            # Create new backgrounds
+            for i, bg_data in enumerate(backgrounds_data):
+                if bg_data.get('type'):  # Only create if has type
+                    background = Background(
+                        character_id=character.id,
+                        category=bg_data.get('category', 'Background'),
+                        type=bg_data['type'],
+                        description=bg_data.get('description', ''),
+                        dots=bg_data.get('dots', 0),
+                        description_height=bg_data.get('description_height', 60),
+                        display_order=i
+                    )
+                    db.add(background)
+
+        # Update disciplines if provided
+        if disciplines_data is not None:
+            # Delete existing disciplines
+            db.query(Discipline).filter(
+                Discipline.character_id == character_id
+            ).delete()
+
+            # Create new disciplines
+            for i, disc_data in enumerate(disciplines_data):
+                if disc_data.get('name'):  # Only create if has name
+                    # Convert powers array to JSON string
+                    powers_data = disc_data.get('powers', [''])
+                    if isinstance(powers_data, list):
+                        powers_str = json.dumps(powers_data)
+                    else:
+                        powers_str = powers_data
+
+                    discipline = Discipline(
+                        character_id=character.id,
+                        name=disc_data['name'],
+                        level=disc_data.get('level', 0),
+                        powers=powers_str,
+                        description='',  # No longer used
+                        display_order=i
+                    )
+                    db.add(discipline)
+
+        # Update XP log if provided
+        if xp_log_data is not None:
+            # Delete existing XP log entries
+            db.query(XPLogEntry).filter(
+                XPLogEntry.character_id == character_id
+            ).delete()
+
+            # Create new XP log entries
+            for entry_data in xp_log_data:
+                xp_entry = XPLogEntry(
                     character_id=character.id,
-                    name=ts_data['name'],
-                    description=ts_data.get('description', ''),
-                    conviction=ts_data.get('conviction', ''),
-                    display_order=i
+                    date=entry_data['date'],
+                    type=entry_data['type'],
+                    amount=entry_data['amount'],
+                    reason=entry_data['reason']
                 )
-                db.add(touchstone)
-    
-    # Update backgrounds if provided
-    if backgrounds_data is not None:
-        # Delete existing backgrounds
-        db.query(Background).filter(
-            Background.character_id == character_id
-        ).delete()
-        
-        # Create new backgrounds
-        for i, bg_data in enumerate(backgrounds_data):
-            if bg_data.get('type'):  # Only create if has type
-                background = Background(
-                    character_id=character.id,
-                    category=bg_data.get('category', 'Background'),
-                    type=bg_data['type'],
-                    description=bg_data.get('description', ''),
-                    dots=bg_data.get('dots', 0),
-                    description_height=bg_data.get('description_height', 60),
-                    display_order=i
-                )
-                db.add(background)
+                db.add(xp_entry)
 
-    # Update disciplines if provided
-    if disciplines_data is not None:
-        # Delete existing disciplines
-        db.query(Discipline).filter(
-            Discipline.character_id == character_id
-        ).delete()
-
-        # Create new disciplines
-        for i, disc_data in enumerate(disciplines_data):
-            if disc_data.get('name'):  # Only create if has name
-                # Convert powers array to JSON string
-                powers_data = disc_data.get('powers', [''])
-                if isinstance(powers_data, list):
-                    powers_str = json.dumps(powers_data)
-                else:
-                    powers_str = powers_data
-
-                discipline = Discipline(
-                    character_id=character.id,
-                    name=disc_data['name'],
-                    level=disc_data.get('level', 0),
-                    powers=powers_str,
-                    description='',  # No longer used
-                    display_order=i
-                )
-                db.add(discipline)
-
-    # Update XP log if provided
-    if xp_log_data is not None:
-        # Delete existing XP log entries
-        db.query(XPLogEntry).filter(
-            XPLogEntry.character_id == character_id
-        ).delete()
-        
-        # Create new XP log entries
-        for entry_data in xp_log_data:
-            xp_entry = XPLogEntry(
-                character_id=character.id,
-                date=entry_data['date'],
-                type=entry_data['type'],
-                amount=entry_data['amount'],
-                reason=entry_data['reason']
-            )
-            db.add(xp_entry)
-    
-    db.commit()
-    db.refresh(character)
+        # Commit all changes atomically
+        db.commit()
+        db.refresh(character)
+    except Exception as e:
+        # Rollback on any error to maintain data consistency
+        db.rollback()
+        logger.error(f"Error updating character {character_id}: {e}", exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Failed to update character", "details": str(e)}
+        )
 
     # Log character update for audit trail
     log_audit_event(
@@ -694,21 +705,69 @@ async def update_user_preferences(
     request: Request,
     db: Session = Depends(get_db)
 ):
-    """Update user UI preferences"""
+    """Update user UI preferences with server-side validation"""
     user = require_auth(request)
-    
+
     data = await request.json()
-    
+
+    # Validate column widths if provided
+    if 'column_widths_above' in data:
+        try:
+            from app.utils import parse_column_widths
+            parse_column_widths(data['column_widths_above'])
+        except ValueError as e:
+            return JSONResponse(
+                status_code=422,
+                content={"error": "Invalid column_widths_above format", "details": str(e)}
+            )
+
+    if 'column_widths_below' in data:
+        try:
+            from app.utils import parse_column_widths
+            parse_column_widths(data['column_widths_below'])
+        except ValueError as e:
+            return JSONResponse(
+                status_code=422,
+                content={"error": "Invalid column_widths_below format", "details": str(e)}
+            )
+
+    # Validate height values (must be positive integers between 50-2000px)
+    height_fields = ['history_in_life_height', 'after_death_height', 'notes_height',
+                     'ambition_height', 'desire_height']
+    for field in height_fields:
+        if field in data:
+            try:
+                height = int(data[field])
+                if height < 50 or height > 2000:
+                    return JSONResponse(
+                        status_code=422,
+                        content={"error": f"Invalid {field}", "details": "Height must be between 50 and 2000 pixels"}
+                    )
+            except (ValueError, TypeError):
+                return JSONResponse(
+                    status_code=422,
+                    content={"error": f"Invalid {field}", "details": "Height must be a number"}
+                )
+
+    # Validate theme
+    if 'theme' in data:
+        allowed_themes = ['auto', 'light', 'dark']
+        if data['theme'] not in allowed_themes:
+            return JSONResponse(
+                status_code=422,
+                content={"error": "Invalid theme", "details": f"Theme must be one of: {', '.join(allowed_themes)}"}
+            )
+
     # Get or create preferences
     prefs = db.query(UserPreferences).filter(
         UserPreferences.user_id == user['id']
     ).first()
-    
+
     if not prefs:
         prefs = UserPreferences(user_id=user['id'])
         db.add(prefs)
-    
-    # Update fields
+
+    # Update fields (already validated)
     if 'column_widths_above' in data:
         prefs.column_widths_above = data['column_widths_above']
     if 'column_widths_below' in data:
@@ -725,7 +784,7 @@ async def update_user_preferences(
         prefs.desire_height = data['desire_height']
     if 'theme' in data:
         prefs.theme = data['theme']
-    
+
     db.commit()
 
     return JSONResponse(content={"success": True})

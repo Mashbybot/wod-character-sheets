@@ -1,9 +1,13 @@
 """Database configuration and session management"""
 
 import os
-from sqlalchemy import create_engine
+import time
+import logging
+from sqlalchemy import create_engine, event, exc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
+logger = logging.getLogger(__name__)
 
 # Get database URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -30,6 +34,34 @@ engine = create_engine(
     echo_pool=False            # Don't log pool checkouts (reduce noise in production)
 )
 
+# Add connection retry logic for transient failures
+@event.listens_for(engine, "connect")
+def receive_connect(dbapi_conn, connection_record):
+    """Handle successful connection"""
+    connection_record.info['pid'] = os.getpid()
+    logger.debug(f"Database connection established (PID: {os.getpid()})")
+
+
+@event.listens_for(engine, "checkout")
+def receive_checkout(dbapi_conn, connection_record, connection_proxy):
+    """Verify connection is still valid on checkout"""
+    pid = os.getpid()
+    if connection_record.info.get('pid') != pid:
+        # Connection was created in a different process (e.g., after fork)
+        # Invalidate it to force a new connection
+        connection_record.dbapi_connection = connection_proxy.dbapi_connection = None
+        raise exc.DisconnectionError(
+            f"Connection record belongs to pid {connection_record.info['pid']}, "
+            f"attempting to check out in pid {pid}"
+        )
+
+
+@event.listens_for(engine, "connect_failed")
+def receive_connect_failed(dbapi_conn, connection_record):
+    """Log connection failures for debugging"""
+    logger.error(f"Database connection failed")
+
+
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -38,14 +70,43 @@ Base = declarative_base()
 
 
 def get_db():
-    """Dependency for getting database sessions"""
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    """Dependency for getting database sessions with retry logic"""
+    max_retries = 3
+    retry_delay = 0.5  # seconds
+
+    for attempt in range(max_retries):
+        try:
+            db = SessionLocal()
+            yield db
+            return
+        except exc.OperationalError as e:
+            if attempt < max_retries - 1:
+                logger.warning(f"Database connection attempt {attempt + 1} failed, retrying in {retry_delay}s: {e}")
+                time.sleep(retry_delay)
+                retry_delay *= 2  # Exponential backoff
+            else:
+                logger.error(f"Database connection failed after {max_retries} attempts: {e}")
+                raise
+        finally:
+            if 'db' in locals():
+                db.close()
 
 
 def init_db():
-    """Initialize database tables"""
-    Base.metadata.create_all(bind=engine)
+    """Initialize database tables with retry logic"""
+    max_retries = 5
+    retry_delay = 1.0
+
+    for attempt in range(max_retries):
+        try:
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables initialized successfully")
+            return
+        except exc.OperationalError as e:
+            if attempt < max_retries - 1:
+                logger.warning(f"Database initialization attempt {attempt + 1} failed, retrying in {retry_delay}s: {e}")
+                time.sleep(retry_delay)
+                retry_delay *= 2  # Exponential backoff
+            else:
+                logger.error(f"Database initialization failed after {max_retries} attempts: {e}")
+                raise
