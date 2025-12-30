@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
 from app.template_config import templates
 from app.sanitize import sanitize_character_data
+from app.audit import log_audit_event, AuditEvent, get_client_ip
 from app.models_new import HTRCharacter, HTRTouchstone, HTRAdvantage, HTRFlaw, HTRXPLogEntry, UserPreferences
 from app.auth import require_auth
 from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS
@@ -531,6 +532,17 @@ async def update_character(
 
     db.commit()
     db.refresh(character)
+
+    # Log character update for audit trail
+    log_audit_event(
+        db=db,
+        event_type=AuditEvent.CHARACTER_UPDATE,
+        user_id=user['id'],
+        target_id=character.id,
+        target_type='htr_character',
+        details={"name": character.name},
+        ip_address=get_client_ip(request)
+    )
 
     return JSONResponse(content={"success": True})
 

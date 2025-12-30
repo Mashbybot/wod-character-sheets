@@ -11,6 +11,8 @@ from typing import Literal, Optional
 from playwright.async_api import async_playwright, Browser, Page
 import logging
 
+from app.constants import EXPORT_NAVIGATION_TIMEOUT, EXPORT_SELECTOR_TIMEOUT
+
 logger = logging.getLogger(__name__)
 
 # Browser instance cache (reuse for performance)
@@ -119,10 +121,10 @@ async def export_character_sheet(
 
         # Navigate to the character sheet
         logger.info(f"Navigating to {url} for export")
-        await page.goto(url, wait_until='networkidle', timeout=60000)
+        await page.goto(url, wait_until='networkidle', timeout=EXPORT_NAVIGATION_TIMEOUT)
 
         # Wait for the character sheet to load
-        await page.wait_for_selector(wait_for_selector, timeout=60000)
+        await page.wait_for_selector(wait_for_selector, timeout=EXPORT_SELECTOR_TIMEOUT)
 
         # Wait for Alpine.js to load character data and finish all rendering
         await page.evaluate("""
@@ -282,8 +284,8 @@ async def export_character_sheet_element(
         page = await context.new_page()
 
         logger.info(f"Navigating to {url} for element export")
-        await page.goto(url, wait_until='networkidle', timeout=60000)
-        await page.wait_for_selector(selector, timeout=60000)
+        await page.goto(url, wait_until='networkidle', timeout=EXPORT_NAVIGATION_TIMEOUT)
+        await page.wait_for_selector(selector, timeout=EXPORT_SELECTOR_TIMEOUT)
         await asyncio.sleep(1)
 
         # Hide unwanted elements

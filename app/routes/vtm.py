@@ -11,6 +11,7 @@ from app.logging_config import get_logger
 from app.database import get_db
 from app.template_config import templates
 from app.sanitize import sanitize_character_data
+from app.audit import log_audit_event, AuditEvent, get_client_ip
 
 logger = get_logger(__name__)
 from app.models_new import VTMCharacter, Touchstone, Background, Discipline, XPLogEntry, UserPreferences
@@ -515,7 +516,18 @@ async def update_character(
     
     db.commit()
     db.refresh(character)
-    
+
+    # Log character update for audit trail
+    log_audit_event(
+        db=db,
+        event_type=AuditEvent.CHARACTER_UPDATE,
+        user_id=user['id'],
+        target_id=character.id,
+        target_type='vtm_character',
+        details={"name": character.name},
+        ip_address=get_client_ip(request)
+    )
+
     return JSONResponse(content={"success": True})
 
 

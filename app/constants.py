@@ -12,6 +12,10 @@ MAX_CHRONICLE_TENETS = 5
 # ===== QUERY PAGINATION =====
 STORYTELLER_DASHBOARD_LIMIT = 500  # Max characters to load in storyteller dashboard
 
+# ===== EXPORT/PDF GENERATION =====
+EXPORT_NAVIGATION_TIMEOUT = int(os.getenv("EXPORT_NAVIGATION_TIMEOUT", "60000"))  # Browser navigation timeout (ms)
+EXPORT_SELECTOR_TIMEOUT = int(os.getenv("EXPORT_SELECTOR_TIMEOUT", "60000"))  # Wait for selector timeout (ms)
+
 # ===== GAME MECHANICS =====
 MIN_ATTRIBUTE = 1
 MAX_ATTRIBUTE = 5
