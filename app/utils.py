@@ -444,7 +444,7 @@ def is_admin(user: Optional[Dict[str, Any]]) -> bool:
     Check if the current user is an admin
 
     Args:
-        user: User dict from session (contains role)
+        user: User dict from session (contains discord_id and role)
 
     Returns:
         True if user is an admin, False otherwise
@@ -452,8 +452,18 @@ def is_admin(user: Optional[Dict[str, Any]]) -> bool:
     if not user:
         return False
 
+    # Check database role (preferred method)
     user_role = user.get("role", "player")
-    return user_role == "admin"
+    if user_role == "admin":
+        return True
+
+    # Fallback: Check environment variable for backward compatibility
+    admin_id = os.getenv("ADMIN_DISCORD_ID", "")
+    if admin_id:
+        user_discord_id = str(user.get("discord_id", ""))
+        return user_discord_id == admin_id
+
+    return False
 
 
 def normalize_chronicle_name(chronicle: Optional[str]) -> str:
