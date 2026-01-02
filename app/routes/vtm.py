@@ -40,7 +40,8 @@ from app.utils import (
     process_and_save_portrait,
     delete_portrait,
     calculate_available_xp,
-    get_current_date_string
+    get_current_date_string,
+    is_admin
 )
 from app.export_utils import export_character_sheet, sanitize_filename
 
@@ -82,17 +83,18 @@ async def vtm_character_list(request: Request, db: Session = Depends(get_db)):
 async def new_character_form(request: Request, db: Session = Depends(get_db)):
     """Display form to create new VTM character"""
     user = require_auth(request)
-    
-    # Check character limit
-    character_count = db.query(VTMCharacter).filter(
-        VTMCharacter.user_id == user['id']
-    ).count()
-    
-    if character_count >= CHARACTER_LIMIT_PER_USER:
-        return RedirectResponse(
-            url="/vtm?error=limit_reached",
-            status_code=303
-        )
+
+    # Check character limit (admins are exempt)
+    if not is_admin(user):
+        character_count = db.query(VTMCharacter).filter(
+            VTMCharacter.user_id == user['id']
+        ).count()
+
+        if character_count >= CHARACTER_LIMIT_PER_USER:
+            return RedirectResponse(
+                url="/vtm?error=limit_reached",
+                status_code=303
+            )
     
     return templates.TemplateResponse(
         "vtm/character_sheet.html",
@@ -247,14 +249,15 @@ async def create_character(
 ):
     """Create new VTM character"""
     user = require_auth(request)
-    
-    # Check character limit
-    character_count = db.query(VTMCharacter).filter(
-        VTMCharacter.user_id == user['id']
-    ).count()
-    
-    if character_count >= CHARACTER_LIMIT_PER_USER:
-        raise CharacterLimitReached(CHARACTER_LIMIT_PER_USER)
+
+    # Check character limit (admins are exempt)
+    if not is_admin(user):
+        character_count = db.query(VTMCharacter).filter(
+            VTMCharacter.user_id == user['id']
+        ).count()
+
+        if character_count >= CHARACTER_LIMIT_PER_USER:
+            raise CharacterLimitReached(CHARACTER_LIMIT_PER_USER)
     
     # Get data from request
     try:

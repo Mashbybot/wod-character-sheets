@@ -439,6 +439,23 @@ def is_storyteller(user: Optional[Dict[str, Any]]) -> bool:
     return False
 
 
+def is_admin(user: Optional[Dict[str, Any]]) -> bool:
+    """
+    Check if the current user is an admin
+
+    Args:
+        user: User dict from session (contains role)
+
+    Returns:
+        True if user is an admin, False otherwise
+    """
+    if not user:
+        return False
+
+    user_role = user.get("role", "player")
+    return user_role == "admin"
+
+
 def normalize_chronicle_name(chronicle: Optional[str]) -> str:
     """
     Normalize chronicle name for fuzzy matching
