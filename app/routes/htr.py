@@ -47,9 +47,13 @@ async def htr_character_list(request: Request, db: Session = Depends(get_db)):
         HTRCharacter.user_id == user['id']
     ).order_by(HTRCharacter.created_at).all()
 
-    # Calculate available slots
-    available_slots = CHARACTER_LIMIT_PER_USER - len(characters)
-    can_create = available_slots > 0
+    # Calculate available slots (admins have unlimited)
+    if is_admin(user):
+        available_slots = 999  # Unlimited for admins
+        can_create = True
+    else:
+        available_slots = CHARACTER_LIMIT_PER_USER - len(characters)
+        can_create = available_slots > 0
 
     return templates.TemplateResponse(
         "htr/character_list.html",

@@ -62,9 +62,13 @@ async def vtm_character_list(request: Request, db: Session = Depends(get_db)):
     for char in characters:
         logger.debug(f"Character {char.id} ({char.name}): portrait_face={char.portrait_face}, portrait_body={char.portrait_body}")
 
-    # Calculate available slots
-    available_slots = CHARACTER_LIMIT_PER_USER - len(characters)
-    can_create = available_slots > 0
+    # Calculate available slots (admins have unlimited)
+    if is_admin(user):
+        available_slots = 999  # Unlimited for admins
+        can_create = True
+    else:
+        available_slots = CHARACTER_LIMIT_PER_USER - len(characters)
+        can_create = available_slots > 0
 
     return templates.TemplateResponse(
         "vtm/character_list.html",
