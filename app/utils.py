@@ -455,14 +455,17 @@ def is_admin(user: Optional[Dict[str, Any]]) -> bool:
     # Check database role (preferred method)
     user_role = user.get("role", "player")
     if user_role == "admin":
+        logger.debug(f"User is admin (database role): {user.get('username', 'unknown')}")
         return True
 
     # Fallback: Check environment variable for backward compatibility
     admin_id = os.getenv("ADMIN_DISCORD_ID", "")
     if admin_id:
         user_discord_id = str(user.get("discord_id", ""))
+        logger.info(f"Admin check - ENV: {admin_id}, User: {user_discord_id}, Match: {user_discord_id == admin_id}")
         return user_discord_id == admin_id
 
+    logger.debug(f"User is not admin: {user.get('username', 'unknown')} (role: {user_role})")
     return False
 
 
