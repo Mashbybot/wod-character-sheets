@@ -327,7 +327,7 @@
                         </div>
                         <div class="actions">
                             <form method="POST" action="/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}/delete"
-                                  onsubmit="return confirm('Are you sure you want to delete {{ char.name or &quot;this character&quot; }}? This action cannot be undone.');">
+                                  onsubmit='return confirm("Are you sure you want to delete {{ char.name|default("this character") }}? This action cannot be undone.");'>
                                 <button type="submit" class="btn-delete">🗑️ Delete</button>
                             </form>
                         </div>
@@ -372,7 +372,7 @@
                             </td>
                             <td>
                                 <form method="POST" action="/storyteller/{{ char.game_type|lower }}/character/{{ char.id }}/delete"
-                                      onsubmit="return confirm('Are you sure you want to delete {{ char.name or &quot;this character&quot; }}? This action cannot be undone.');" style="display: inline;">
+                                      onsubmit='return confirm("Are you sure you want to delete {{ char.name|default("this character") }}? This action cannot be undone.");' style="display: inline;">
                                     <button type="submit" class="btn-delete-small">🗑️ Delete</button>
                                 </form>
                             </td>
