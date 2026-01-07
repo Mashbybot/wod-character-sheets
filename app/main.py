@@ -76,13 +76,16 @@ init_csrf(SECRET_KEY)
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "false").lower() == "true"
 
 # Add session middleware with explicit cookie settings
+# Note: https_only is set to False because Railway proxy terminates SSL
+# The actual client connection is HTTPS, but the proxy->app connection is HTTP
+# With --proxy-headers flag, uvicorn will correctly understand the original protocol
 app.add_middleware(
     SessionMiddleware,
     secret_key=SECRET_KEY,
     session_cookie="wod_session",  # Explicit cookie name
     max_age=14 * 24 * 60 * 60,     # 14 days
     same_site="lax",                # Allow OAuth redirects
-    https_only=not DEVELOPMENT_MODE  # Secure in production, HTTP allowed in dev
+    https_only=False                # Set to False due to proxy SSL termination
 )
 
 # Mount static files

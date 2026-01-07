@@ -211,8 +211,7 @@ async def get_vtm_character_api(
     character = db.query(VTMCharacter).options(
         joinedload(VTMCharacter.touchstones),
         joinedload(VTMCharacter.backgrounds),
-        joinedload(VTMCharacter.xp_log),
-        joinedload(VTMCharacter.equipment)
+        joinedload(VTMCharacter.xp_log)
     ).filter(
         VTMCharacter.id == character_id
     ).first()
@@ -383,13 +382,6 @@ async def get_vtm_character_api(
                 "reason": entry.reason
             }
             for entry in character.xp_log
-        ],
-        "equipment": [
-            {
-                "name": item.name,
-                "description": item.description
-            }
-            for item in character.equipment
         ]
     }
 

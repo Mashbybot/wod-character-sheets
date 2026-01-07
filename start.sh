@@ -49,4 +49,4 @@ python3 migrate.py
 
 echo ""
 echo "🚀 Starting web server..."
-exec python3 -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+exec python3 -m uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips='*'
