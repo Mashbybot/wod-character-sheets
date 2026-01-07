@@ -46,18 +46,22 @@ def sanitize_string(value: str, field_name: Optional[str] = None) -> str:
     """
     Sanitize a string value to prevent XSS attacks
 
+    NOTE: We do NOT html.escape here because:
+    1. Jinja2 auto-escapes all template variables by default
+    2. Escaping on storage causes double-escaping on every save cycle
+    3. We only need to remove dangerous characters, not escape HTML entities
+
     Args:
         value: The string to sanitize
         field_name: Optional field name for context-aware sanitization
 
     Returns:
-        Sanitized string safe for storage and display
+        Sanitized string safe for storage
     """
     if not isinstance(value, str):
         return str(value)
 
-    # Escape HTML entities
-    sanitized = html.escape(value, quote=True)
+    sanitized = value
 
     # Apply max length if defined for this field
     if field_name and field_name in MAX_LENGTHS:
@@ -65,12 +69,23 @@ def sanitize_string(value: str, field_name: Optional[str] = None) -> str:
         if len(sanitized) > max_len:
             sanitized = sanitized[:max_len]
 
-    # Remove potential script injections that might bypass html.escape
+    # Remove dangerous characters for XSS prevention
     # Remove null bytes
     sanitized = sanitized.replace('\x00', '')
 
     # Remove control characters except newlines and tabs
     sanitized = re.sub(r'[\x01-\x08\x0B\x0C\x0E-\x1F\x7F]', '', sanitized)
+
+    # Remove script tags (case-insensitive) to prevent XSS
+    sanitized = re.sub(r'<script[^>]*>.*?</script>', '', sanitized, flags=re.IGNORECASE | re.DOTALL)
+    sanitized = re.sub(r'<iframe[^>]*>.*?</iframe>', '', sanitized, flags=re.IGNORECASE | re.DOTALL)
+
+    # Remove javascript: and data: protocols from potential URLs
+    sanitized = re.sub(r'javascript:', '', sanitized, flags=re.IGNORECASE)
+    sanitized = re.sub(r'data:text/html', '', sanitized, flags=re.IGNORECASE)
+
+    # Remove on* event handlers (onclick, onerror, etc.)
+    sanitized = re.sub(r'\s*on\w+\s*=\s*["\'][^"\']*["\']', '', sanitized, flags=re.IGNORECASE)
 
     return sanitized
 
