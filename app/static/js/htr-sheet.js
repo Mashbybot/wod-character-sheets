@@ -150,6 +150,29 @@ function htrCharacterSheet(characterId) {
             // Setup auto-resize for textareas after a short delay to ensure DOM is ready
             setTimeout(() => this.setupTextareaAutoResize(), 100);
 
+            // Auto-calculate Willpower base (Composure + Resolve)
+            // Only update if calculated base is higher than current (preserves manual increases from Edges/Perks)
+            this.$watch('data.composure', () => {
+                const calculatedBase = this.data.composure + this.data.resolve;
+                if (this.data.willpower_max < calculatedBase) {
+                    this.data.willpower_max = calculatedBase;
+                    if (!this.isLoading) this.autoSave();
+                }
+            });
+            this.$watch('data.resolve', () => {
+                const calculatedBase = this.data.composure + this.data.resolve;
+                if (this.data.willpower_max < calculatedBase) {
+                    this.data.willpower_max = calculatedBase;
+                    if (!this.isLoading) this.autoSave();
+                }
+            });
+
+            // Auto-calculate Health max (Stamina + 3)
+            this.$watch('data.stamina', () => {
+                this.data.health_max = this.data.stamina + 3;
+                if (!this.isLoading) this.autoSave();
+            });
+
             // Watch for changes in edges/perks and auto-save with debounce
             let edgesSaveTimeout;
             this.$watch('characterEdges', () => {
@@ -387,16 +410,26 @@ function htrCharacterSheet(characterId) {
         },
 
         cycleWillpower(index) {
-            if (index > this.data.willpower_max) return;
-
             const state = this.getWillpowerState(index);
-            if (state === 'empty') {
-                this.data.willpower_superficial++;
+            const max = this.data.willpower_max || 5;
+
+            // Allow clicking empty boxes beyond current max to extend it (for Edges/Perks bonuses)
+            if (state === 'hidden' && index <= 10) {
+                // Extend max (useful for Edges/Perks that boost Willpower)
+                this.data.willpower_max = index;
+            } else if (state === 'empty') {
+                // Add superficial damage
+                if ((this.data.willpower_superficial + this.data.willpower_aggravated) < max) {
+                    this.data.willpower_superficial++;
+                }
             } else if (state === 'superficial') {
+                // Convert superficial to aggravated
                 this.data.willpower_superficial--;
                 this.data.willpower_aggravated++;
             } else if (state === 'aggravated') {
+                // Clear aggravated damage and reduce max (allows resetting manual increases)
                 this.data.willpower_aggravated--;
+                this.data.willpower_max--;
             }
             this.autoSave();
         },
