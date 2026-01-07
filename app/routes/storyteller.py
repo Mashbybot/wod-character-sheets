@@ -548,7 +548,7 @@ async def get_htr_character_api(
         ],
         "advantages": [
             {
-                "name": adv.name,
+                "name": adv.type,
                 "description": adv.description,
                 "dots": adv.dots
             }
@@ -556,7 +556,7 @@ async def get_htr_character_api(
         ],
         "flaws": [
             {
-                "name": flaw.name,
+                "name": flaw.type,
                 "description": flaw.description,
                 "dots": flaw.dots
             }
