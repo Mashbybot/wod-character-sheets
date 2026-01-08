@@ -170,7 +170,15 @@ def sanitize_character_data(data: Dict[str, Any], game_type: str = 'vtm') -> Dic
     vtm_fields = {
         # Basic Info
         'name', 'concept', 'chronicle', 'predator', 'clan', 'generation',
-        'sire', 'ambition', 'desire',
+        'sire', 'ambition', 'desire', 'alias',
+
+        # Identity & Appearance
+        'pronouns', 'ethnicity', 'languages', 'birthplace',
+        'apparent_age', 'true_age', 'date_of_birth', 'date_of_death',
+        'appearance', 'distinguishing_features',
+
+        # Bane & Compulsion
+        'bane_type', 'bane_custom', 'compulsion', 'compulsion_custom',
 
         # Attributes
         'strength', 'dexterity', 'stamina',
@@ -178,7 +186,7 @@ def sanitize_character_data(data: Dict[str, Any], game_type: str = 'vtm') -> Dic
         'intelligence', 'wits', 'resolve',
 
         # Skills
-        'athletics', 'brawl', 'craft', 'drive_skill', 'firearms', 'larceny',
+        'athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny',
         'melee', 'stealth', 'survival', 'animal_ken', 'etiquette', 'insight',
         'intimidation', 'leadership', 'performance', 'persuasion', 'streetwise',
         'subterfuge', 'academics', 'awareness', 'finance', 'investigation',
@@ -190,17 +198,21 @@ def sanitize_character_data(data: Dict[str, Any], game_type: str = 'vtm') -> Dic
         # Trackers
         'health_max', 'health_superficial', 'health_aggravated',
         'willpower_max', 'willpower_superficial', 'willpower_aggravated',
-        'humanity_current', 'hunger_current',
+        'humanity_current', 'humanity_stained', 'hunger',
 
         # Blood Potency
         'blood_potency',
 
         # Disciplines (relationships handled separately)
-        'discipline_1_name', 'discipline_1_level',
-        'discipline_2_name', 'discipline_2_level',
-        'discipline_3_name', 'discipline_3_level',
-        'discipline_4_name', 'discipline_4_level',
-        'discipline_5_name', 'discipline_5_level',
+        'discipline_1_name', 'discipline_1_level', 'discipline_1_powers', 'discipline_1_description',
+        'discipline_2_name', 'discipline_2_level', 'discipline_2_powers', 'discipline_2_description',
+        'discipline_3_name', 'discipline_3_level', 'discipline_3_powers', 'discipline_3_description',
+        'discipline_4_name', 'discipline_4_level', 'discipline_4_powers', 'discipline_4_description',
+        'discipline_5_name', 'discipline_5_level', 'discipline_5_powers', 'discipline_5_description',
+
+        # Chronicle Tenets
+        'chronicle_tenet_1', 'chronicle_tenet_2', 'chronicle_tenet_3',
+        'chronicle_tenet_4', 'chronicle_tenet_5',
 
         # Portraits
         'portrait_face', 'portrait_body',
@@ -213,7 +225,7 @@ def sanitize_character_data(data: Dict[str, Any], game_type: str = 'vtm') -> Dic
         'exp_total', 'exp_available', 'exp_spent',
 
         # Relationships (handled separately but fields for reference)
-        'touchstones', 'advantages', 'flaws', 'disciplines', 'equipment', 'xp_log',
+        'touchstones', 'backgrounds', 'disciplines', 'xp_log',
 
         # Resonance
         'resonance',
