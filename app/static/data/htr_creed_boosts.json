@@ -5,7 +5,7 @@
       "description": "Religious and spiritual hunters who draw strength from belief and faith. They see the Hunt as a sacred calling.",
       "philosophy": "Faith is our shield and our weapon. We hunt not from hate, but from duty to protect the innocent.",
       "boosted_skills": ["insight", "medicine", "occult"],
-      "typical_drives": ["atonement", "justice"],
+      "typical_drives": ["atonement", "oath"],
       "color": "#4a90e2"
     },
     "inquisitive": {
@@ -13,7 +13,7 @@
       "description": "Researchers, scientists, and investigators who approach the supernatural analytically. Knowledge is their greatest weapon.",
       "philosophy": "Understanding our enemy is the first step to defeating them. We hunt with information and preparation.",
       "boosted_skills": ["academics", "investigation", "science"],
-      "typical_drives": ["justice", "legacy"],
+      "typical_drives": ["curiosity", "greed"],
       "color": "#7b68ee"
     },
     "martial": {
@@ -21,7 +21,7 @@
       "description": "Soldiers, law enforcement, and fighters who confront supernatural threats with direct force and tactical expertise.",
       "philosophy": "When diplomacy fails, we stand ready. Superior firepower and training win hunts.",
       "boosted_skills": ["athletics", "brawl", "firearms"],
-      "typical_drives": ["pride", "revenge"],
+      "typical_drives": ["pride", "vengeance"],
       "color": "#dc3545"
     },
     "entrepreneurial": {
@@ -29,7 +29,7 @@
       "description": "Networkers, fixers, and resource managers who leverage connections and capital against supernatural threats.",
       "philosophy": "Everything has a price, and we know how to pay it. Resources and contacts are as deadly as bullets.",
       "boosted_skills": ["finance", "persuasion", "streetwise"],
-      "typical_drives": ["legacy", "pride"],
+      "typical_drives": ["greed", "pride"],
       "color": "#ffc107"
     },
     "underground": {
@@ -37,30 +37,45 @@
       "description": "Street-level survivors, criminals, and outcasts who fight supernatural threats from society's shadows.",
       "philosophy": "The system failed us, so we hunt alone. Survival and cunning are our edges.",
       "boosted_skills": ["larceny", "stealth", "survival"],
-      "typical_drives": ["revenge", "atonement"],
+      "typical_drives": ["vengeance", "atonement"],
       "color": "#ff8c00"
     }
   },
   "drives": {
-    "atonement": {
-      "name": "Atonement",
-      "description": "You hunt to make up for past sins or failures. Every monster you stop is a step toward redemption."
+    "curiosity": {
+      "name": "Curiosity",
+      "description": "The Hunter is motivated to discover everything about the quarry; learning about their target motivates them to dig deeper for each new fact.",
+      "redemption": "The cell learns new information about their quarry."
     },
-    "justice": {
-      "name": "Justice",
-      "description": "You hunt to protect the innocent and punish the guilty. The law may fail, but you won't."
+    "vengeance": {
+      "name": "Vengeance",
+      "description": "The Hunter must balance the scale for the harm done to themselves or someone close to them by the supernatural.",
+      "redemption": "The cell must directly or indirectly harm their quarry (or a creature similar)."
     },
-    "legacy": {
-      "name": "Legacy",
-      "description": "You hunt to leave the world better than you found it. Your deeds will outlive you."
+    "oath": {
+      "name": "Oath",
+      "description": "The Hunter's words are their bond, and they must fulfill the pledge they made against the creatures of the night, stopping at nothing to achieve this.",
+      "redemption": "The cell must aid the Hunter to either uphold their pledge or bring it closer to completion."
+    },
+    "greed": {
+      "name": "Greed",
+      "description": "The Hunter wants what the supernatural creatures have, believing it unfair that they profit from their monstrosities.",
+      "redemption": "Obtaining resources from the quarry or a creature like it."
     },
     "pride": {
       "name": "Pride",
-      "description": "You hunt to prove your superiority. You're the apex predator, and monsters should fear you."
+      "description": "The Hunter has a burning desire to prove themselves against supernatural creatures given powers that they've never deserved. Whether it represents the unbreakable human spirit or an overly competitive nature, the Hunter will take any chance to overcome their quarry.",
+      "redemption": "Directly or indirectly beating the quarry at some type of challenge."
     },
-    "revenge": {
-      "name": "Revenge",
-      "description": "You hunt because they took something from you. Every kill brings you closer to settling the score."
+    "envy": {
+      "name": "Envy",
+      "description": "The Hunter wants to join the supernatural or die trying.",
+      "redemption": "Either obtain samples of the source of the quarry's power or win their favor."
+    },
+    "atonement": {
+      "name": "Atonement",
+      "description": "The Hunter helped a monster in the past, knowingly or unknowingly, and now seeks restitution. They are aware that their acts have injured innocent people and are willing to put themselves in danger to repay this debt.",
+      "redemption": "The cell must defend someone, directly or indirectly, from the quarry (or a similar creature) by putting themselves in danger and taking the hit for them. Alternately, the Hunter can atone for their transgression by helping a cellie."
     }
   },
   "skill_descriptions": {
