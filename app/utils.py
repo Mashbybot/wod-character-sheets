@@ -473,18 +473,44 @@ def normalize_chronicle_name(chronicle: Optional[str]) -> str:
     """
     Normalize chronicle name for fuzzy matching
 
+    This function removes common stop words and suffixes to group similar
+    chronicle names together (e.g., "Sins of Sydney" and "The Sins of Sydney Chronicle"
+    will be normalized to the same key).
+
     Args:
         chronicle: Chronicle name string
 
     Returns:
-        Normalized lowercase string with extra whitespace removed
+        Normalized lowercase string with stop words removed
     """
     if not chronicle:
         return "uncategorized"
 
-    # Convert to lowercase, strip whitespace, collapse multiple spaces
-    normalized = ' '.join(chronicle.lower().strip().split())
-    return normalized if normalized else "uncategorized"
+    # Convert to lowercase, strip whitespace
+    normalized = chronicle.lower().strip()
+
+    if not normalized:
+        return "uncategorized"
+
+    # Remove common stop words and suffixes that vary between chronicle names
+    stop_words = {'the', 'a', 'an', 'chronicle', 'chronicles', 'campaign', 'saga', 'story', 'tales', 'tale'}
+
+    # Split into words and filter out stop words
+    words = normalized.split()
+    filtered_words = [word for word in words if word not in stop_words]
+
+    # If all words were stop words, use the original (minus common suffixes)
+    if not filtered_words:
+        # Just remove "chronicle" suffix if present
+        if normalized.endswith(' chronicle'):
+            normalized = normalized[:-10].strip()
+        elif normalized.endswith(' chronicles'):
+            normalized = normalized[:-11].strip()
+        return normalized if normalized else "uncategorized"
+
+    # Collapse multiple spaces and return
+    result = ' '.join(filtered_words)
+    return result if result else "uncategorized"
 
 
 def group_characters_by_chronicle(characters: list) -> Dict[str, list]:

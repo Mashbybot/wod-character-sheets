@@ -155,6 +155,20 @@ main {
     color: white;
 }
 
+.btn-support {
+    background-color: #5865F2;
+    color: white !important;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.btn-support:hover {
+    background-color: #4752C4;
+    color: white !important;
+}
+
 /* Landing Page */
 .landing-page {
     text-align: center;
@@ -429,6 +443,81 @@ footer {
     text-align: center;
     color: var(--text-gray);
     margin-top: auto;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dark-pack-badge {
+    margin-bottom: 0.5rem;
+}
+
+.dark-pack-logo {
+    height: 80px;
+    width: auto;
+    opacity: 0.9;
+    transition: opacity 0.3s;
+}
+
+.dark-pack-logo:hover {
+    opacity: 1;
+}
+
+.footer-legal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-notice {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    font-style: italic;
+}
+
+.footer-attribution {
+    font-size: 0.75rem;
+    color: #888;
+    line-height: 1.5;
+}
+
+.footer-attribution a {
+    color: var(--vtm-red-light);
+    text-decoration: none;
+}
+
+.footer-attribution a:hover {
+    text-decoration: underline;
+}
+
+/* HeraldReg Watermark */
+.heraldreg-watermark {
+    margin-top: 2rem;
+    padding: 1rem;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+}
+
+.watermark-text {
+    font-size: 0.75rem;
+    color: #666;
+    letter-spacing: 0.5px;
+    font-style: italic;
+}
+
+/* Hide watermark in print/export by default - can be toggled */
+@media print {
+    .heraldreg-watermark {
+        display: block !important;
+        border-top: none;
+        padding-top: 0.5rem;
+    }
 }
 
 /* Responsive */
