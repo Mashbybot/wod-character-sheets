@@ -4,9 +4,8 @@ Extracts common patterns (portrait upload, delete, export, serialization)
 to avoid duplication across VTM, HTR, and future game type routes.
 """
 
-import json
 from io import BytesIO
-from typing import Optional, List
+from typing import Optional
 from fastapi import Request, UploadFile
 from fastapi.responses import JSONResponse, Response
 from sqlalchemy.orm import Session
@@ -14,7 +13,6 @@ from sqlalchemy.orm import Session
 from app.logging_config import get_logger
 from app.constants import MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS, VALID_PORTRAIT_BOXES
 from app.exceptions import (
-    CharacterNotFound,
     ImageUploadError,
     validate_file_size,
     validate_file_extension,
@@ -77,13 +75,13 @@ async def handle_portrait_upload(
             content={"error": "No file provided"}
         )
 
-    validate_image_type(file.content_type)
-    validate_file_extension(file.filename, ALLOWED_IMAGE_EXTENSIONS)
-
-    file_content = await file.read()
-    validate_file_size(len(file_content), MAX_UPLOAD_SIZE)
-
     try:
+        validate_image_type(file.content_type)
+        validate_file_extension(file.filename, ALLOWED_IMAGE_EXTENSIONS)
+
+        file_content = await file.read()
+        validate_file_size(len(file_content), MAX_UPLOAD_SIZE)
+
         old_portrait = getattr(character, f'portrait_{box_type}', None)
         if old_portrait:
             delete_portrait(old_portrait)
@@ -156,15 +154,3 @@ async def handle_export_png(
     )
 
 
-def parse_request_data(data: dict) -> dict:
-    """Parse XP log data from string to list if needed.
-
-    Common pattern used by both create and update routes.
-    """
-    xp_log_data = data.get('xp_log', '[]')
-    if isinstance(xp_log_data, str):
-        try:
-            data['xp_log'] = json.loads(xp_log_data)
-        except (json.JSONDecodeError, ValueError):
-            data['xp_log'] = []
-    return data

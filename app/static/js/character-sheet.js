@@ -985,7 +985,7 @@ function characterSheet(characterId) {
                 clearTimeout(this.prefSaveTimeout);
             }
             this.prefSaveTimeout = setTimeout(() => {
-                this.savePreferences();
+                this.saveUserPreferences();
             }, 1000);
         },
 

@@ -616,6 +616,7 @@ function htrCharacterSheet(characterId) {
             const url = await sheetUploadPortrait('htr', this.characterId, event, boxType);
             if (url) {
                 this.data[`portrait_${boxType}`] = url + `?v=${Date.now()}`;
+                this.autoSave();
             }
         },
 
