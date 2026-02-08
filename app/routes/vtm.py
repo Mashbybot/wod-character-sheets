@@ -1,8 +1,7 @@
 """Vampire: The Masquerade character routes - REFACTORED"""
 
-import os
 import json
-from typing import Optional, List
+from typing import Optional
 from fastapi import APIRouter, Request, Depends, HTTPException, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from sqlalchemy.orm import Session, joinedload
@@ -26,24 +25,18 @@ from app.schemas import (
 )
 from pydantic import ValidationError
 from app.auth import require_auth
-from app.constants import CHARACTER_LIMIT_PER_USER, MAX_UPLOAD_SIZE, ALLOWED_IMAGE_EXTENSIONS, VALID_PORTRAIT_BOXES
+from app.constants import CHARACTER_LIMIT_PER_USER
 from app.exceptions import (
     CharacterLimitReached,
     CharacterNotFound,
-    ImageUploadError,
-    validate_character_ownership,
-    validate_file_size,
-    validate_file_extension,
-    validate_image_type
 )
-from app.utils import (
-    process_and_save_portrait,
-    delete_portrait,
-    calculate_available_xp,
-    get_current_date_string,
-    is_admin
+from app.utils import is_admin
+from app.routes.common import (
+    serialize_model_to_dict,
+    delete_character_portraits,
+    handle_portrait_upload,
+    handle_export_png,
 )
-from app.export_utils import export_character_sheet, sanitize_filename
 
 router = APIRouter(prefix="/vtm", tags=["vtm"])
 
@@ -194,15 +187,8 @@ async def get_character_api(
     if not character:
         raise CharacterNotFound(character_id)
     
-    # Convert SQLAlchemy object to dict with datetime handling
-    char_dict = {}
-    for c in character.__table__.columns:
-        value = getattr(character, c.name)
-        # Convert datetime to ISO string for JSON serialization
-        if hasattr(value, 'isoformat'):
-            value = value.isoformat()
-        char_dict[c.name] = value
-    
+    char_dict = serialize_model_to_dict(character)
+
     # Add relationships as arrays
     char_dict['touchstones'] = [
         {
@@ -228,7 +214,7 @@ async def get_character_api(
         {
             'name': disc.name,
             'level': disc.level,
-            'powers': json.loads(disc.powers) if disc.powers and disc.powers.startswith('[') else (disc.powers.split('\n') if disc.powers else [''])
+            'powers': json.loads(disc.powers) if disc.powers else []
         }
         for disc in character.disciplines
     ]
@@ -569,20 +555,8 @@ async def delete_character(
     if not character:
         raise CharacterNotFound(character_id)
     
-    # Delete character portraits if they exist
-    portraits = [
-        character.portrait_face,
-        character.portrait_body,
-        character.portrait_hobby_1,
-        character.portrait_hobby_2,
-        character.portrait_hobby_3,
-        character.portrait_hobby_4
-    ]
-    
-    for portrait_url in portraits:
-        if portrait_url:
-            delete_portrait(portrait_url)
-    
+    delete_character_portraits(character)
+
     # Delete character (cascade will handle touchstones, backgrounds, xp_log)
     db.delete(character)
     db.commit()
@@ -600,74 +574,16 @@ async def upload_portrait(
 ):
     """Upload character portrait (file or URL) to specific box"""
     user = require_auth(request)
-    
-    # Get character and verify ownership
+
     character = db.query(VTMCharacter).filter(
         VTMCharacter.id == character_id,
         VTMCharacter.user_id == user['id']
     ).first()
-    
+
     if not character:
         raise CharacterNotFound(character_id)
-    
-    # Validate box_type
-    if box_type not in VALID_PORTRAIT_BOXES:
-        return JSONResponse(
-            status_code=400,
-            content={"error": "Invalid box type"}
-        )
-    
-    if not file:
-        return JSONResponse(
-            status_code=400,
-            content={"error": "No file provided"}
-        )
-    
-    # Validate file type
-    validate_image_type(file.content_type)
-    validate_file_extension(file.filename, ALLOWED_IMAGE_EXTENSIONS)
-    
-    # Read file
-    file_content = await file.read()
-    validate_file_size(len(file_content), MAX_UPLOAD_SIZE)
-    
-    # Process and save image
-    try:
-        # Delete old portrait if exists
-        old_portrait = getattr(character, f'portrait_{box_type}', None)
-        if old_portrait:
-            delete_portrait(old_portrait)
-        
-        # Save new portrait
-        from io import BytesIO
-        portrait_url = process_and_save_portrait(
-            BytesIO(file_content),
-            file.filename,
-            box_type
-        )
-        
-        # Update character
-        setattr(character, f'portrait_{box_type}', portrait_url)
-        db.commit()
 
-        # DEBUG: Log what was saved
-        logger.debug(f"Character {character.id}: Set portrait_{box_type} = {portrait_url}")
-
-        return JSONResponse(content={
-            "success": True,
-            "portrait_url": portrait_url
-        })
-        
-    except ImageUploadError as e:
-        return JSONResponse(
-            status_code=400,
-            content={"error": str(e)}
-        )
-    except Exception as e:
-        return JSONResponse(
-            status_code=500,
-            content={"error": f"Failed to upload portrait: {str(e)}"}
-        )
+    return await handle_portrait_upload(character, file, box_type, db)
 
 
 # ===== USER PREFERENCES ENDPOINTS =====
@@ -805,11 +721,8 @@ async def export_character_png(
     db: Session = Depends(get_db)
 ):
     """Export VTM character sheet as PNG image"""
-    from fastapi.responses import Response
-
     user = require_auth(request)
 
-    # Get character and verify ownership
     character = db.query(VTMCharacter).filter(
         VTMCharacter.id == character_id,
         VTMCharacter.user_id == user['id']
@@ -818,41 +731,8 @@ async def export_character_png(
     if not character:
         raise CharacterNotFound(character_id)
 
-    # Build the full URL to the character sheet
-    base_url = str(request.base_url).rstrip('/')
-    character_url = f"{base_url}/vtm/character/{character_id}"
-
-    # Extract cookies from request to pass to Playwright for authentication
-    cookies = []
-    for cookie_name, cookie_value in request.cookies.items():
-        cookies.append({
-            'name': cookie_name,
-            'value': cookie_value,
-            'domain': request.url.hostname or 'localhost',
-            'path': '/'
-        })
-
     try:
-        # Export to PNG using Playwright
-        png_bytes = await export_character_sheet(
-            url=character_url,
-            format='png',
-            character_name=character.name or "Unnamed Character",
-            cookies=cookies
-        )
-
-        # Generate filename
-        safe_name = sanitize_filename(character.name or "character")
-        filename = f"{safe_name}_vtm_sheet.png"
-
-        # Return PNG as downloadable file
-        return Response(
-            content=png_bytes,
-            media_type="image/png",
-            headers={
-                "Content-Disposition": f'attachment; filename="{filename}"'
-            }
-        )
+        return await handle_export_png(character, 'vtm', request)
     except Exception as e:
         raise HTTPException(
             status_code=500,

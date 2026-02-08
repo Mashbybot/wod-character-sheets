@@ -16,6 +16,7 @@ To add support for future game types (e.g., WTA - Werewolf: The Apocalypse):
 6. Update JavaScript to use storyteller API when STORYTELLER_MODE=true
 """
 
+import json
 from typing import List, Dict, Any
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
@@ -211,6 +212,7 @@ async def get_vtm_character_api(
     character = db.query(VTMCharacter).options(
         joinedload(VTMCharacter.touchstones),
         joinedload(VTMCharacter.backgrounds),
+        joinedload(VTMCharacter.disciplines),
         joinedload(VTMCharacter.xp_log)
     ).filter(
         VTMCharacter.id == character_id
@@ -218,9 +220,6 @@ async def get_vtm_character_api(
 
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
-
-    # Build response with all character data
-    from app.schemas import VTMCharacterResponse
 
     # Convert to dict for JSON response
     char_dict = {
@@ -311,28 +310,6 @@ async def get_vtm_character_api(
         "humanity_current": character.humanity_current,
         "humanity_stained": character.humanity_stained,
 
-        # Disciplines
-        "discipline_1_name": character.discipline_1_name,
-        "discipline_1_level": character.discipline_1_level,
-        "discipline_1_powers": character.discipline_1_powers,
-        "discipline_1_description": character.discipline_1_description,
-        "discipline_2_name": character.discipline_2_name,
-        "discipline_2_level": character.discipline_2_level,
-        "discipline_2_powers": character.discipline_2_powers,
-        "discipline_2_description": character.discipline_2_description,
-        "discipline_3_name": character.discipline_3_name,
-        "discipline_3_level": character.discipline_3_level,
-        "discipline_3_powers": character.discipline_3_powers,
-        "discipline_3_description": character.discipline_3_description,
-        "discipline_4_name": character.discipline_4_name,
-        "discipline_4_level": character.discipline_4_level,
-        "discipline_4_powers": character.discipline_4_powers,
-        "discipline_4_description": character.discipline_4_description,
-        "discipline_5_name": character.discipline_5_name,
-        "discipline_5_level": character.discipline_5_level,
-        "discipline_5_powers": character.discipline_5_powers,
-        "discipline_5_description": character.discipline_5_description,
-
         # Chronicle tenets
         "chronicle_tenet_1": character.chronicle_tenet_1,
         "chronicle_tenet_2": character.chronicle_tenet_2,
@@ -373,6 +350,14 @@ async def get_vtm_character_api(
                 "dots": bg.dots
             }
             for bg in character.backgrounds
+        ],
+        "disciplines": [
+            {
+                "name": disc.name,
+                "level": disc.level,
+                "powers": json.loads(disc.powers) if disc.powers else []
+            }
+            for disc in character.disciplines
         ],
         "xp_log": [
             {

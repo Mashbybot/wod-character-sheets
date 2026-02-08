@@ -201,32 +201,9 @@ class VTMCharacterBase(BaseModel):
     portrait_hobby_4: Optional[str] = Field(None, max_length=500)
     alias: Optional[str] = Field(None, max_length=100)
     
-    # Disciplines (5 slots)
-    discipline_1_name: Optional[str] = Field(None, max_length=50)
-    discipline_1_level: Optional[int] = Field(None, ge=0, le=5)
-    discipline_1_powers: Optional[str] = None
-    discipline_1_description: Optional[str] = None
-    
-    discipline_2_name: Optional[str] = Field(None, max_length=50)
-    discipline_2_level: Optional[int] = Field(None, ge=0, le=5)
-    discipline_2_powers: Optional[str] = None
-    discipline_2_description: Optional[str] = None
-    
-    discipline_3_name: Optional[str] = Field(None, max_length=50)
-    discipline_3_level: Optional[int] = Field(None, ge=0, le=5)
-    discipline_3_powers: Optional[str] = None
-    discipline_3_description: Optional[str] = None
-    
-    discipline_4_name: Optional[str] = Field(None, max_length=50)
-    discipline_4_level: Optional[int] = Field(None, ge=0, le=5)
-    discipline_4_powers: Optional[str] = None
-    discipline_4_description: Optional[str] = None
-    
-    discipline_5_name: Optional[str] = Field(None, max_length=50)
-    discipline_5_level: Optional[int] = Field(None, ge=0, le=5)
-    discipline_5_powers: Optional[str] = None
-    discipline_5_description: Optional[str] = None
-    
+    # Disciplines are stored via the Discipline relationship table
+    # (no longer denormalized on VTMCharacter)
+
     # Chronicle Tenets (5 individual fields)
     chronicle_tenet_1: Optional[str] = Field(None, max_length=200)
     chronicle_tenet_2: Optional[str] = Field(None, max_length=200)

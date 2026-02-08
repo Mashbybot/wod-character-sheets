@@ -203,12 +203,7 @@ def sanitize_character_data(data: Dict[str, Any], game_type: str = 'vtm') -> Dic
         # Blood Potency
         'blood_potency',
 
-        # Disciplines (relationships handled separately)
-        'discipline_1_name', 'discipline_1_level', 'discipline_1_powers', 'discipline_1_description',
-        'discipline_2_name', 'discipline_2_level', 'discipline_2_powers', 'discipline_2_description',
-        'discipline_3_name', 'discipline_3_level', 'discipline_3_powers', 'discipline_3_description',
-        'discipline_4_name', 'discipline_4_level', 'discipline_4_powers', 'discipline_4_description',
-        'discipline_5_name', 'discipline_5_level', 'discipline_5_powers', 'discipline_5_description',
+        # Disciplines are handled via the Discipline relationship table
 
         # Chronicle Tenets
         'chronicle_tenet_1', 'chronicle_tenet_2', 'chronicle_tenet_3',

@@ -6,8 +6,6 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="/static/css/vtm-sheet.css?v={{ static_version }}">
-<link rel="stylesheet" href="/static/css/vtm-interactive.css?v={{ static_version }}">
-<link rel="stylesheet" href="/static/css/vtm-phase1.css?v={{ static_version }}">
 <script>
     // Global static version for cache-busting
     window.STATIC_VERSION = '{{ static_version }}';
@@ -1124,5 +1122,6 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="/static/js/sheet-common.js?v={{ static_version }}"></script>
 <script src="/static/js/character-sheet.js?v={{ static_version }}"></script>
 {% endblock %}

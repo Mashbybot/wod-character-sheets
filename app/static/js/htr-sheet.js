@@ -99,12 +99,6 @@ function htrCharacterSheet(characterId) {
             willpower_aggravated: 0,
             in_despair: false,
 
-            // Edges & Perks
-            edge_config: '1e2p',
-            edge_1_id: '',
-            edge_2_id: '',
-            selected_perks: '',
-
             // Equipment
             equipment_weapon: '',
             equipment_weapon_damage: 0,
@@ -619,30 +613,9 @@ function htrCharacterSheet(characterId) {
 
         // Portrait upload
         async uploadPortrait(event, boxType) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('box_type', boxType);
-
-            try {
-                const response = await fetch(`/htr/character/${this.characterId}/upload-portrait`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error('Upload failed');
-                }
-
-                const result = await response.json();
-                if (result.portrait_url) {
-                    this.data[`portrait_${boxType}`] = result.portrait_url + `?v=${Date.now()}`;
-                }
-            } catch (error) {
-                console.error('Upload error:', error);
-                alert('Failed to upload portrait. Please try again.');
+            const url = await sheetUploadPortrait('htr', this.characterId, event, boxType);
+            if (url) {
+                this.data[`portrait_${boxType}`] = url + `?v=${Date.now()}`;
             }
         },
 
@@ -652,55 +625,12 @@ function htrCharacterSheet(characterId) {
             return rareTypes.includes(this.data.blood_type);
         },
 
-        // Utility
         capitalize(str) {
-            if (str === 'drive_skill') return 'Drive';
-            if (str === 'animal_ken') return 'Animal Ken';
-            return str.split('_').map(word =>
-                word.charAt(0).toUpperCase() + word.slice(1)
-            ).join(' ');
+            return sheetCapitalize(str);
         },
 
-        // Auto-resize textareas
         setupTextareaAutoResize() {
-            // Create auto-resize function
-            const autoResize = (textarea) => {
-                textarea.style.height = 'auto';
-                textarea.style.height = textarea.scrollHeight + 'px';
-            };
-
-            // Get all textareas in the document
-            const resizeAllTextareas = () => {
-                const textareas = document.querySelectorAll('textarea');
-                textareas.forEach(textarea => {
-                    // Skip textareas that shouldn't auto-resize (if any)
-                    // For now, resize all textareas
-
-                    // Remove old listener if it exists to avoid duplicates
-                    textarea.removeEventListener('input', textarea._autoResizeHandler);
-
-                    // Create bound handler
-                    textarea._autoResizeHandler = () => autoResize(textarea);
-
-                    // Initial resize
-                    autoResize(textarea);
-
-                    // Add input listener
-                    textarea.addEventListener('input', textarea._autoResizeHandler);
-                });
-            };
-
-            // Initial resize
-            resizeAllTextareas();
-
-            // Watch for changes in arrays that might add/remove textareas
-            this.$watch('advantages', () => setTimeout(resizeAllTextareas, 50), { deep: true });
-            this.$watch('flaws', () => setTimeout(resizeAllTextareas, 50), { deep: true });
-            this.$watch('touchstones', () => setTimeout(resizeAllTextareas, 50), { deep: true });
-            this.$watch('equipment', () => setTimeout(resizeAllTextareas, 50), { deep: true });
-
-            // Watch for data changes that update textarea content
-            this.$watch('data', () => setTimeout(resizeAllTextareas, 50), { deep: true });
+            sheetSetupTextareaAutoResize(this, ['advantages', 'flaws', 'touchstones', 'equipment']);
         }
     };
 }

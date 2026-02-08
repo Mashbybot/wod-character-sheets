@@ -99,10 +99,7 @@ function characterSheet(characterId) {
             portrait_hobby_3: '',
             portrait_hobby_4: '',
             alias: 'Alias',
-            
-            // Keep old portrait_url for backwards compatibility
-            portrait_url: '',
-            
+
             // Experience
             exp_total: 0,
             exp_spent: 0,
@@ -124,10 +121,7 @@ function characterSheet(characterId) {
             chronicle_tenet_3: '',
             chronicle_tenet_4: '',
             chronicle_tenet_5: '',
-            
-            // Keep old chronicle_tenets for backwards compatibility
-            chronicle_tenets: '',
-            
+
             // History
             history_in_life: '',
             after_death: '',
@@ -275,26 +269,13 @@ function characterSheet(characterId) {
                 
                 this.characterName = character.name || 'Unnamed';
                 
-                // NEW: Load touchstones from array
+                // Load touchstones from array
                 if (character.touchstones && Array.isArray(character.touchstones)) {
                     this.touchstones = character.touchstones.map(ts => ({
                         name: ts.name || '',
                         description: ts.description || '',
                         conviction: ts.conviction || ''
                     }));
-                } else {
-                    // Fallback: Load from old individual fields (backwards compatibility)
-                    this.touchstones = [];
-                    for (let i = 1; i <= 3; i++) {
-                        const name = character[`touchstone_${i}_name`];
-                        if (name) {
-                            this.touchstones.push({
-                                name: name,
-                                description: character[`touchstone_${i}_description`] || '',
-                                conviction: character[`touchstone_${i}_conviction`] || ''
-                            });
-                        }
-                    }
                 }
                 
                 // If no touchstones, add one empty
@@ -302,7 +283,7 @@ function characterSheet(characterId) {
                     this.touchstones.push({ name: '', description: '', conviction: '' });
                 }
                 
-                // NEW: Load backgrounds from array
+                // Load backgrounds from array
                 if (character.backgrounds && Array.isArray(character.backgrounds)) {
                     this.backgrounds = character.backgrounds.map(bg => ({
                         category: bg.category || 'Background',
@@ -311,21 +292,6 @@ function characterSheet(characterId) {
                         dots: bg.dots || 0,
                         description_height: bg.description_height || 60
                     }));
-                } else {
-                    // Fallback: Load from old individual fields (backwards compatibility)
-                    this.backgrounds = [];
-                    for (let i = 1; i <= 10; i++) {
-                        const type = character[`background_type_${i}`];
-                        if (type) {
-                            this.backgrounds.push({
-                                category: 'Background',
-                                type: type,
-                                description: character[`background_description_${i}`] || '',
-                                dots: character[`background_dots_${i}`] || 0,
-                                description_height: 60
-                            });
-                        }
-                    }
                 }
 
                 // If no backgrounds, add 3 empty ones
@@ -335,21 +301,12 @@ function characterSheet(characterId) {
                     }
                 }
 
-                // NEW: Load disciplines from array
+                // Load disciplines from array
                 if (character.disciplines && Array.isArray(character.disciplines)) {
                     this.disciplines = character.disciplines.map(disc => {
-                        // Convert powers to array if it's a string (backward compatibility)
-                        let powersArray;
-                        if (typeof disc.powers === 'string') {
-                            // Split by newlines or bullets, filter out empty
-                            powersArray = disc.powers.split('\n').map(p => p.trim()).filter(p => p);
-                        } else if (Array.isArray(disc.powers)) {
-                            powersArray = disc.powers;
-                        } else {
-                            powersArray = [];
-                        }
-
+                        let powersArray = Array.isArray(disc.powers) ? disc.powers : [];
                         const level = disc.level || 0;
+
                         // Ensure we have at least 'level' number of power slots
                         while (powersArray.length < level) {
                             powersArray.push('');
@@ -361,28 +318,6 @@ function characterSheet(characterId) {
                             powers: powersArray
                         };
                     });
-                } else {
-                    // Fallback: Load from old individual fields (backwards compatibility)
-                    this.disciplines = [];
-                    for (let i = 1; i <= 5; i++) {
-                        const name = character[`discipline_${i}_name`];
-                        if (name) {
-                            const powersStr = character[`discipline_${i}_powers`] || '';
-                            const powersArray = powersStr.split('\n').map(p => p.trim()).filter(p => p);
-                            const level = character[`discipline_${i}_level`] || 0;
-
-                            // Ensure we have at least 'level' number of power slots
-                            while (powersArray.length < level) {
-                                powersArray.push('');
-                            }
-
-                            this.disciplines.push({
-                                name: name,
-                                level: level,
-                                powers: powersArray
-                            });
-                        }
-                    }
                 }
 
                 // If no disciplines, add 3 empty ones
@@ -1081,86 +1016,27 @@ function characterSheet(characterId) {
 
         // PORTRAIT UPLOAD
         async uploadPortrait(event, boxType = 'face') {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('box_type', boxType);
-            
-            try {
-                const response = await fetch(`/vtm/character/${this.characterId}/upload-portrait`, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    this.data[`portrait_${boxType}`] = data.portrait_url;
-                    this.autoSave();
-                } else {
-                    const errorData = await response.json();
-                    this.handleError(errorData);
-                }
-            } catch (error) {
-                console.error('Portrait upload error:', error);
-                this.showError('Failed to upload portrait. Please try again.');
+            const url = await sheetUploadPortrait('vtm', this.characterId, event, boxType);
+            if (url) {
+                this.data[`portrait_${boxType}`] = url;
+                this.autoSave();
             }
         },
 
-        // Helper method to trigger hobby portrait upload
         triggerHobbyUpload(event) {
-            // Find the file input within the same parent container
-            const container = event.currentTarget.parentElement;
-            const fileInput = container.querySelector('input[type="file"]');
-            if (fileInput) {
-                console.log('Triggering hobby upload');
-                fileInput.click();
-            } else {
-                console.error('File input not found for hobby upload');
-            }
+            sheetTriggerFileUpload(event);
         },
 
         // XP MANAGEMENT
         addXP() {
-            const amount = prompt('How much XP to add?');
-            const reason = prompt('Reason (optional):');
-            if (amount && !isNaN(amount)) {
-                const xpAmount = parseInt(amount);
-                this.data.exp_total += xpAmount;
-                this.data.exp_available = this.data.exp_total - this.data.exp_spent;
-                
-                this.xpLog.push({
-                    date: new Date().toLocaleDateString(),
-                    type: 'add',
-                    amount: xpAmount,
-                    reason: reason || 'XP Award'
-                });
-                
+            if (sheetAddXP(this.data, this.xpLog)) {
                 this.autoSave();
             }
         },
-        
+
         spendXP() {
-            const amount = prompt('How much XP to spend?');
-            const reason = prompt('What did you buy?');
-            if (amount && !isNaN(amount)) {
-                const spend = parseInt(amount);
-                if (spend <= this.data.exp_available) {
-                    this.data.exp_spent += spend;
-                    this.data.exp_available = this.data.exp_total - this.data.exp_spent;
-                    
-                    this.xpLog.push({
-                        date: new Date().toLocaleDateString(),
-                        type: 'spend',
-                        amount: spend,
-                        reason: reason || 'Purchase'
-                    });
-                    
-                    this.autoSave();
-                } else {
-                    alert('Not enough available XP!');
-                }
+            if (sheetSpendXP(this.data, this.xpLog)) {
+                this.autoSave();
             }
         },
         

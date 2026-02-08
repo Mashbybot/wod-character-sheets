@@ -336,32 +336,6 @@ class VTMCharacter(Base):
     # After Death section
     after_death = Column(Text)
     
-    # RIGHT SIDE - Disciplines (5 slots)
-    discipline_1_name = Column(String(50))
-    discipline_1_level = Column(Integer, default=0)
-    discipline_1_powers = Column(Text)
-    discipline_1_description = Column(Text)
-    
-    discipline_2_name = Column(String(50))
-    discipline_2_level = Column(Integer, default=0)
-    discipline_2_powers = Column(Text)
-    discipline_2_description = Column(Text)
-    
-    discipline_3_name = Column(String(50))
-    discipline_3_level = Column(Integer, default=0)
-    discipline_3_powers = Column(Text)
-    discipline_3_description = Column(Text)
-    
-    discipline_4_name = Column(String(50))
-    discipline_4_level = Column(Integer, default=0)
-    discipline_4_powers = Column(Text)
-    discipline_4_description = Column(Text)
-    
-    discipline_5_name = Column(String(50))
-    discipline_5_level = Column(Integer, default=0)
-    discipline_5_powers = Column(Text)
-    discipline_5_description = Column(Text)
-    
     def __repr__(self):
         return f"<VTMCharacter {self.name} ({self.clan})>"
 
@@ -629,15 +603,6 @@ class HTRCharacter(Base):
     willpower_aggravated = Column(Integer, default=0)
 
     in_despair = Column(Boolean, default=False)  # Triggers overlay!
-
-    # EDGES & PERKS
-    # DEPRECATED: Old edge/perk system - replaced by edges and perks relationships
-    # Kept for backward compatibility during migration
-    edge_config = Column(String(10), default='1e2p')  # '1e2p' or '2e1p'
-    edge_1_id = Column(String(50))  # e.g., 'arsenal'
-    edge_2_id = Column(String(50))  # null if only 1 edge chosen
-    selected_perks = Column(Text)  # JSON array: ["well-armed", "ordnance"]
-    # NEW: Use character.edges and character.perks relationships instead
 
     # EQUIPMENT
     equipment_weapon = Column(String(100))
