@@ -58,8 +58,7 @@ main {
 
 /* Navigation */
 .navbar {
-    background-color: var(--bg-dark);
-    border-bottom: 2px solid var(--vtm-red-dark);
+    background-color: transparent;
     padding: 0.5rem 2rem;
     font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
 }
@@ -510,8 +509,7 @@ main {
 
 /* Footer */
 footer {
-    background-color: var(--bg-dark);
-    border-top: 1px solid var(--border-color);
+    background-color: transparent;
     padding: 2rem;
     text-align: center;
     color: var(--text-gray);
