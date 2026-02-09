@@ -354,7 +354,7 @@
                             <template x-for="i in 5" :key="i">
                                 <span class="dot hunger-dot-compact"
                                       :class="[i <= (data.hunger ?? 0) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger ?? 0) ? 'danger' : '']"
-                                      @click="clickDot('hunger', i, 0, 5)">●</span>
+                                      @click="clickDot('hunger', i, 0, 5)"></span>
                             </template>
                         </div>
                     </div>
@@ -965,66 +965,12 @@
     <!-- VISUAL PAGE BREAK -->
     <div class="page-break-divider"></div>
     
-    <!-- 3-Column Grid Layout (BELOW PAGE BREAK) -->
-    <div class="sheet-grid-three-column sheet-grid-below">
-        
-        <!-- COLUMN 1: Chronicle Tenets -->
+    <!-- 2-Column Grid Layout (BELOW PAGE BREAK) -->
+    <div class="sheet-grid-two-column sheet-grid-below">
+
+        <!-- COLUMN 1: History in Life + After Death + Notes -->
         <div class="column-one">
 
-            <!-- Chronicle Tenets -->
-            <section class="sheet-section chronicle-tenets-numbered">
-                <h2>Chronicle Tenets</h2>
-
-                <div class="tenets-content">
-                <div class="tenet-row">
-                    <span class="tenet-numeral">I</span>
-                    <input type="text" 
-                           x-model="data.chronicle_tenet_1"
-                           @input.debounce.300ms="autoSave()"
-                           placeholder="Tenet 1">
-                </div>
-                <div class="tenet-row">
-                    <span class="tenet-numeral">II</span>
-                    <input type="text" 
-                           x-model="data.chronicle_tenet_2"
-                           @input.debounce.300ms="autoSave()"
-                           placeholder="Tenet 2">
-                </div>
-                <div class="tenet-row">
-                    <span class="tenet-numeral">III</span>
-                    <input type="text" 
-                           x-model="data.chronicle_tenet_3"
-                           @input.debounce.300ms="autoSave()"
-                           placeholder="Tenet 3">
-                </div>
-                <div class="tenet-row">
-                    <span class="tenet-numeral">IV</span>
-                    <input type="text" 
-                           x-model="data.chronicle_tenet_4"
-                           @input.debounce.300ms="autoSave()"
-                           placeholder="Tenet 4">
-                </div>
-                <div class="tenet-row">
-                    <span class="tenet-numeral">V</span>
-                    <input type="text"
-                           x-model="data.chronicle_tenet_5"
-                           @input.debounce.300ms="autoSave()"
-                           placeholder="Tenet 5">
-                </div>
-                </div><!-- /.tenets-content -->
-            </section>
-            
-            
-        </div>
-        
-        <!-- DRAGGABLE DIVIDER 1 -->
-        <div class="column-divider" @mousedown="startResizing('below', 0, $event)">
-            <div class="divider-handle"></div>
-        </div>
-        
-        <!-- COLUMN 2: History in Life + After Death + Notes -->
-        <div class="column-two">
-            
             <!-- History in Life -->
             <section class="sheet-section">
                 <h2>History in Life</h2>
@@ -1057,16 +1003,16 @@
                           rows="6"
                           placeholder="Additional notes..."></textarea>
             </section>
-            
+
         </div>
-        
-        <!-- DRAGGABLE DIVIDER 2 -->
-        <div class="column-divider" @mousedown="startResizing('below', 1, $event)">
+
+        <!-- DRAGGABLE DIVIDER -->
+        <div class="column-divider" @mousedown="startResizing('below', 0, $event)">
             <div class="divider-handle"></div>
         </div>
-        
-        <!-- COLUMN 3: Experience -->
-        <div class="column-three">
+
+        <!-- COLUMN 2: Experience + Chronicle Tenets -->
+        <div class="column-two">
 
             <!-- Experience Tracker -->
             <section class="sheet-section xp-section">
@@ -1080,7 +1026,7 @@
                     <button type="button" class="btn-small" @click="addXP()">+ Add XP</button>
                     <button type="button" class="btn-small" @click="spendXP()">Spend XP</button>
                 </div>
-                
+
                 <div class="xp-log">
                     <h3>XP Log</h3>
 
@@ -1102,9 +1048,52 @@
                     </div>
                 </div>
             </section>
-            
+
+            <!-- Chronicle Tenets -->
+            <section class="sheet-section chronicle-tenets-numbered">
+                <h2>Chronicle Tenets</h2>
+
+                <div class="tenets-content">
+                <div class="tenet-row">
+                    <span class="tenet-numeral">I</span>
+                    <input type="text"
+                           x-model="data.chronicle_tenet_1"
+                           @input.debounce.300ms="autoSave()"
+                           placeholder="Tenet 1">
+                </div>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">II</span>
+                    <input type="text"
+                           x-model="data.chronicle_tenet_2"
+                           @input.debounce.300ms="autoSave()"
+                           placeholder="Tenet 2">
+                </div>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">III</span>
+                    <input type="text"
+                           x-model="data.chronicle_tenet_3"
+                           @input.debounce.300ms="autoSave()"
+                           placeholder="Tenet 3">
+                </div>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">IV</span>
+                    <input type="text"
+                           x-model="data.chronicle_tenet_4"
+                           @input.debounce.300ms="autoSave()"
+                           placeholder="Tenet 4">
+                </div>
+                <div class="tenet-row">
+                    <span class="tenet-numeral">V</span>
+                    <input type="text"
+                           x-model="data.chronicle_tenet_5"
+                           @input.debounce.300ms="autoSave()"
+                           placeholder="Tenet 5">
+                </div>
+                </div><!-- /.tenets-content -->
+            </section>
+
         </div>
-        
+
     </div>
     
     <div class="back-link">

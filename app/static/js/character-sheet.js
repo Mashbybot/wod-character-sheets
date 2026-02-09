@@ -143,7 +143,7 @@ function characterSheet(characterId) {
         // NEW: User preferences (separate from character data)
         preferences: {
             column_widths_above: '40,30,30',
-            column_widths_below: '33,33,34',
+            column_widths_below: '65,35',
             history_in_life_height: null,
             after_death_height: null,
             notes_height: null
@@ -1062,25 +1062,30 @@ function characterSheet(characterId) {
                 : [40, 30, 30];
             const widthsBelow = this.preferences.column_widths_below
                 ? this.preferences.column_widths_below.split(',').map(w => parseInt(w))
-                : [33, 33, 34];
+                : [65, 35];
             
             this.applyColumnWidths('above', widthsAbove);
             this.applyColumnWidths('below', widthsBelow);
         },
         
         applyColumnWidths(section, widths) {
-            const grid = section === 'above' 
-                ? document.querySelector('.sheet-grid-above') 
+            const grid = section === 'above'
+                ? document.querySelector('.sheet-grid-above')
                 : document.querySelector('.sheet-grid-below');
-            
-            if (grid && widths.length === 3) {
-                // Grid has 5 columns: col1, divider, col2, divider, col3
-                // Dividers are 8px each (16px total)
-                // Adjust percentages to account for dividers
+
+            if (!grid) return;
+
+            if (section === 'above' && widths.length === 3) {
+                // 3-column grid: col1, divider, col2, divider, col3
                 const col1 = `calc(${widths[0]}% - 5px)`;
                 const col2 = `calc(${widths[1]}% - 6px)`;
                 const col3 = `calc(${widths[2]}% - 5px)`;
                 grid.style.gridTemplateColumns = `${col1} 8px ${col2} 8px ${col3}`;
+            } else if (section === 'below' && widths.length === 2) {
+                // 2-column grid: col1, divider, col2
+                const col1 = `calc(${widths[0]}% - 4px)`;
+                const col2 = `calc(${widths[1]}% - 4px)`;
+                grid.style.gridTemplateColumns = `${col1} 8px ${col2}`;
             }
         },
         
@@ -1094,12 +1099,14 @@ function characterSheet(characterId) {
             const startX = event.clientX;
             const gridRect = grid.getBoundingClientRect();
             const gridWidth = gridRect.width;
-            
-            // Account for dividers (16px total for both dividers)
-            const availableWidth = gridWidth - 16;
-            
+
+            const numColumns = section === 'above' ? 3 : 2;
+            const numDividers = numColumns - 1;
+            const dividerTotal = numDividers * 8;
+            const availableWidth = gridWidth - dividerTotal;
+
             // Get current widths from preferences with safety checks
-            const defaultWidths = section === 'above' ? [40, 30, 30] : [33, 33, 34];
+            const defaultWidths = section === 'above' ? [40, 30, 30] : [65, 35];
             let currentWidths;
 
             try {
@@ -1109,8 +1116,7 @@ function characterSheet(characterId) {
 
                 if (widthString && typeof widthString === 'string') {
                     currentWidths = widthString.split(',').map(w => parseInt(w));
-                    // Validate we got 3 valid numbers
-                    if (currentWidths.length !== 3 || currentWidths.some(w => isNaN(w))) {
+                    if (currentWidths.length !== numColumns || currentWidths.some(w => isNaN(w))) {
                         console.warn('Invalid column widths, using defaults');
                         currentWidths = defaultWidths;
                     }
@@ -1123,61 +1129,65 @@ function characterSheet(characterId) {
             }
 
             const startWidths = [...currentWidths];
-            
+            const maxWidth = numColumns === 2 ? 85 : 60;
+
             const onMouseMove = (e) => {
                 const deltaX = e.clientX - startX;
                 const deltaPercent = (deltaX / availableWidth) * 100;
-                
+
                 // Adjust the two columns on either side of the divider
                 const newWidths = [...startWidths];
-                newWidths[dividerIndex] = Math.max(15, Math.min(60, startWidths[dividerIndex] + deltaPercent));
-                newWidths[dividerIndex + 1] = Math.max(15, Math.min(60, startWidths[dividerIndex + 1] - deltaPercent));
-                
-                // Ensure total is 100%
-                const total = newWidths.reduce((sum, w) => sum + w, 0);
-                if (Math.abs(total - 100) > 0.1) {
-                    // Adjust third column to maintain 100%
-                    const otherIndex = dividerIndex === 0 ? 2 : 0;
-                    newWidths[otherIndex] = 100 - newWidths[dividerIndex] - newWidths[dividerIndex + 1];
-                    newWidths[otherIndex] = Math.max(15, Math.min(60, newWidths[otherIndex]));
+                newWidths[dividerIndex] = Math.max(15, Math.min(maxWidth, startWidths[dividerIndex] + deltaPercent));
+                newWidths[dividerIndex + 1] = Math.max(15, Math.min(maxWidth, startWidths[dividerIndex + 1] - deltaPercent));
+
+                // For 3-column grids, ensure total is 100%
+                if (numColumns === 3) {
+                    const total = newWidths.reduce((sum, w) => sum + w, 0);
+                    if (Math.abs(total - 100) > 0.1) {
+                        const otherIndex = dividerIndex === 0 ? 2 : 0;
+                        newWidths[otherIndex] = 100 - newWidths[dividerIndex] - newWidths[dividerIndex + 1];
+                        newWidths[otherIndex] = Math.max(15, Math.min(60, newWidths[otherIndex]));
+                    }
                 }
-                
+
                 this.applyColumnWidths(section, newWidths);
             };
-            
+
             const onMouseUp = () => {
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
-                
+
                 // Calculate final widths from actual computed styles
-                const grid = section === 'above' 
-                    ? document.querySelector('.sheet-grid-above') 
+                const grid = section === 'above'
+                    ? document.querySelector('.sheet-grid-above')
                     : document.querySelector('.sheet-grid-below');
-                
+
                 const computedStyle = window.getComputedStyle(grid);
                 const columns = computedStyle.gridTemplateColumns.split(' ');
-                
-                // Columns are: col1, 8px, col2, 8px, col3
-                // We want indices 0, 2, 4
-                const col1Width = parseFloat(columns[0]);
-                const col2Width = parseFloat(columns[2]);
-                const col3Width = parseFloat(columns[4]);
-                
+
                 const gridWidth = grid.getBoundingClientRect().width;
-                const availableWidth = gridWidth - 16; // Account for dividers
-                
-                const widthsPercent = [
-                    Math.round((col1Width / availableWidth) * 100),
-                    Math.round((col2Width / availableWidth) * 100),
-                    Math.round((col3Width / availableWidth) * 100)
-                ];
-                
-                // Ensure they sum to 100
-                const sum = widthsPercent.reduce((a, b) => a + b, 0);
-                if (sum !== 100) {
-                    widthsPercent[2] += (100 - sum);
+                const availableWidth = gridWidth - dividerTotal;
+
+                let widthsPercent;
+                if (numColumns === 3) {
+                    // Columns: col1, 8px, col2, 8px, col3 → indices 0, 2, 4
+                    widthsPercent = [
+                        Math.round((parseFloat(columns[0]) / availableWidth) * 100),
+                        Math.round((parseFloat(columns[2]) / availableWidth) * 100),
+                        Math.round((parseFloat(columns[4]) / availableWidth) * 100)
+                    ];
+                    const sum = widthsPercent.reduce((a, b) => a + b, 0);
+                    if (sum !== 100) widthsPercent[2] += (100 - sum);
+                } else {
+                    // Columns: col1, 8px, col2 → indices 0, 2
+                    widthsPercent = [
+                        Math.round((parseFloat(columns[0]) / availableWidth) * 100),
+                        Math.round((parseFloat(columns[2]) / availableWidth) * 100)
+                    ];
+                    const sum = widthsPercent.reduce((a, b) => a + b, 0);
+                    if (sum !== 100) widthsPercent[1] += (100 - sum);
                 }
-                
+
                 // Save to preferences
                 if (section === 'above') {
                     this.preferences.column_widths_above = widthsPercent.join(',');
@@ -1188,7 +1198,7 @@ function characterSheet(characterId) {
                 console.log(`Saving ${section} column widths:`, widthsPercent.join(','));
                 this.saveUserPreferences();
             };
-            
+
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
         }
