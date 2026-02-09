@@ -177,15 +177,103 @@ main {
     color: var(--vtm-red-light);
 }
 
+/* User Avatar Menu */
 .user-menu {
+    position: relative;
+}
+
+.user-avatar-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
     display: flex;
-    gap: 1rem;
     align-items: center;
+    gap: 0.35rem;
+    padding: 0;
+    color: var(--text-white);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-avatar-btn .discord-icon {
+    width: 32px;
+    height: 32px;
+    color: #5865F2;
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    min-width: 160px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.user-dropdown-name {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-gray);
+    font-size: 0.85rem;
     font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-white);
+    text-decoration: none;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    transition: background-color 0.2s;
+}
+
+.user-dropdown-menu a:hover {
+    background-color: var(--bg-card);
+    color: var(--danger);
+}
+
+/* Discord Icon */
+.discord-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.btn-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #5865F2;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    transition: background-color 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #4752C4;
+}
+
+.btn-login .discord-icon {
+    width: 22px;
+    height: 22px;
+    color: white;
 }
 
 /* Buttons */
-.btn-primary, .btn-secondary, .btn-login, .btn-logout {
+.btn-primary, .btn-secondary, .btn-logout {
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 4px;
@@ -216,11 +304,6 @@ main {
     background-color: var(--bg-dark);
 }
 
-.btn-login {
-    background-color: #5865F2; /* Discord blue */
-    color: white;
-}
-
 .btn-logout {
     background-color: var(--danger);
     color: white;
@@ -244,7 +327,10 @@ main {
 /* Landing Page */
 .landing-page {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 3rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
 }
 
 .hero {
@@ -252,39 +338,180 @@ main {
 }
 
 .hero h1 {
-    font-size: 3rem;
+    font-size: 2.8rem;
     color: var(--vtm-red-light);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
 }
 
-.hero h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-}
-
-.hero p {
-    font-size: 1.2rem;
+.hero > p {
+    font-size: 1.1rem;
     color: var(--text-gray);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
 }
 
-.features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.feature {
+/* CTA Card */
+.hero-cta-card {
     background-color: var(--bg-card);
-    padding: 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+.cta-tagline {
+    font-weight: bold;
+    font-size: 1.05rem;
+    color: var(--text-white);
+    margin-bottom: 1rem;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-herald,
+.btn-discord {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: bold;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    transition: background-color 0.3s;
+}
+
+.btn-herald {
+    background-color: var(--vtm-red);
+    color: white;
+}
+
+.btn-herald:hover {
+    background-color: var(--vtm-red-dark);
+}
+
+.btn-discord {
+    background-color: #5865F2;
+    color: white;
+}
+
+.btn-discord:hover {
+    background-color: #4752C4;
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Splat Sections */
+.splat-sections {
+    text-align: left;
+    margin-top: 4rem;
+}
+
+.splat-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.splat-section-reverse {
+    direction: rtl;
+}
+
+.splat-section-reverse > * {
+    direction: ltr;
+}
+
+.splat-text h2 {
+    font-size: 1.8rem;
+    color: var(--text-white);
+    margin-bottom: 1rem;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+}
+
+.splat-text p {
+    font-size: 1rem;
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+
+.splat-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.splat-features li {
+    padding: 0.3rem 0;
+    color: var(--text-gray);
+    font-size: 0.95rem;
+}
+
+.splat-features li::before {
+    content: '\2666';
+    color: var(--vtm-red-light);
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+    vertical-align: middle;
+}
+
+.btn-splat {
+    display: inline-block;
+    padding: 0.6rem 1.25rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: bold;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    transition: background-color 0.3s;
+    color: white;
+}
+
+.btn-vtm {
+    background-color: var(--vtm-red);
+}
+
+.btn-vtm:hover {
+    background-color: var(--vtm-red-dark);
+}
+
+.btn-htr {
+    background-color: #D4760A;
+}
+
+.btn-htr:hover {
+    background-color: #B5650A;
+}
+
+.splat-image img {
+    width: 100%;
     border-radius: 8px;
     border: 1px solid var(--border-color);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-.feature h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+.splat-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 1rem 0;
+    opacity: 0.5;
 }
 
 /* Dashboard */
@@ -611,7 +838,21 @@ footer {
     .hero h1 {
         font-size: 2rem;
     }
-    
+
+    .splat-section,
+    .splat-section-reverse {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .splat-section-reverse {
+        direction: ltr;
+    }
+
+    .splat-text {
+        text-align: center;
+    }
+
     .character-grid {
         grid-template-columns: 1fr;
     }
