@@ -184,6 +184,12 @@ async def csrf_token_endpoint(request: Request):
 
 
 # Error handlers
+@app.exception_handler(401)
+async def unauthorized_handler(request: Request, exc):
+    """Redirect unauthenticated users to login"""
+    return RedirectResponse(url="/auth/login", status_code=302)
+
+
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc):
     """Custom 404 page"""
