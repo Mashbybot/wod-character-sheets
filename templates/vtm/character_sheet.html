@@ -353,7 +353,7 @@
                         <div class="box-tracker-small hunger-dots-compact">
                             <template x-for="i in 5" :key="i">
                                 <span class="dot hunger-dot-compact"
-                                      :class="[i <= (data.hunger || 1) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger || 1) ? 'danger' : '']"
+                                      :class="[i <= (data.hunger ?? 0) ? 'filled' : 'empty', i >= 4 && i <= (data.hunger ?? 0) ? 'danger' : '']"
                                       @click="clickDot('hunger', i, 0, 5)">●</span>
                             </template>
                         </div>
