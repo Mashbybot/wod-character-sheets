@@ -1,88 +1,63 @@
-# World of Darkness Character Sheets
+# 🌑 World of Darkness Character Sheets
 
-A web application for managing World of Darkness character sheets across multiple game lines.
+**Your chronicles, preserved.**
 
-## Currently Supported
-- **Vampire: The Masquerade 5th Edition** (VTM5e)
+A web-based character sheet manager for World of Darkness 5th Edition tabletop RPGs. Create, manage, and export your characters with Discord authentication and persistent cloud storage.
 
-## Planned Support
-- Hunter: The Reckoning 5th Edition (HTR5e)
-- Werewolf: The Apocalypse 5th Edition (WTA5e)
-- Additional WoD splats
+> *"A Beast I am, lest a Beast I become."*
 
-## Features
-- Discord OAuth authentication
-- Up to 3 characters per user per game line
-- Character portrait uploads with automatic resizing
-- Persistent storage via PostgreSQL + Railway Volumes
-- Mobile-friendly responsive design
-- Prepared for Discord bot webhook integration (Inconnu, Herald)
+---
 
-## Tech Stack
+## 🌑 Supported Game Lines
+
+- **Vampire: The Masquerade 5th Edition** — Full character sheet support
+- **Hunter: The Reckoning 5th Edition** — Full character sheet support
+- *Werewolf: The Apocalypse 5th Edition* — Planned
+
+## 🌑 Features
+
+- **Discord OAuth** — Log in with your Discord account
+- **Multiple characters** — Up to 3 characters per game line
+- **Character portraits** — Upload with automatic resizing
+- **PDF & PNG export** — Print-ready character sheets via Playwright
+- **Storyteller dashboard** — Campaign and player management
+- **Mobile-friendly** — Responsive design for any device
+- **Cloud storage** — PostgreSQL with Railway Volumes
+
+## 🌑 Tech Stack
+
 - **Backend:** FastAPI + SQLAlchemy + PostgreSQL
 - **Frontend:** HTML/CSS/JavaScript + Alpine.js
-- **Auth:** Discord OAuth
-- **Storage:** Railway Volumes (character portraits)
-- **Deployment:** Railway (auto-deploy on push to main)
+- **Auth:** Discord OAuth2
+- **Export:** Playwright + Chromium
+- **Deployment:** Railway
 
-## Environment Variables
-
-Required environment variables (set in Railway):
-
-```
-DATABASE_URL=postgresql://...          # Auto-provided by Railway PostgreSQL
-DISCORD_CLIENT_ID=your_client_id       # From Discord Developer Portal
-DISCORD_CLIENT_SECRET=your_secret      # From Discord Developer Portal
-DISCORD_REDIRECT_URI=https://your-app.up.railway.app/auth/callback
-SECRET_KEY=your_random_secret_key      # Generate with: openssl rand -hex 32
-VOLUME_PATH=/data                      # Railway Volume mount point
-```
-
-## Local Development
+## 🌑 Quick Start
 
 1. Clone the repository
 2. Create a virtual environment: `python -m venv venv`
-3. Activate it: `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
+3. Activate: `source venv/bin/activate`
 4. Install dependencies: `pip install -r requirements.txt`
-5. Set up environment variables in `.env` file
+5. Copy `.env.example` to `.env` and configure
 6. Run migrations: `alembic upgrade head`
 7. Start the server: `uvicorn app.main:app --reload`
 
-## Deployment
+See `.env.example` for required environment variables. For production, this project auto-deploys to [Railway](https://railway.app) on push to `main`.
 
-This project auto-deploys to Railway on push to `main` branch.
+## 🌑 Contributing
 
-1. Connect GitHub repository to Railway project
-2. Add PostgreSQL database in Railway
-3. Add Railway Volume (5GB) mounted at `/data`
-4. Set environment variables in Railway dashboard
-5. Push to `main` branch
+Contributions are welcome! Open an issue or submit a pull request.
 
-## Project Structure
+## 🌑 License
 
-```
-wod-character-sheets/
-├── app/
-│   ├── main.py              # FastAPI application
-│   ├── database.py          # Database connection and session management
-│   ├── models.py            # SQLAlchemy models
-│   ├── auth.py              # Discord OAuth implementation
-│   ├── routes/
-│   │   ├── auth.py          # Authentication routes
-│   │   ├── vtm.py           # VTM character routes
-│   │   └── htr.py           # HTR character routes (future)
-│   └── static/              # CSS, JS, images
-├── templates/               # Jinja2 templates
-├── alembic/                 # Database migrations
-├── requirements.txt
-├── Procfile                 # Railway deployment
-└── README.md
-```
+MIT License — Free to use, modify, and distribute.
 
-## License
+---
 
-This is a personal project for World of Darkness gameplay. All World of Darkness content is owned by Paradox Interactive.
+## Dark Pack
 
-## Author
+*This project is made under the [Dark Pack](https://www.paradoxinteractive.com/games/world-of-darkness/community/dark-pack-agreement) license agreement.*
 
-Built with love for the World of Darkness community.
+Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit [worldofdarkness.com](https://www.worldofdarkness.com).
+
+**This is a community project and is not official World of Darkness material.**
