@@ -245,6 +245,9 @@ function htrCharacterSheet(characterId) {
                 // Force Alpine to re-render by waiting a tick
                 await this.$nextTick();
 
+                // Auto-resize all textareas to fit their content
+                this.autoResizeAllTextareas();
+
                 this.isLoading = false;
             } catch (error) {
                 console.error('Failed to load character:', error);
@@ -632,6 +635,16 @@ function htrCharacterSheet(characterId) {
 
         setupTextareaAutoResize() {
             sheetSetupTextareaAutoResize(this, ['advantages', 'flaws', 'touchstones', 'equipment']);
+        },
+
+        autoResizeAllTextareas() {
+            const container = this.$el || document;
+            container.querySelectorAll('textarea').forEach(ta => {
+                if (ta.value) {
+                    ta.style.height = 'auto';
+                    ta.style.height = ta.scrollHeight + 'px';
+                }
+            });
         }
     };
 }

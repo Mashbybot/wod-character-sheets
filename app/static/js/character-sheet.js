@@ -344,6 +344,9 @@ function characterSheet(characterId) {
                 // Update Blood Potency calculated values after loading
                 this.updateBloodPotency(this.data.blood_potency || 0);
 
+                // Auto-resize all textareas after data is rendered
+                this.$nextTick(() => this.autoResizeAllTextareas());
+
                 console.log('Character loaded:', this.data);
 
             } catch (error) {
@@ -942,6 +945,17 @@ function characterSheet(characterId) {
                 if (textarea && textarea[0]) {
                     const height = this.backgrounds[index].description_height || 60;
                     textarea[0].style.height = height + 'px';
+                }
+            });
+        },
+
+        // Auto-resize all textareas to fit their content after data loads
+        autoResizeAllTextareas() {
+            const container = this.$el || document;
+            container.querySelectorAll('textarea').forEach(ta => {
+                if (ta.value) {
+                    ta.style.height = 'auto';
+                    ta.style.height = ta.scrollHeight + 'px';
                 }
             });
         },
