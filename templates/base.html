@@ -23,14 +23,22 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <a href="/">
-                    <img src="/static/images/wod-logo.png?v={{ static_version }}" alt="World of Darkness" class="wod-logo">
+                    <img src="/static/images/herald_logo.png?v={{ static_version }}" alt="Herald Registry" class="herald-logo">
+                    <span class="brand-text">Herald Registry</span>
                 </a>
             </div>
-            
+
             <div class="nav-links">
                 {% if user %}
-                    <a href="/vtm">VTM Characters</a>
-                    <a href="/htr">HTR Characters</a>
+                    <div class="nav-dropdown" x-data="{ open: false }" @click.away="open = false">
+                        <button class="nav-dropdown-btn" @click="open = !open">
+                            Characters <span class="dropdown-arrow" :class="open && 'open'">&#9662;</span>
+                        </button>
+                        <div class="nav-dropdown-menu" x-show="open" x-transition @click="open = false">
+                            <a href="/vtm">Vampire: The Masquerade</a>
+                            <a href="/htr">Hunter: The Reckoning</a>
+                        </div>
+                    </div>
                     {% if is_storyteller(user) %}
                     <a href="/storyteller" style="color: #d4af37; font-weight: bold;">📖 Storyteller</a>
                     {% endif %}
