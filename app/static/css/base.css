@@ -394,12 +394,12 @@ main {
 }
 
 .btn-herald {
-    background-color: var(--vtm-red);
+    background-color: #D4760A;
     color: white;
 }
 
 .btn-herald:hover {
-    background-color: var(--vtm-red-dark);
+    background-color: #B5650A;
 }
 
 .btn-discord {
