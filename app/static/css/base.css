@@ -339,7 +339,7 @@ main {
 
 .hero h1 {
     font-size: 2.8rem;
-    color: var(--vtm-red-light);
+    color: var(--text-white);
     margin-bottom: 1.5rem;
     line-height: 1.2;
     font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
